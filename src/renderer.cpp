@@ -26,20 +26,7 @@ Renderer::Renderer() {
     glEnable(GL_LIGHTING);
 }
 
-void Renderer::render(sf::Clock Clock) {
-
-    // Clear color and depth buffer
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Apply some transformations
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0.f, 0.f, -5.f);
-    glRotatef(Clock.GetElapsedTime() * 50, 1.f, 0.f, 0.f);
-    glRotatef(Clock.GetElapsedTime() * 30, 0.f, 1.f, 0.f);
-    glRotatef(Clock.GetElapsedTime() * 90, 0.f, 0.f, 1.f);
-
-    // Draw a cube
+void drawCube() {
     glBegin(GL_QUADS);
 
 		// Front Face
@@ -79,4 +66,30 @@ void Renderer::render(sf::Clock Clock) {
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 3 (Left)
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 4 (Left)
 	glEnd();								// Done Drawing Quads
+}
+
+void Renderer::render(sf::Clock Clock) {
+
+    // Clear color and depth buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+    
+    // Apply some transformations
+    glLoadIdentity();
+    glTranslatef(0.f, 0.f, -5.f);
+    glRotatef(Clock.GetElapsedTime() * 50, 1.f, 0.f, 0.f);
+    glRotatef(Clock.GetElapsedTime() * 30, 0.f, 1.f, 0.f);
+    glRotatef(Clock.GetElapsedTime() * 90, 0.f, 0.f, 1.f);
+    
+    drawCube();
+    
+    // Apply some transformations
+    glLoadIdentity();
+    glTranslatef(2.f, 0.f, -5.f);
+    glRotatef(Clock.GetElapsedTime() * 50, 1.f, 0.f, 0.f);
+    glRotatef(Clock.GetElapsedTime() * 30, 0.f, 1.f, 0.f);
+    glRotatef(Clock.GetElapsedTime() * 90, 0.f, 0.f, 1.f);
+    
+    drawCube();
 }
