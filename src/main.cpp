@@ -11,7 +11,7 @@ int main()
     Renderer renderer;
     InputHandler input_handler(&App);
     
-    App.SetFramerateLimit(60);
+    App.UseVerticalSync(true);
 
     // Create a clock for measuring time elapsed
     sf::Clock Clock;
