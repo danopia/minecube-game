@@ -19,10 +19,10 @@ CFLAGS := -I include
 all: $(APPLICATION)
 
 $(APPLICATION): $(OBJFILES)
-	g++ $< -o $(APPLICATION)
+	g++ $+ -o $(APPLICATION) -lSDL
 
 %.o: %.cpp
-	${COMPILER} ${CFLAGS} -MMD -MP -MT "$*.d $*.o"  -c $< -o $@
+	${COMPILER} ${CFLAGS} -MMD -MP -MT "$*.d $*.o"  -c $< -o $@ -I/usr/include/SDL
 
 clean:
 	@rm -rf $(APPLICATION)
