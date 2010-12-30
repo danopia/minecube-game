@@ -5,7 +5,7 @@
 class Renderer {
     public:
         Renderer();
-        void render(sf::Clock Clock);
+        void render(float Left, float Top);
 };
 
 #endif

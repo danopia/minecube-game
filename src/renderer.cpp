@@ -68,7 +68,7 @@ void drawCube() {
 	glEnd();								// Done Drawing Quads
 }
 
-void Renderer::render(sf::Clock Clock) {
+void Renderer::render(float Left, float Top) {
 
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -77,19 +77,15 @@ void Renderer::render(sf::Clock Clock) {
     
     // Apply some transformations
     glLoadIdentity();
+	  glTranslatef(-Left, 0.f, -Top);				// Translate The Scene Based On Player Position
     glTranslatef(0.f, 0.f, -5.f);
-    glRotatef(Clock.GetElapsedTime() * 50, 1.f, 0.f, 0.f);
-    glRotatef(Clock.GetElapsedTime() * 30, 0.f, 1.f, 0.f);
-    glRotatef(Clock.GetElapsedTime() * 90, 0.f, 0.f, 1.f);
     
     drawCube();
     
     // Apply some transformations
     glLoadIdentity();
+	  glTranslatef(-Left, 0.f, -Top);				// Translate The Scene Based On Player Position
     glTranslatef(2.f, 0.f, -5.f);
-    glRotatef(Clock.GetElapsedTime() * 50, 1.f, 0.f, 0.f);
-    glRotatef(Clock.GetElapsedTime() * 30, 0.f, 1.f, 0.f);
-    glRotatef(Clock.GetElapsedTime() * 90, 0.f, 0.f, 1.f);
     
     drawCube();
 }
