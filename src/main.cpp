@@ -10,6 +10,8 @@ int main()
     // Create a renderer and input handler
     Renderer renderer;
     InputHandler input_handler(&App);
+    
+    App.SetFramerateLimit(60);
 
     // Create a clock for measuring time elapsed
     sf::Clock Clock;
