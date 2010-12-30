@@ -1,5 +1,6 @@
 # At the time being, use the VS project file on Windows
 
+COMPILER    := g++
 APPLICATION := minecube
 ARCH        := x86_64
 ARCHES      := i386 x86_64
@@ -13,12 +14,15 @@ SOURCE_SUFFIXES := '(' -name '*.cpp' ')'
 SRCFILES := $(shell find 'src' ${SOURCE_SUFFIXES})
 OBJFILES := $(patsubst %.cpp,%.o,$(SRCFILES))
 
-CCFLAGS := -I include
+CFLAGS := -I include
 
 all: $(APPLICATION)
 
-$(APPLICATION):
-	g++ $(CCFLAGS) $(SRCFILES) -o $(APPLICATION)
+$(APPLICATION): $(OBJFILES)
+	g++ $< -o $(APPLICATION)
+
+%.o: %.cpp
+	${COMPILER} ${CFLAGS} -MMD -MP -MT "$*.d $*.o"  -c $< -o $@
 
 clean:
 	@rm -rf $(APPLICATION)

@@ -3,3 +3,9 @@ Debug/
 *.sdf
 *.suo
 *.opensdf
+*.d
+*.o
+*.exe
+*.lib
+*.dll
+minecube
