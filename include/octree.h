@@ -2,30 +2,33 @@
 #pragma once
 #ifndef OCTREE_H
 #define OCTREE_H
+
+#include <cstddef>
+
 template <class T>
 class Octree
 {
     public:
-
-        //Only value or children will ever be non-null
-        T value; 
-        Octree<T> *children[8];
-
         Octree(Octree<T> *initchildren[8])
         {
             value = NULL;
             children = initchildren;
         }
-        Octree(T initvalue);
+        Octree(T initvalue)
         {
             value = initvalue;
-            children = NULL;
-        }
+            children = (T)NULL;
+        };
         Octree()
         {
             value = NULL;
             children = NULL;
-        }
+        };
+
+                //Only value or children will ever be non-null
+        T value; 
+        Octree<T> *children[8];
+
 
         bool Insert(T *val)
         {
@@ -39,7 +42,7 @@ class Octree
             children[freeIndex] = val;
             return true;
         }   
-        bool Remove(int index);
+        bool Remove(int index)
         {
             if(children == NULL || children[index] == NULL)
                 return false;
