@@ -1,8 +1,10 @@
 #include <SFML/Window.hpp>
-#include <renderer.h>
-#include <input.h>
-#include <octree.h>
+#include <cmath>
 #include <iostream>
+
+#include "renderer.h"
+#include "input.h"
+#include "octree.h"
 
 using namespace std;
 
@@ -50,10 +52,12 @@ int main()
     Renderer renderer(terrain);
     InputHandler input_handler(&App);
     
-    App.UseVerticalSync(true);
+    //App.UseVerticalSync(true);
 
     // Create a clock for measuring time elapsed
     sf::Clock Clock;
+    
+    const float PI = 3.14159265358979323846264338329750288419716939937510582;
 
     const float Speed = 5.f;
     float Left = 5.f;
@@ -71,10 +75,49 @@ int main()
         float ElapsedTime = Clock.GetElapsedTime();
         Clock.Reset();
         
-        if (App.GetInput().IsKeyDown(sf::Key::D)) Left -= Speed * ElapsedTime;
-        if (App.GetInput().IsKeyDown(sf::Key::A)) Left += Speed * ElapsedTime;
-        if (App.GetInput().IsKeyDown(sf::Key::W)) Top  -= Speed * ElapsedTime;
-        if (App.GetInput().IsKeyDown(sf::Key::S)) Top  += Speed * ElapsedTime;
+        bool moving = false;
+        float xStep =  Speed * sin((PI * zRotation) / 180) * ElapsedTime; 
+        float yStep =  Speed * cos((PI * zRotation) / 180) * ElapsedTime; 
+        float zStep = -Speed * sin((PI *  rotation) / 180) * ElapsedTime; 
+        
+        if ((App.GetInput().IsKeyDown(sf::Key::S)))    // W = forwards 
+        { 
+            moving = true; 
+            Left -= (xStep * cos((PI * rotation) / 180)); 
+            Top -= (yStep * cos((PI * rotation) / 180)); 
+            Up -= zStep; 
+        } 
+
+        if ((App.GetInput().IsKeyDown(sf::Key::W)))    // S = backwards 
+        { 
+            moving = true; 
+            Left += (xStep * cos((PI * rotation) / 180)); 
+            Top += (yStep * cos((PI * rotation) / 180)); 
+            Up += zStep; 
+        } 
+
+        if ((App.GetInput().IsKeyDown(sf::Key::D)))    //A = strafe left 
+        { 
+            if ((moving = true)) 
+            { 
+                xStep *= 0.707106; 
+                yStep *= 0.707106; 
+            } 
+            Left += yStep; 
+            Top -= xStep; 
+        } 
+
+        if ((App.GetInput().IsKeyDown(sf::Key::A)))    //D = strafe right 
+        { 
+            if ((moving = true)) 
+            { 
+                xStep *= 0.707106; 
+                yStep *= 0.707106; 
+            } 
+            Left -= yStep; 
+            Top += xStep; 
+        } 
+        
         if (App.GetInput().IsKeyDown(sf::Key::Q)) Up   -= Speed * ElapsedTime;
         if (App.GetInput().IsKeyDown(sf::Key::E)) Up   += Speed * ElapsedTime;
         
