@@ -4,49 +4,54 @@
 #define OCTREE_H
 
 #include <cstddef>
+#include <vector>
+#include <iostream>
+using namespace std;
+
 
 template <class T>
 class Octree
 {
     public:
-        Octree(Octree<T> *initchildren[8])
+        Octree()
         {
-            value = NULL;
+            value = 0;
+            hasChildren = false; //Default to a leaf
+        }
+        Octree(vector<Octree<T> > initchildren)
+        {
+            value = 0;
+            hasChildren = true;
             children = initchildren;
         }
         Octree(T initvalue)
         {
             value = initvalue;
-            children = (T)NULL;
-        };
-        Octree()
-        {
-            value = NULL;
-            children = NULL;
-        };
+            hasChildren = false;
+            children = vector<Octree<T> >(0);
+        }
 
-                //Only value or children will ever be non-null
+        //Only value or children will ever be non-null
         T value; 
-        Octree<T> *children[8];
+        vector<Octree<T> > children;
+        bool hasChildren;
 
-
-        bool Insert(T *val)
+        bool Insert(T val)
         {
-            if(children == NULL)
+            if(!hasChildren)
                 return false;
             //Go to the next free cell
             int freeIndex = 0;
-            while(children[freeIndex] != NULL && freeIndex <= 8)
+            while(children[freeIndex] != NULL && freeIndex <= 7)
                 freeIndex++;
-            if(freeIndex == 8) return false;
+            if(children[freeIndex] != NULL) return false;
             children[freeIndex] = val;
             return true;
         }   
         bool Remove(int index)
         {
-            if(children == NULL || children[index] == NULL)
+            if(!hasChildren || children[index] == NULL)
                 return false;
-            delete children[index];
             children[index] = NULL;
             return true;
         }

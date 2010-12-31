@@ -14,7 +14,7 @@ SOURCE_SUFFIXES := '(' -name '*.cpp' ')'
 SRCFILES := $(shell find 'src' ${SOURCE_SUFFIXES})
 OBJFILES := $(patsubst %.cpp,%.o,$(SRCFILES))
 
-CFLAGS := -I include
+CFLAGS := -I include -g
 
 all: $(APPLICATION)
 

@@ -1,6 +1,10 @@
 #include <SFML/Window.hpp>
 #include <renderer.h>
 #include <input.h>
+#include <octree.h>
+#include <iostream>
+
+using namespace std;
 
 int main()
 {
@@ -11,7 +15,7 @@ int main()
     Renderer renderer;
     InputHandler input_handler(&App);
     
-    App.UseVerticalSync(true);
+//    App.UseVerticalSync(true);
 
     // Create a clock for measuring time elapsed
     sf::Clock Clock;
@@ -20,6 +24,15 @@ int main()
     float Left = 0.f;
     float Top  = 0.f;
 
+    Octree<float> myfloats[] = {Octree<float>(1.0), Octree<float>(2.0), Octree<float>(50), Octree<float>(3.5), Octree<float>(1.5), Octree<float>(56.0), Octree<float>(3.0), Octree<float>(1.0)};
+    vector<Octree<float> > treechildren;
+    for(int i = 0; i < 8; i++)
+        treechildren.push_back(myfloats[i]);
+
+    Octree<float> tree = Octree<float>(treechildren);
+
+    for(int i = 0; i < 8; i++)
+        cout << i << ": " << tree.children[i].value << endl;
     // Start game loop
     while (App.IsOpened())
     {
