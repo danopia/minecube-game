@@ -55,7 +55,7 @@ int main()
     // Create a clock for measuring time elapsed
     sf::Clock Clock;
     
-    Player player(5.f, 0.f, 180.f, 5.f, 20.f, 5.f);
+    Player player(5.f, 0.f, 180.f, 5.f, 70.f, 30.f);
     
     App.ShowMouseCursor(false);
     
