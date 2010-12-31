@@ -6,6 +6,20 @@
 
 using namespace std;
 
+Octree<bool> makeTerrain()
+{
+    vector<Octree<bool> >blocks;
+    for(int i = 0; i < 8; i++)
+    {
+        bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
+        blocks.push_back(Octree<bool>(type));
+        cout << "Block " << i << ": " << (type ? "dirt" : "air") << endl;
+    }
+    Octree<bool> terrain(blocks);
+    return terrain;
+}
+
+
 int main()
 {
     // Create the main window
@@ -24,15 +38,8 @@ int main()
     float Left = 0.f;
     float Top  = 0.f;
 
-    Octree<float> myfloats[] = {Octree<float>(1.0), Octree<float>(2.0), Octree<float>(50), Octree<float>(3.5), Octree<float>(1.5), Octree<float>(56.0), Octree<float>(3.0), Octree<float>(1.0)};
-    vector<Octree<float> > treechildren;
-    for(int i = 0; i < 8; i++)
-        treechildren.push_back(myfloats[i]);
-
-    Octree<float> tree = Octree<float>(treechildren);
-
-    for(int i = 0; i < 8; i++)
-        cout << i << ": " << tree.children[i].value << endl;
+    Octree<bool> terrain = makeTerrain();
+    
     // Start game loop
     while (App.IsOpened())
     {
