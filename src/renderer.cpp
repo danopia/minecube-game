@@ -95,7 +95,7 @@ void renderNode(Octree<bool> terrain, float x, float y, float z, float size) {
     }
 }
 
-void Renderer::render(float Left, float Top, float Up) {
+void Renderer::render(float Left, float Top, float Up, float rotation, float zRotation) {
 
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -104,7 +104,10 @@ void Renderer::render(float Left, float Top, float Up) {
     
     // Apply some transformations
     glLoadIdentity();
-	  glTranslatef(-Left, -Up, -Top);				// Translate The Scene Based On Player Position
+            // Rotate the view first 
+        glRotatef(-90 + rotation, 1.f, 0.f, 0.f); 
+        glRotatef(zRotation, 0.f, 0.f, 1.f); 
+	  glTranslatef(-Left, -Top, -Up);				// Translate The Scene Based On Player Position
 	  
     renderNode(terrain, 0.f, 0.f, 0.f, 10.f);
 }

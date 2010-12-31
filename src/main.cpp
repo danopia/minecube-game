@@ -1,14 +1,15 @@
 #include <SFML/Window.hpp>
-#include <renderer.h>
-#include <input.h>
-#include <octree.h>
+#include <cmath>
 #include <iostream>
+
+#include "renderer.h"
+#include "input.h"
+#include "octree.h"
 
 using namespace std;
 
 Octree<bool> makeTerrain(int level)
 {
-    cout << "At level " << level << endl;
     vector<Octree<bool> >blocks;
     for(int i = 0; i < 8; i++)
     {
@@ -23,7 +24,6 @@ Octree<bool> makeTerrain(int level)
             } 
             else
             {
-                cout << "Going deeper!" << endl;
                 blocks.push_back(makeTerrain(level + 1));
             }
         }
@@ -32,7 +32,6 @@ Octree<bool> makeTerrain(int level)
             bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
             blocks.push_back(Octree<bool>(type));
         }
-        cout << "Block " << i << "at level " << level << ": " << (leaf ? "leaf" : "node") << endl;
     }
     Octree<bool> terrain(blocks);
     return terrain;
@@ -42,7 +41,7 @@ Octree<bool> makeTerrain(int level)
 int main()
 {
     // Create the main window
-    sf::Window App(sf::VideoMode(800, 600, 32), "SFML OpenGL");
+    sf::Window App(sf::VideoMode(800, 600, 32), "MineCube");
 
     Octree<bool> terrain = makeTerrain(0);
     
@@ -50,15 +49,22 @@ int main()
     Renderer renderer(terrain);
     InputHandler input_handler(&App);
     
-//    App.UseVerticalSync(true);
+    //App.UseVerticalSync(true);
 
     // Create a clock for measuring time elapsed
     sf::Clock Clock;
+    
+    const float PI = 3.14159265358979323846264338329750288419716939937510582;
 
     const float Speed = 5.f;
     float Left = 5.f;
     float Top  = 20.f;
     float Up  = 5.f;
+    
+    float rotation = 0.f;
+    float zRotation = 180.f;
+    
+    App.ShowMouseCursor(false);
     
     // Start game loop
     while (App.IsOpened())
@@ -66,14 +72,84 @@ int main()
         float ElapsedTime = Clock.GetElapsedTime();
         Clock.Reset();
         
-        if (App.GetInput().IsKeyDown(sf::Key::A)) Left -= Speed * ElapsedTime;
-        if (App.GetInput().IsKeyDown(sf::Key::D)) Left += Speed * ElapsedTime;
-        if (App.GetInput().IsKeyDown(sf::Key::W)) Top  -= Speed * ElapsedTime;
-        if (App.GetInput().IsKeyDown(sf::Key::S)) Top  += Speed * ElapsedTime;
+        bool moving = false;
+        float xStep =  Speed * sin((PI * zRotation) / 180) * ElapsedTime; 
+        float yStep =  Speed * cos((PI * zRotation) / 180) * ElapsedTime; 
+        float zStep = -Speed * sin((PI *  rotation) / 180) * ElapsedTime; 
+        
+        if ((App.GetInput().IsKeyDown(sf::Key::S)))    // W = forwards 
+        { 
+            moving = true; 
+            Left -= (xStep * cos((PI * rotation) / 180)); 
+            Top -= (yStep * cos((PI * rotation) / 180)); 
+            Up -= zStep; 
+        } 
+
+        if ((App.GetInput().IsKeyDown(sf::Key::W)))    // S = backwards 
+        { 
+            moving = true; 
+            Left += (xStep * cos((PI * rotation) / 180)); 
+            Top += (yStep * cos((PI * rotation) / 180)); 
+            Up += zStep; 
+        } 
+
+        if ((App.GetInput().IsKeyDown(sf::Key::D)))    //A = strafe left 
+        { 
+            if ((moving = true)) 
+            { 
+                xStep *= 0.707106; 
+                yStep *= 0.707106; 
+            } 
+            Left += yStep; 
+            Top -= xStep; 
+        } 
+
+        if ((App.GetInput().IsKeyDown(sf::Key::A)))    //D = strafe right 
+        { 
+            if ((moving = true)) 
+            { 
+                xStep *= 0.707106; 
+                yStep *= 0.707106; 
+            } 
+            Left -= yStep; 
+            Top += xStep; 
+        } 
+        
         if (App.GetInput().IsKeyDown(sf::Key::Q)) Up   -= Speed * ElapsedTime;
         if (App.GetInput().IsKeyDown(sf::Key::E)) Up   += Speed * ElapsedTime;
         
         if (App.GetInput().IsKeyDown(sf::Key::Space)) renderer.terrain = makeTerrain(0);
+        
+        // Rotate view based on mouse movement 
+        float mouseDeltaX = App.GetInput().GetMouseX() - 100; 
+        float mouseDeltaY = App.GetInput().GetMouseY() - 100;
+        App.SetCursorPosition(100, 100);
+        if (!(mouseDeltaX == -100 && mouseDeltaY == -100)) {
+            zRotation += (mouseDeltaX / 10); 
+            rotation += (mouseDeltaY / 10); 
+            //cout << "DeltaX: " << mouseDeltaX << " DeltaY: " << mouseDeltaY << endl; 
+
+            // Z rotation normalisation - between 0 and 360 
+            if (zRotation >= 360) 
+            { 
+                zRotation -= 360; 
+            } 
+
+            if (zRotation < 0) 
+            { 
+                zRotation += 360; 
+            } 
+
+            // X/Y rotation limits 
+            if (rotation < -90) 
+            { 
+                rotation = -90; 
+            } 
+            if (rotation >= 90) 
+            { 
+                rotation = 90; 
+            } 
+        }
         
         input_handler.handleEvents();
 
@@ -82,7 +158,7 @@ int main()
         // but don't forget it if you use multiple windows or controls
         App.SetActive();
 
-        renderer.render(Left, Top, Up);
+        renderer.render(Left, Top, Up, rotation, zRotation);
 
         // Finally, display rendered frame on screen
         App.Display();
