@@ -30,7 +30,7 @@ void drawCube(float x, float y, float z, float length) {
 
     // Apply some transformations
 	  glPushMatrix();
-    glTranslatef(x, y, z);
+    glTranslatef(x + (length/2), y + (length/2), z + (length/2));
     glScalef(length, length, length);
 
     glBegin(GL_QUADS);
