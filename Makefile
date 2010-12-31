@@ -27,6 +27,7 @@ $(APPLICATION): $(OBJFILES)
 clean:
 	@rm -rf $(APPLICATION)
 	@find ./src -name '*.o' -delete
+	@find ./src -name '*.d' -delete
 	@find ./src -name '*.lib' -delete
 	@find ./src -name '*.dll' -delete
 	@find ./src -name '*.exe' -delete
