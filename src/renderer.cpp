@@ -26,7 +26,13 @@ Renderer::Renderer() {
     glEnable(GL_LIGHTING);
 }
 
-void drawCube() {
+void drawCube(float x, float y, float z, float length) {
+
+    // Apply some transformations
+	  glPushMatrix();
+    glTranslatef(x, y, z);
+    glScalef(length, length, length);
+
     glBegin(GL_QUADS);
 
 		// Front Face
@@ -66,6 +72,8 @@ void drawCube() {
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 3 (Left)
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 4 (Left)
 	glEnd();								// Done Drawing Quads
+	
+	  glPopMatrix();
 }
 
 void Renderer::render(float Left, float Top, float Up) {
@@ -78,14 +86,9 @@ void Renderer::render(float Left, float Top, float Up) {
     // Apply some transformations
     glLoadIdentity();
 	  glTranslatef(-Left, -Up, -Top);				// Translate The Scene Based On Player Position
-    glTranslatef(0.f, 0.f, -5.f);
-    
-    drawCube();
-    
-    // Apply some transformations
-    glLoadIdentity();
-	  glTranslatef(-Left, -Up, -Top);				// Translate The Scene Based On Player Position
-    glTranslatef(2.f, 0.f, -5.f);
-    
-    drawCube();
+	  
+    drawCube(0.f, 0.f, -5.f, 1.f);
+    drawCube(3.f, 0.f, -5.f, 1.f);
+    drawCube(-2.f, 1.f, -4.f, 0.5f);
+    drawCube(10.f, -10.f, -10.f, 5.f);
 }
