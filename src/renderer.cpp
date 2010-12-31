@@ -13,7 +13,9 @@ Renderer::Renderer(Octree<bool> terrain) : terrain(terrain) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(90.f, 1.f, 1.f, 500.f);
-    
+
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     // Lighting test junk
     GLfloat LightAmbient[]= { 0.5f, 0.5f, 0.5f, 1.0f }; 				// Ambient Light Values ( NEW )
     GLfloat LightDiffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };				 // Diffuse Light Values ( NEW )
@@ -27,11 +29,12 @@ Renderer::Renderer(Octree<bool> terrain) : terrain(terrain) {
 }
 
 void drawCube(float x, float y, float z, float length) {
+    float sublength = length / 2;
 
     // Apply some transformations
 	  glPushMatrix();
-    glTranslatef(x + (length/2), y + (length/2), z + (length/2));
-    glScalef(length, length, length);
+    glTranslatef(x + sublength, y + sublength, z + sublength);
+    glScalef(sublength, sublength, sublength);
 
     glBegin(GL_QUADS);
 
