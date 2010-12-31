@@ -56,6 +56,7 @@ int main()
     const float Speed = 5.f;
     float Left = 0.f;
     float Top  = 0.f;
+    float Up  = 0.f;
 
     Octree<bool> terrain = makeTerrain(0);
     
@@ -65,10 +66,12 @@ int main()
         float ElapsedTime = Clock.GetElapsedTime();
         Clock.Reset();
         
-        if (App.GetInput().IsKeyDown(sf::Key::Left))  Left -= Speed * ElapsedTime;
-        if (App.GetInput().IsKeyDown(sf::Key::Right)) Left += Speed * ElapsedTime;
-        if (App.GetInput().IsKeyDown(sf::Key::Up))    Top  -= Speed * ElapsedTime;
-        if (App.GetInput().IsKeyDown(sf::Key::Down))  Top  += Speed * ElapsedTime;
+        if (App.GetInput().IsKeyDown(sf::Key::A)) Left -= Speed * ElapsedTime;
+        if (App.GetInput().IsKeyDown(sf::Key::D)) Left += Speed * ElapsedTime;
+        if (App.GetInput().IsKeyDown(sf::Key::W)) Top  -= Speed * ElapsedTime;
+        if (App.GetInput().IsKeyDown(sf::Key::S)) Top  += Speed * ElapsedTime;
+        if (App.GetInput().IsKeyDown(sf::Key::Q)) Up   -= Speed * ElapsedTime;
+        if (App.GetInput().IsKeyDown(sf::Key::E)) Up   += Speed * ElapsedTime;
         
         input_handler.handleEvents();
 
@@ -77,7 +80,7 @@ int main()
         // but don't forget it if you use multiple windows or controls
         App.SetActive();
 
-        renderer.render(Left, Top);
+        renderer.render(Left, Top, Up);
 
         // Finally, display rendered frame on screen
         App.Display();

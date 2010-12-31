@@ -1,7 +1,6 @@
 #include "input.h"
 
-InputHandler::InputHandler(sf::Window* Window) {
-    app = Window;
+InputHandler::InputHandler(sf::Window* Window) : app(Window) {
 }
 
 void InputHandler::handleEvent(sf::Event Event) {

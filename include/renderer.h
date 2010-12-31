@@ -5,7 +5,7 @@
 class Renderer {
     public:
         Renderer();
-        void render(float Left, float Top);
+        void render(float Left, float Top, float Up);
 };
 
 #endif

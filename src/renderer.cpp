@@ -68,7 +68,7 @@ void drawCube() {
 	glEnd();								// Done Drawing Quads
 }
 
-void Renderer::render(float Left, float Top) {
+void Renderer::render(float Left, float Top, float Up) {
 
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -77,14 +77,14 @@ void Renderer::render(float Left, float Top) {
     
     // Apply some transformations
     glLoadIdentity();
-	  glTranslatef(-Left, 0.f, -Top);				// Translate The Scene Based On Player Position
+	  glTranslatef(-Left, -Up, -Top);				// Translate The Scene Based On Player Position
     glTranslatef(0.f, 0.f, -5.f);
     
     drawCube();
     
     // Apply some transformations
     glLoadIdentity();
-	  glTranslatef(-Left, 0.f, -Top);				// Translate The Scene Based On Player Position
+	  glTranslatef(-Left, -Up, -Top);				// Translate The Scene Based On Player Position
     glTranslatef(2.f, 0.f, -5.f);
     
     drawCube();
