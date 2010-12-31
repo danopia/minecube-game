@@ -66,24 +66,22 @@ int main()
         Clock.Reset();
         
         if ((App.GetInput().IsKeyDown(sf::Key::S)))    // W = forwards 
-        { 
             player.Forward(-ElapsedTime);
-        } 
 
         if ((App.GetInput().IsKeyDown(sf::Key::W)))    // S = backwards 
-        { 
             player.Forward(ElapsedTime);
-        }
 
         if ((App.GetInput().IsKeyDown(sf::Key::D)))    //A = strafe left 
-        { 
             player.Strafe(-ElapsedTime);
-        } 
 
         if ((App.GetInput().IsKeyDown(sf::Key::A)))    //D = strafe right 
-        { 
             player.Strafe(ElapsedTime);
-        } 
+
+        if ((App.GetInput().IsKeyDown(sf::Key::Z)))
+            player.Speed++;
+        
+        if((App.GetInput().IsKeyDown(sf::Key::X)))
+            player.Speed--;
         
         if (App.GetInput().IsKeyDown(sf::Key::Space)) renderer.terrain = makeTerrain(0);
         
