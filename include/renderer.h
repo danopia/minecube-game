@@ -6,7 +6,7 @@
 class Renderer {
     public:
         Renderer(Octree<bool> terrain);
-        void render(float Left, float Top, float Up);
+        void render(float Left, float Top, float Up, float rotation, float zRotation);
         
         Octree<bool> terrain;
 };
