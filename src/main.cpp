@@ -56,9 +56,9 @@ int main()
     sf::Clock Clock;
 
     const float Speed = 5.f;
-    float Left = 0.f;
-    float Top  = 0.f;
-    float Up  = 0.f;
+    float Left = 5.f;
+    float Top  = 20.f;
+    float Up  = 5.f;
     
     // Start game loop
     while (App.IsOpened())
