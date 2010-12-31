@@ -20,7 +20,6 @@ void Player::Strafe(float amount)
 {
     float xStep = Speed * sin((PI * Zrot) / 180) * amount;
     float yStep = Speed * cos((PI * Zrot) / 180) * amount;
-    //TODO: Find out why this is necessary
     if(Moving == true)
     {
         xStep *= 0.707106;        
