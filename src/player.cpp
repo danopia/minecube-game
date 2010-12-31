@@ -1,6 +1,8 @@
 #include "player.h"
 #include <cmath>
 
+const float PI = 3.14159265358979323846264338329750288419716939937510582;
+
 Player::Player() : Speed(0), Yrot(0), Zrot(0), X(0), Y(0), Z(0), Moving(false) {}
 Player::Player(float initspeed, float initYrot, float initZrot, float initX, float initY, float initZ) :
     Speed(initspeed), Yrot(initYrot), Zrot(initZrot), X(initX), Y(initY), Z(initZ), Moving(false) {}

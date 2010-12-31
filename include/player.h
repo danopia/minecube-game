@@ -1,7 +1,6 @@
 #pragma once
 #ifndef PLAYER_H
 #define PLAYER_H
-#define PI 3.14159265358979323846264338329750288419716939937510582
 
 class Player
 {
