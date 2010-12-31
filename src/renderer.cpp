@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-Renderer::Renderer() {
+Renderer::Renderer(Octree<bool> terrain) : terrain(terrain) {
     // Set color and depth clear value
     glClearDepth(1.f);
     glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -76,6 +76,22 @@ void drawCube(float x, float y, float z, float length) {
 	  glPopMatrix();
 }
 
+void renderNode(Octree<bool> terrain, float x, float y, float z, float size) {
+    if (terrain.hasChildren) {
+        float subsize = size / 2;
+        renderNode(terrain.children[0], x,         y,         z,         subsize);
+        renderNode(terrain.children[1], x+subsize, y,         z,         subsize);
+        renderNode(terrain.children[2], x,         y+subsize, z,         subsize);
+        renderNode(terrain.children[3], x+subsize, y+subsize, z,         subsize);
+        renderNode(terrain.children[4], x,         y,         z+subsize, subsize);
+        renderNode(terrain.children[5], x+subsize, y,         z+subsize, subsize);
+        renderNode(terrain.children[6], x,         y+subsize, z+subsize, subsize);
+        renderNode(terrain.children[7], x+subsize, y+subsize, z+subsize, subsize);
+    } else if (terrain.value) {
+        drawCube(x, y, z, size);
+    }
+}
+
 void Renderer::render(float Left, float Top, float Up) {
 
     // Clear color and depth buffer
@@ -87,8 +103,5 @@ void Renderer::render(float Left, float Top, float Up) {
     glLoadIdentity();
 	  glTranslatef(-Left, -Up, -Top);				// Translate The Scene Based On Player Position
 	  
-    drawCube(0.f, 0.f, -5.f, 1.f);
-    drawCube(3.f, 0.f, -5.f, 1.f);
-    drawCube(-2.f, 1.f, -4.f, 0.5f);
-    drawCube(10.f, -10.f, -10.f, 5.f);
+    renderNode(terrain, 0.f, 0.f, 0.f, 10.f);
 }

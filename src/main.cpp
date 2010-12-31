@@ -43,9 +43,11 @@ int main()
 {
     // Create the main window
     sf::Window App(sf::VideoMode(800, 600, 32), "SFML OpenGL");
+
+    Octree<bool> terrain = makeTerrain(0);
     
     // Create a renderer and input handler
-    Renderer renderer;
+    Renderer renderer(terrain);
     InputHandler input_handler(&App);
     
 //    App.UseVerticalSync(true);
@@ -57,8 +59,6 @@ int main()
     float Left = 0.f;
     float Top  = 0.f;
     float Up  = 0.f;
-
-    Octree<bool> terrain = makeTerrain(0);
     
     // Start game loop
     while (App.IsOpened())
@@ -72,6 +72,8 @@ int main()
         if (App.GetInput().IsKeyDown(sf::Key::S)) Top  += Speed * ElapsedTime;
         if (App.GetInput().IsKeyDown(sf::Key::Q)) Up   -= Speed * ElapsedTime;
         if (App.GetInput().IsKeyDown(sf::Key::E)) Up   += Speed * ElapsedTime;
+        
+        if (App.GetInput().IsKeyDown(sf::Key::Space)) renderer.terrain = makeTerrain(0);
         
         input_handler.handleEvents();
 
