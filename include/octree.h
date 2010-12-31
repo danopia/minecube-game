@@ -27,27 +27,13 @@ class Octree
 };
 
 template <class T>
-Octree<T>::Octree()
-{
-    value = 0;
-    hasChildren = false; //Default to a leaf
-}
+Octree<T>::Octree() : value(0), hasChildren(false) {}
 
 template <class T>
-Octree<T>::Octree(vector<Octree<T> > initchildren)
-{
-    value = 0;
-    hasChildren = true;
-    children = initchildren;
-}
+Octree<T>::Octree(vector<Octree<T> > initchildren) : value(0), hasChildren(true), children(initchildren) {}
 
 template <class T>
-Octree<T>::Octree(T initvalue)
-{
-    value = initvalue;
-    hasChildren = false;
-    children = vector<Octree<T> >(0);
-}
+Octree<T>::Octree(T initvalue) : value(initvalue), hasChildren(false), children(vector<Octree<T> >(0)) {}
 
 template <class T>
 bool Octree<T>::Insert(T val)

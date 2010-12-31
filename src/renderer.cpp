@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include <SFML/System.hpp>
 
 Renderer::Renderer(Octree<bool> terrain) : terrain(terrain) {
     // Set color and depth clear value
@@ -36,8 +37,11 @@ void drawCube(float x, float y, float z, float length) {
     glTranslatef(x + sublength, y + sublength, z + sublength);
     glScalef(sublength, sublength, sublength);
 
+        float randred = sf::Randomizer::Random(0.0f, 1.0f);
+        float randblue = sf::Randomizer::Random(0.0f, 1.0f);
+        float randgreen = sf::Randomizer::Random(0.0f, 1.0f);
+        glColor3f(1.0, 0.0, 0.0);
     glBegin(GL_QUADS);
-
 		// Front Face
 		glNormal3f( 0.0f, 0.0f, 1.0f);					// Normal Pointing Towards Viewer
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 1 (Front)
@@ -109,5 +113,5 @@ void Renderer::render(float Left, float Top, float Up, float rotation, float zRo
         glRotatef(zRotation, 0.f, 0.f, 1.f); 
 	  glTranslatef(-Left, -Top, -Up);				// Translate The Scene Based On Player Position
 	  
-    renderNode(terrain, 0.f, 0.f, 0.f, 10.f);
+    renderNode(terrain, 0.f, 0.f, 0.f, 50.f);
 }

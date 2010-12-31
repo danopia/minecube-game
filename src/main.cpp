@@ -14,7 +14,7 @@ Octree<bool> makeTerrain(int level)
     for(int i = 0; i < 8; i++)
     {
         bool leaf = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-        if(level < 2)
+        if(level < 5)
         {
 
             if(leaf)
@@ -27,7 +27,7 @@ Octree<bool> makeTerrain(int level)
                 blocks.push_back(makeTerrain(level + 1));
             }
         }
-        else if(level == 2)
+        else if(level == 5)
         {
             bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
             blocks.push_back(Octree<bool>(type));
