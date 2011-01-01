@@ -23,6 +23,7 @@ class Octree
         Octree(T initvalue);
         bool Insert(T val);
         bool Remove(int index);
+        bool Collapse();
 
 };
 
@@ -57,4 +58,34 @@ bool Octree<T>::Remove(int index)
     children[index] = NULL;
     return true;
 }
+
+/* Collapses the octree into leaves where all the children of a node are identical */
+template <class T>
+bool Octree<T>::Collapse()
+{
+    if(hasChildren)
+    {
+        for(int i = 0; i < 8; i++)
+        {
+            if(children[i].hasChildren)
+            {
+                if(!children[i].Collapse())
+                    return false;
+            }
+        }
+
+        T startingvalue = children[0].value;
+        for(int i = 1; i < 8; i++)
+        {
+            if(!(children[i].value == startingvalue))
+                return false;
+        }
+        /* All children are identical, collapse the node */
+        hasChildren = false;
+        children = vector<Octree<T> >(0);
+        value = startingvalue;
+    }
+    return true;
+}
+    
 #endif

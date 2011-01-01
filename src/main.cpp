@@ -45,7 +45,11 @@ int main()
     sf::Window App(sf::VideoMode(800, 600, 32), "MineCube");
 
     Octree<bool> terrain = makeTerrain(0);
-    
+    vector<Octree<float> > testnodes(8, Octree<float>(5.2));
+    vector<Octree<float> > testnodes2(8, Octree<float>(testnodes));
+    Octree<float> foo(testnodes2);
+    foo.Collapse();
+    cout << foo.value << endl;
     // Create a renderer and input handler
     Renderer renderer(terrain);
     InputHandler input_handler(&App);
