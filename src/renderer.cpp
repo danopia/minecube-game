@@ -1,6 +1,8 @@
 #include "renderer.h"
 #include "player.h"
-#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
+
+GLuint Texture = 0;
 
 Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     // Set color and depth clear value
@@ -28,12 +30,25 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);			// Position The Light
     glEnable(GL_LIGHT1);							// Enable Light One
     
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE); // Let glcolor work with lighting
-    glEnable(GL_COLOR_MATERIAL); // Enable lighting
+    //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE); // Let glcolor work with lighting
+    //glEnable(GL_COLOR_MATERIAL); // Enable lighting
+    glEnable(GL_TEXTURE_2D); // Enable textures
     glEnable(GL_LIGHTING); // Enable lighting
     
     glShadeModel(GL_SMOOTH); // Enable Smooth Shading
+    
+    sf::Image Image;
+    if (!Image.LoadFromFile("data/tiles.png"))
+        return;
+    glGenTextures(1, &Texture);
+    glBindTexture(GL_TEXTURE_2D, Texture);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.GetWidth(), Image.GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, Image.GetPixelsPtr());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 }
+
+// Don't forget to destroy our texture 
+//glDeleteTextures(1, &Texture); 
 
 void drawCube(float x, float y, float z, float length) {
     float sublength = length / 2;
@@ -44,53 +59,50 @@ void drawCube(float x, float y, float z, float length) {
     glTranslatef(x + sublength, y + sublength, z + sublength);
     glScalef(sublength, sublength, sublength);
 
+    glBindTexture(GL_TEXTURE_2D, Texture);
     glBegin(GL_QUADS);
-
-    glColor3f(0.27f, 0.54f, 0.f); // Grass
     
-		// Front Face
+		// Top Face: Grass Top
 		glNormal3f( 0.0f, 0.0f, 1.0f);					// Normal Pointing Towards Viewer
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 1 (Front)
-		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 2 (Front)
-		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Front)
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 4 (Front)
-
-    glColor3f(0.54f, 0.27f, 0.07f); // Dirt
+		glTexCoord2f(0.0f,   0.0f  ); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 1 (Front)
+		glTexCoord2f(0.125f, 0.0f  ); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 2 (Front)
+		glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Front)
+		glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 4 (Front)
 		
-		// Back Face
+		// Bottom Face: Dirt
 		glNormal3f( 0.0f, 0.0f,-1.0f);					// Normal Pointing Away From Viewer
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Back)
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 2 (Back)
-		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 3 (Back)
-		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 4 (Back)
+		glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Back)
+		glTexCoord2f(0.125f, 0.375f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 2 (Back)
+		glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 3 (Back)
+		glTexCoord2f(0.0f,   0.375f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 4 (Back)
 		
-		// Top Face
+		// Front Face: Grass Side
 		glNormal3f( 0.0f, 1.0f, 0.0f);					// Normal Pointing Up
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 1 (Top)
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 2 (Top)
-		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Top)
-		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 4 (Top)
+		glTexCoord2f(0.0f,   0.25f ); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 1 (Top)
+		glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 2 (Top)
+		glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Top)
+		glTexCoord2f(0.125f, 0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 4 (Top)
 		
-		// Bottom Face
+		// Back Face: Grass Side
 		glNormal3f( 0.0f,-1.0f, 0.0f);					// Normal Pointing Down
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Bottom)
-		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 2 (Bottom)
-		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 3 (Bottom)
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 4 (Bottom)
+		glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Bottom)
+		glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 2 (Bottom)
+		glTexCoord2f(0.0f,   0.125f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 3 (Bottom)
+		glTexCoord2f(0.125f, 0.125f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 4 (Bottom)
 		
-		// Right face
+		// Left face: Grass Side
 		glNormal3f( 1.0f, 0.0f, 0.0f);					// Normal Pointing Right
-		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 1 (Right)
-		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 2 (Right)
-		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Right)
-		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 4 (Right)
+		glTexCoord2f(0.125f, 0.25f ); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 1 (Right)
+		glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 2 (Right)
+		glTexCoord2f(0.0f,   0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Right)
+		glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 4 (Right)
 		
-		// Left Face
+		// Right Face: Grass Side
 		glNormal3f(-1.0f, 0.0f, 0.0f);					// Normal Pointing Left
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Left)
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 2 (Left)
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 3 (Left)
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 4 (Left)
+		glTexCoord2f(0.125f, 0.125f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Left)
+		glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 2 (Left)
+		glTexCoord2f(0.0f,   0.25f ); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 3 (Left)
+		glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 4 (Left)
 		
 	  glEnd(); // Done Drawing Quads
 	  glPopMatrix(); // Undo the translations
