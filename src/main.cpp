@@ -56,6 +56,8 @@ int main()
         
         if (Input.IsKeyDown(sf::Key::Space)) renderer.terrain.Regenerate();
         
+        input_handler.handleEvents();
+        
         // Rotate view based on mouse movement 
         float mouseDeltaX = Input.GetMouseX() - 100; 
         float mouseDeltaY = Input.GetMouseY() - 100;
@@ -63,8 +65,6 @@ int main()
         
         if (!(mouseDeltaX == -100 && mouseDeltaY == -100) && !(mouseDeltaX == 0 && mouseDeltaY == 0)) 
             player.ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));
-        
-        input_handler.handleEvents();
 
         // Set the active window before using OpenGL commands
         // It's useless here because active window is always the same,
