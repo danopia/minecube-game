@@ -62,34 +62,26 @@ int main()
     // Start game loop
     while (App.IsOpened())
     {
+        const sf::Input& Input = App->GetInput(); 
+        
         float ElapsedTime = Clock.GetElapsedTime();
         Clock.Reset();
         
-        if ((App.GetInput().IsKeyDown(sf::Key::S)))    // W = forwards 
-            player.Forward(-ElapsedTime);
-
-        if ((App.GetInput().IsKeyDown(sf::Key::W)))    // S = backwards 
-            player.Forward(ElapsedTime);
-
-        if ((App.GetInput().IsKeyDown(sf::Key::D)))    //A = strafe left 
-            player.Strafe(-ElapsedTime);
-
-        if ((App.GetInput().IsKeyDown(sf::Key::A)))    //D = strafe right 
-            player.Strafe(ElapsedTime);
-
-        if ((App.GetInput().IsKeyDown(sf::Key::Z)))
-            player.Speed++;
+        if ((Input.IsKeyDown(sf::Key::S))) player.Forward(-ElapsedTime);
+        if ((Input.IsKeyDown(sf::Key::W))) player.Forward( ElapsedTime);
+        if ((Input.IsKeyDown(sf::Key::D))) player.Strafe(-ElapsedTime);
+        if ((Input.IsKeyDown(sf::Key::A))) player.Strafe( ElapsedTime);
+        if ((Input.IsKeyDown(sf::Key::Z))) player.Speed++;
+        if ((Input.IsKeyDown(sf::Key::X))) player.Speed--;
         
-        if((App.GetInput().IsKeyDown(sf::Key::X)))
-            player.Speed--;
-        
-        if (App.GetInput().IsKeyDown(sf::Key::Space)) renderer.terrain = makeTerrain(0);
+        if (Input.IsKeyDown(sf::Key::Space)) renderer.terrain = makeTerrain(0);
         
         // Rotate view based on mouse movement 
-        float mouseDeltaX = App.GetInput().GetMouseX() - 100; 
-        float mouseDeltaY = App.GetInput().GetMouseY() - 100;
+        float mouseDeltaX = Input.GetMouseX() - 100; 
+        float mouseDeltaY = Input.GetMouseY() - 100;
         App.SetCursorPosition(100, 100);
-        if (!(mouseDeltaX == -100 && mouseDeltaY == -100)) 
+        
+        if (!(mouseDeltaX == -100 && mouseDeltaY == -100) && !(mouseDeltaX == 0 && mouseDeltaY == 0)) 
             player.ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));
         
         input_handler.handleEvents();
