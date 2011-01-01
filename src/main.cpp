@@ -1,6 +1,7 @@
-#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include <stdio.h>
 
 #include "renderer.h"
 #include "input.h"
@@ -16,7 +17,7 @@ using namespace std;
 int main()
 {
     // Create the main window
-    sf::Window App(sf::VideoMode(800, 600, 32), "MineCube");
+    sf::RenderWindow App(sf::VideoMode(800, 600, 32), "MineCube");
 
     // Generate terrain
 
@@ -25,18 +26,23 @@ int main()
     InputHandler input_handler(&App);
     
     //App.UseVerticalSync(true);
-
-    // Create a clock for measuring time elapsed
-    sf::Clock Clock;
     
     Player player(5.f, 0.f, 180.f, 5.f, 70.f, 30.f);
     
-    App.ShowMouseCursor(false);
+    // Track elapsed time for player movement
+    sf::Clock Clock;
     
+    App.ShowMouseCursor(false);
+    App.PreserveOpenGLStates(true);
+
+    char buf[10];
+
     // Start game loop
     while (App.IsOpened())
     {
-        const sf::Input& Input = App.GetInput(); 
+        const sf::Input& Input = App.GetInput();
+        
+        float Framerate = 1.f / App.GetFrameTime();
         
         float ElapsedTime = Clock.GetElapsedTime();
         Clock.Reset();
@@ -66,6 +72,12 @@ int main()
         App.SetActive();
 
         renderer.render(player.X, player.Y, player.Z, player.Yrot, player.Zrot);
+        
+        snprintf(buf, 10, "%f FPS", Framerate);
+        sf::String Text;
+        Text.SetText(buf);
+        Text.SetFont(sf::Font::GetDefaultFont());
+        App.Draw(Text);
 
         // Finally, display rendered frame on screen
         App.Display();

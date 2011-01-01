@@ -120,10 +120,9 @@ void Renderer::render(float Left, float Top, float Up, float rotation, float zRo
     
     // Apply some transformations
     glLoadIdentity();
-            // Rotate the view first 
-        glRotatef(-90 + rotation, 1.f, 0.f, 0.f); 
-        glRotatef(zRotation, 0.f, 0.f, 1.f); 
-	  glTranslatef(-Left, -Top, -Up);				// Translate The Scene Based On Player Position
-	  
+    glRotatef(-90 + rotation, 1.f, 0.f, 0.f); 
+    glRotatef(zRotation, 0.f, 0.f, 1.f); 
+    glTranslatef(-Left, -Top, -Up);				// Translate The Scene Based On Player Position
+
     renderNode(terrain.GeneratedTerrain, 0.f, 0.f, 0.f, 50.f);
 }

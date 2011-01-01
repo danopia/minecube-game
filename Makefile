@@ -19,7 +19,7 @@ CFLAGS := -I include -g
 all: $(APPLICATION)
 
 $(APPLICATION): $(OBJFILES)
-	g++ $+ -o $(APPLICATION) -lsfml-window -lsfml-system -lGL -lGLU
+	g++ $+ -o $(APPLICATION) -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLU
 
 %.o: %.cpp
 	${COMPILER} ${CFLAGS} -MMD -MP -MT "$*.d $*.o"  -c $< -o $@ -I/usr/include/SDL
