@@ -33,7 +33,7 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE); // Let glcolor work with lighting
     //glEnable(GL_COLOR_MATERIAL); // Enable lighting
     glEnable(GL_TEXTURE_2D); // Enable textures
-    glEnable(GL_LIGHTING); // Enable lighting
+    //glEnable(GL_LIGHTING); // Enable lighting
     
     glShadeModel(GL_SMOOTH); // Enable Smooth Shading
     
@@ -53,7 +53,7 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
 void drawCube(float x, float y, float z, float length) {
     float sublength = length / 2;
 
-	  glPushMatrix(); // Preserve world matrix
+	glPushMatrix(); // Preserve world matrix
 	  
     // Apply some transformations
     glTranslatef(x + sublength, y + sublength, z + sublength);
@@ -62,50 +62,50 @@ void drawCube(float x, float y, float z, float length) {
     glBindTexture(GL_TEXTURE_2D, Texture);
     glBegin(GL_QUADS);
     
-		// Top Face: Grass Top
-		glNormal3f( 0.0f, 0.0f, 1.0f);					// Normal Pointing Towards Viewer
-		glTexCoord2f(0.0f,   0.0f  ); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 1 (Front)
-		glTexCoord2f(0.125f, 0.0f  ); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 2 (Front)
-		glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Front)
-		glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 4 (Front)
+    // Top Face: Grass Top
+    glNormal3f( 0.0f, 0.0f, 1.0f);					// Normal Pointing Towards Viewer
+    glTexCoord2f(0.0f,   0.0f  ); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 1 (Front)
+    glTexCoord2f(0.125f, 0.0f  ); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 2 (Front)
+    glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Front)
+    glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 4 (Front)
+
+    // Bottom Face: Dirt
+    glNormal3f( 0.0f, 0.0f,-1.0f);					// Normal Pointing Away From Viewer
+    glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Back)
+    glTexCoord2f(0.125f, 0.375f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 2 (Back)
+    glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 3 (Back)
+    glTexCoord2f(0.0f,   0.375f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 4 (Back)
+
+    // Front Face: Grass Side
+    glNormal3f( 0.0f, 1.0f, 0.0f);					// Normal Pointing Up
+    glTexCoord2f(0.0f,   0.25f ); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 1 (Top)
+    glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 2 (Top)
+    glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Top)
+    glTexCoord2f(0.125f, 0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 4 (Top)
+
+    // Back Face: Grass Side
+    glNormal3f( 0.0f,-1.0f, 0.0f);					// Normal Pointing Down
+    glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Bottom)
+    glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 2 (Bottom)
+    glTexCoord2f(0.0f,   0.125f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 3 (Bottom)
+    glTexCoord2f(0.125f, 0.125f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 4 (Bottom)
+
+    // Left face: Grass Side
+    glNormal3f( 1.0f, 0.0f, 0.0f);					// Normal Pointing Right
+    glTexCoord2f(0.125f, 0.25f ); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 1 (Right)
+    glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 2 (Right)
+    glTexCoord2f(0.0f,   0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Right)
+    glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 4 (Right)
+
+    // Right Face: Grass Side
+    glNormal3f(-1.0f, 0.0f, 0.0f);					// Normal Pointing Left
+    glTexCoord2f(0.0f,   0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Left)
+    glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 2 (Left)
+    glTexCoord2f(0.125f, 0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 3 (Left)
+    glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 4 (Left)
 		
-		// Bottom Face: Dirt
-		glNormal3f( 0.0f, 0.0f,-1.0f);					// Normal Pointing Away From Viewer
-		glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Back)
-		glTexCoord2f(0.125f, 0.375f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 2 (Back)
-		glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 3 (Back)
-		glTexCoord2f(0.0f,   0.375f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 4 (Back)
-		
-		// Front Face: Grass Side
-		glNormal3f( 0.0f, 1.0f, 0.0f);					// Normal Pointing Up
-		glTexCoord2f(0.0f,   0.25f ); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 1 (Top)
-		glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 2 (Top)
-		glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Top)
-		glTexCoord2f(0.125f, 0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 4 (Top)
-		
-		// Back Face: Grass Side
-		glNormal3f( 0.0f,-1.0f, 0.0f);					// Normal Pointing Down
-		glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Bottom)
-		glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 2 (Bottom)
-		glTexCoord2f(0.0f,   0.125f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 3 (Bottom)
-		glTexCoord2f(0.125f, 0.125f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 4 (Bottom)
-		
-		// Left face: Grass Side
-		glNormal3f( 1.0f, 0.0f, 0.0f);					// Normal Pointing Right
-		glTexCoord2f(0.125f, 0.25f ); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 1 (Right)
-		glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 2 (Right)
-		glTexCoord2f(0.0f,   0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Right)
-		glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 4 (Right)
-		
-		// Right Face: Grass Side
-		glNormal3f(-1.0f, 0.0f, 0.0f);					// Normal Pointing Left
-		glTexCoord2f(0.125f, 0.125f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Left)
-		glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 2 (Left)
-		glTexCoord2f(0.0f,   0.25f ); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 3 (Left)
-		glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 4 (Left)
-		
-	  glEnd(); // Done Drawing Quads
-	  glPopMatrix(); // Undo the translations
+    glEnd(); // Done Drawing Quads
+    glPopMatrix(); // Undo the translations
 }
 
 void renderNode(Octree<bool> terrain, float x, float y, float z, float size) {
