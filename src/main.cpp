@@ -73,7 +73,7 @@ int main()
 
         renderer.render(player.X, player.Y, player.Z, player.Yrot, player.Zrot);
         
-        snprintf(buf, 10, "%f FPS", Framerate);
+        snprintf(buf, 10, "%.1f FPS", Framerate);
         sf::String Text;
         Text.SetText(buf);
         Text.SetFont(sf::Font::GetDefaultFont());
