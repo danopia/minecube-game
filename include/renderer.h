@@ -1,12 +1,13 @@
 #ifndef _RENDERER_H_
     #define _RENDERER_H_
 #include <SFML/Window.hpp>
+#include "player.h"
 #include "terrain.h"
 
 class Renderer {
     public:
         Renderer(Terrain initterrain);
-        void render(float Left, float Top, float Up, float rotation, float zRotation);
+        void render(Player player);
         
         Terrain terrain;
 };

@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "player.h"
 #include <SFML/System.hpp>
 
 Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
@@ -111,7 +112,7 @@ void renderNode(Octree<bool> terrain, float x, float y, float z, float size) {
     }
 }
 
-void Renderer::render(float Left, float Top, float Up, float rotation, float zRotation) {
+void Renderer::render(Player player) {
 
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -120,9 +121,9 @@ void Renderer::render(float Left, float Top, float Up, float rotation, float zRo
     
     // Apply some transformations
     glLoadIdentity();
-    glRotatef(-90 + rotation, 1.f, 0.f, 0.f); 
-    glRotatef(zRotation, 0.f, 0.f, 1.f); 
-    glTranslatef(-Left, -Top, -Up);				// Translate The Scene Based On Player Position
+    glRotatef(-90 + player.Yrot, 1.f, 0.f, 0.f); 
+    glRotatef(player.Zrot, 0.f, 0.f, 1.f); 
+    glTranslatef(-player.X, -player.Y, -player.Z);    // Translate The Scene Based On Player Position
 
     renderNode(terrain.GeneratedTerrain, 0.f, 0.f, 0.f, 50.f);
 }

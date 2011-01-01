@@ -71,7 +71,7 @@ int main()
         // but don't forget it if you use multiple windows or controls
         App.SetActive();
 
-        renderer.render(player.X, player.Y, player.Z, player.Yrot, player.Zrot);
+        renderer.render(player);
         
         snprintf(buf, 10, "%.1f FPS", Framerate);
         sf::String Text;
