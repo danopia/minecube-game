@@ -45,8 +45,6 @@ void drawCube(float x, float y, float z, float length) {
 
     glBegin(GL_QUADS);
 
-    glColor3f(0.54f, 0.27f, 0.07f); // Dirt
-
     glColor3f(0.27f, 0.54f, 0.f); // Grass
     
 		// Front Face
