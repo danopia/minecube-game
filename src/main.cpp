@@ -66,7 +66,7 @@ int main()
     // Start game loop
     while (App.IsOpened())
     {
-        const sf::Input& Input = App->GetInput(); 
+        const sf::Input& Input = App.GetInput(); 
         
         float ElapsedTime = Clock.GetElapsedTime();
         Clock.Reset();
