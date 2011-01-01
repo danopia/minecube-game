@@ -6,37 +6,11 @@
 #include "input.h"
 #include "octree.h"
 #include "player.h"
+#include "terrain.h"
 
 using namespace std;
 
-Octree<bool> makeTerrain(int level)
-{
-    vector<Octree<bool> >blocks;
-    for(int i = 0; i < 8; i++)
-    {
-        bool leaf = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-        if(level < 5)
-        {
 
-            if(leaf)
-            {
-                bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-                blocks.push_back(Octree<bool>(type));
-            } 
-            else
-            {
-                blocks.push_back(makeTerrain(level + 1));
-            }
-        }
-        else if(level == 5)
-        {
-            bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-            blocks.push_back(Octree<bool>(type));
-        }
-    }
-    Octree<bool> terrain(blocks);
-    return terrain;
-}
 
 
 int main()
@@ -44,14 +18,10 @@ int main()
     // Create the main window
     sf::Window App(sf::VideoMode(800, 600, 32), "MineCube");
 
-    Octree<bool> terrain = makeTerrain(0);
-    vector<Octree<float> > testnodes(8, Octree<float>(5.2));
-    vector<Octree<float> > testnodes2(8, Octree<float>(testnodes));
-    Octree<float> foo(testnodes2);
-    foo.Collapse();
-    cout << foo.value << endl;
+    // Generate terrain
+
     // Create a renderer and input handler
-    Renderer renderer(terrain);
+    Renderer renderer(Terrain(5, 0));
     InputHandler input_handler(&App);
     
     //App.UseVerticalSync(true);
@@ -78,7 +48,7 @@ int main()
         if ((Input.IsKeyDown(sf::Key::Z))) player.Speed++;
         if ((Input.IsKeyDown(sf::Key::X))) player.Speed--;
         
-        if (Input.IsKeyDown(sf::Key::Space)) renderer.terrain = makeTerrain(0);
+        if (Input.IsKeyDown(sf::Key::Space)) renderer.terrain.Regenerate();
         
         // Rotate view based on mouse movement 
         float mouseDeltaX = Input.GetMouseX() - 100; 

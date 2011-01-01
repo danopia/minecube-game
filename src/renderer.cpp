@@ -1,7 +1,7 @@
 #include "renderer.h"
 #include <SFML/System.hpp>
 
-Renderer::Renderer(Octree<bool> terrain) : terrain(terrain) {
+Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     // Set color and depth clear value
     glClearDepth(1.f);
     glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -115,5 +115,5 @@ void Renderer::render(float Left, float Top, float Up, float rotation, float zRo
         glRotatef(zRotation, 0.f, 0.f, 1.f); 
 	  glTranslatef(-Left, -Top, -Up);				// Translate The Scene Based On Player Position
 	  
-    renderNode(terrain, 0.f, 0.f, 0.f, 50.f);
+    renderNode(terrain.GeneratedTerrain, 0.f, 0.f, 0.f, 50.f);
 }
