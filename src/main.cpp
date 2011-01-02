@@ -27,7 +27,7 @@ int main()
     
     //App.UseVerticalSync(true);
     
-    Player player(5.f, 0.f, 180.f, 5.f, 70.f, 30.f);
+    Player player(5.f, 0.f, 180.f, 5.f, 70.f, 30.f, "Foo");
     
     // Track elapsed time for player movement
     sf::Clock Clock;
