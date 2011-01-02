@@ -21,7 +21,6 @@ void Terrain::Regenerate()
             }
         }
     }
-    cout << GeneratedTerrain[Coord(0,0,0)].value << endl;
 }
 Octree<bool> Terrain::makeTerrainFrom(int level)
 {
