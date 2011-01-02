@@ -2,21 +2,24 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
-#include <vector>
 #include "octree.h"
+#include "coord.h"
 
+#include <map>
 using namespace std;
 
 class Terrain
 {
     public:
         Terrain();
-        Terrain(int maxlevel, int minlevel);
+        Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ);
 
         int Maxlevel; // Lowest level in the octree possible
         int Minlevel; // Minimum level at which we start getting leaves instead of nodes
-        Octree<bool> GeneratedTerrain;
+        int sizeX, sizeY, sizeZ; // Size in chunks in X,Y, and Z directions
+        int chunkSize; // Chunk size in... units. >_>
 
+        map<Coord, Octree<bool> > GeneratedTerrain;
         void Regenerate();
 
     private:

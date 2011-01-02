@@ -3,7 +3,6 @@
 #ifndef OCTREE_H
 #define OCTREE_H
 
-#include <cstddef>
 #include <vector>
 #include <iostream>
 using namespace std;

@@ -22,7 +22,7 @@ int main()
     // Generate terrain
 
     // Create a renderer and input handler
-    Renderer renderer(Terrain(5, 0));
+    Renderer renderer(Terrain(5, 0, 1, 1, 1));
     InputHandler input_handler(&App);
     
     //App.UseVerticalSync(true);

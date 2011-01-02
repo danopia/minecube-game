@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include "player.h"
+#include "coord.h"
 #include <SFML/Graphics.hpp>
 
 GLuint Texture = 0;
@@ -137,5 +138,5 @@ void Renderer::render(Player player) {
     glRotatef(player.Zrot, 0.f, 0.f, 1.f); 
     glTranslatef(-player.X, -player.Y, -player.Z);    // Translate The Scene Based On Player Position
 
-    renderNode(terrain.GeneratedTerrain, 0.f, 0.f, 0.f, 50.f);
+    renderNode(terrain.GeneratedTerrain[Coord(0,0,0)], 0.f, 0.f, 0.f, 50.f);
 }

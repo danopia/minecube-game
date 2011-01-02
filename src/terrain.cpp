@@ -1,13 +1,27 @@
 #include "terrain.h"
 #include <SFML/System.hpp>
+#include <iostream>
 
-Terrain::Terrain() : Maxlevel(5), Minlevel(0) { Regenerate(); } /* Some sort of default values. TODO Discuss and decide whether these should be different */
+using namespace std;
 
-Terrain::Terrain(int maxlevel, int minlevel) : Maxlevel(maxlevel), Minlevel(minlevel) { Regenerate(); }
+Terrain::Terrain() : Maxlevel(5), Minlevel(0), sizeX(1), sizeY(1), sizeZ(1) { Regenerate(); } /* Some sort of default values. TODO Discuss and decide whether these should be different */
+
+Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ) : Maxlevel(maxlevel), Minlevel(minlevel), sizeX(initsizeX), sizeY(initsizeY), sizeZ(initsizeZ) { Regenerate(); }
 
 void Terrain::Regenerate()
 {
-    GeneratedTerrain = makeTerrainFrom(0);
+    GeneratedTerrain = map<Coord, Octree<bool> >();
+    for(int i = 0; i < sizeX; i++)
+    {
+        for(int j = 0; j < sizeY; j++)
+        {
+            for(int k = 0; k < sizeZ; k++)
+            {
+                GeneratedTerrain[Coord(i,j,k)] = makeTerrainFrom(0);
+            }
+        }
+    }
+    cout << GeneratedTerrain[Coord(0,0,0)].value << endl;
 }
 Octree<bool> Terrain::makeTerrainFrom(int level)
 {
