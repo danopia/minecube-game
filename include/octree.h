@@ -5,7 +5,6 @@
 
 #include <vector>
 #include <iostream>
-using namespace std;
 
 
 template <class T>
@@ -14,11 +13,11 @@ class Octree
     public:
         //Only value or children will ever be non-null
         T value; 
-        vector<Octree<T> > children;
+        std::vector<Octree<T> > children;
         bool hasChildren;
 
         Octree();
-        Octree(vector<Octree<T> > initchildren);
+        Octree(std::vector<Octree<T> > initchildren);
         Octree(T initvalue);
         bool Insert(T val);
         bool Remove(int index);
@@ -30,10 +29,10 @@ template <class T>
 Octree<T>::Octree() : value(0), hasChildren(false) {}
 
 template <class T>
-Octree<T>::Octree(vector<Octree<T> > initchildren) : value(0), hasChildren(true), children(initchildren) {}
+Octree<T>::Octree(std::vector<Octree<T> > initchildren) : value(0), hasChildren(true), children(initchildren) {}
 
 template <class T>
-Octree<T>::Octree(T initvalue) : value(initvalue), hasChildren(false), children(vector<Octree<T> >(0)) {}
+Octree<T>::Octree(T initvalue) : value(initvalue), hasChildren(false), children(std::vector<Octree<T> >(0)) {}
 
 template <class T>
 bool Octree<T>::Insert(T val)
@@ -81,7 +80,7 @@ bool Octree<T>::Collapse()
         }
         /* All children are identical, collapse the node */
         hasChildren = false;
-        children = vector<Octree<T> >(0);
+        children = std::vector<Octree<T> >(0);
         value = startingvalue;
     }
     return true;

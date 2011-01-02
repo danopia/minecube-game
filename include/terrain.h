@@ -6,7 +6,6 @@
 #include "coord.h"
 
 #include <map>
-using namespace std;
 
 class Terrain
 {
@@ -19,7 +18,7 @@ class Terrain
         int sizeX, sizeY, sizeZ; // Size in chunks in X,Y, and Z directions
         int chunkSize; // Chunk size in... units. >_>
 
-        map<Coord, Octree<bool> > GeneratedTerrain;
+        std::map<Coord, Octree<bool> > GeneratedTerrain;
         void Regenerate();
 
     private:

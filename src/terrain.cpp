@@ -2,15 +2,13 @@
 #include <SFML/System.hpp>
 #include <iostream>
 
-using namespace std;
-
 Terrain::Terrain() : Maxlevel(5), Minlevel(0), sizeX(1), sizeY(1), sizeZ(1), chunkSize(50) { Regenerate(); } /* Some sort of default values. TODO Discuss and decide whether these should be different */
 
 Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ, int initChunkSize) : Maxlevel(maxlevel), Minlevel(minlevel), sizeX(initsizeX), sizeY(initsizeY), sizeZ(initsizeZ), chunkSize(initChunkSize) { Regenerate(); }
 
 void Terrain::Regenerate()
 {
-    GeneratedTerrain = map<Coord, Octree<bool> >();
+    GeneratedTerrain = std::map<Coord, Octree<bool> >();
     for(int i = 0; i < sizeX; i++)
     {
         for(int j = 0; j < sizeY; j++)
@@ -24,7 +22,7 @@ void Terrain::Regenerate()
 }
 Octree<bool> Terrain::makeTerrainFrom(int level)
 {
-    vector<Octree<bool> >blocks;
+    std::vector<Octree<bool> >blocks;
     for(int i = 0; i < 8; i++)
     {
         bool leaf = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
@@ -50,5 +48,4 @@ Octree<bool> Terrain::makeTerrainFrom(int level)
     Octree<bool> terrain(blocks);
     return terrain;
 }
-
 

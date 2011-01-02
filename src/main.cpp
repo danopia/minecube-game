@@ -9,7 +9,6 @@
 #include "player.h"
 #include "terrain.h"
 
-using namespace std;
 
 
 
