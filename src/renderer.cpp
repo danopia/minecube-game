@@ -29,14 +29,14 @@ GLuint Texture = 0;
 						   norm, norm, -norm,
 						   -norm, norm, -norm };
 
-  GLdouble colors[24] = { 1.0, 0.0, 0.0,
-						  0.0, 1.0, 0.0,
-						  0.0, 0.0, 1.0,
-						  1.0, 0.0, 0.0,
-						  0.0, 1.0, 0.0,
-						  0.0, 0.0, 1.0,
-						  1.0, 0.0, 0.0,
-						  0.0, 1.0, 0.0 };
+  GLdouble texcoords[24] = { 1.0, 0.0, 0.0,
+						     0.0, 1.0, 0.0,
+						     0.0, 0.0, 1.0,
+						     1.0, 0.0, 0.0,
+						     0.0, 1.0, 0.0,
+						     0.0, 0.0, 1.0,
+						     1.0, 0.0, 0.0,
+						     0.0, 1.0, 0.0 };
 
   /*GLubyte indices[24] = { 4, 5, 6, 7,
 						  1, 2, 6, 5,
@@ -110,17 +110,17 @@ void drawCube(float x, float y, float z, float length) {
     
   glEnableClientState( GL_VERTEX_ARRAY );
   glEnableClientState( GL_NORMAL_ARRAY );
-  glEnableClientState( GL_COLOR_ARRAY );
+  glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
   glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
   glNormalPointer( GL_DOUBLE, 0, &normals[0] );
-  glColorPointer( 3, GL_DOUBLE, 0, &normals[0] );
+  glTexCoordPointer( 3, GL_DOUBLE, 0, &texcoords[0] );
 
   glDrawElements( GL_QUADS, 24, GL_UNSIGNED_BYTE, indices );
 
   glDisableClientState( GL_VERTEX_ARRAY );
   glDisableClientState( GL_NORMAL_ARRAY );
-  glDisableClientState( GL_COLOR_ARRAY );
+  glDisableClientState( GL_TEXTURE_COORD_ARRAY );
     
     glPopMatrix(); // Undo the translations
 }
