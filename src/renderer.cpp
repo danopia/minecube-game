@@ -5,6 +5,52 @@
 
 GLuint Texture = 0;
 
+  GLdouble norm = 1 / sqrt( 3 );
+
+    GLdouble x = 0;
+    GLdouble y = 0;
+    GLdouble z = 0;
+    GLdouble radius = 1;
+  GLdouble vertices[24] = { x - radius, y - radius, z + radius,
+							x + radius, y - radius, z + radius,
+							x + radius, y + radius, z + radius,
+							x - radius, y + radius, z + radius,
+							x - radius, y - radius, z - radius,
+							x + radius, y - radius, z - radius,
+							x + radius, y + radius, z - radius,
+							x - radius, y + radius, z - radius };
+
+  GLdouble normals[24] = { -norm, -norm, norm,
+						   norm, -norm, norm,
+						   norm, norm, norm,
+						   -norm, norm, norm,
+						   -norm, -norm, -norm,
+						   norm, -norm, -norm,
+						   norm, norm, -norm,
+						   -norm, norm, -norm };
+
+  GLdouble colors[24] = { 1.0, 0.0, 0.0,
+						  0.0, 1.0, 0.0,
+						  0.0, 0.0, 1.0,
+						  1.0, 0.0, 0.0,
+						  0.0, 1.0, 0.0,
+						  0.0, 0.0, 1.0,
+						  1.0, 0.0, 0.0,
+						  0.0, 1.0, 0.0 };
+
+  /*GLubyte indices[24] = { 4, 5, 6, 7,
+						  1, 2, 6, 5,
+						  0, 1, 5, 4,
+						  0, 3, 2, 1,
+						  0, 4, 7, 3,
+						  2, 3, 7, 6 };*/
+  GLubyte indices[24] = { 7, 6, 5, 4,
+						  5, 6, 2, 1,
+						  4, 5, 1, 0,
+						  1, 2, 3, 0,
+						  3, 7, 4, 0,
+						  6, 7, 3, 2 };
+
 Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     // Set color and depth clear value
     glClearDepth(1.f);
@@ -52,6 +98,34 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
 //glDeleteTextures(1, &Texture); 
 
 void drawCube(float x, float y, float z, float length) {
+    float sublength = length / 2;
+
+	glPushMatrix(); // Preserve world matrix
+	  
+    // Apply some transformations
+    glTranslatef(x + sublength, y + sublength, z + sublength);
+    glScalef(sublength, sublength, sublength);
+
+    glBindTexture(GL_TEXTURE_2D, Texture);
+    
+  glEnableClientState( GL_VERTEX_ARRAY );
+  glEnableClientState( GL_NORMAL_ARRAY );
+  glEnableClientState( GL_COLOR_ARRAY );
+
+  glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
+  glNormalPointer( GL_DOUBLE, 0, &normals[0] );
+  glColorPointer( 3, GL_DOUBLE, 0, &normals[0] );
+
+  glDrawElements( GL_QUADS, 24, GL_UNSIGNED_BYTE, indices );
+
+  glDisableClientState( GL_VERTEX_ARRAY );
+  glDisableClientState( GL_NORMAL_ARRAY );
+  glDisableClientState( GL_COLOR_ARRAY );
+    
+    glPopMatrix(); // Undo the translations
+}
+
+void drawCube2(float x, float y, float z, float length) {
     float sublength = length / 2;
 
 	glPushMatrix(); // Preserve world matrix
