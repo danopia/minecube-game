@@ -22,7 +22,7 @@ $(APPLICATION): $(OBJFILES)
 	$(COMPILER) $+ -o $(APPLICATION) -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLU
 
 %.o: %.cpp
-	${COMPILER} ${CFLAGS} -MMD -MP -MT "$*.d $*.o"  -c $< -o $@ -I/usr/include/SDL
+	${COMPILER} ${CFLAGS} -MMD -MP -MT "$*.d $*.o"  -c $< -o $@
 
 clean:
 	@rm -rf $(APPLICATION)
