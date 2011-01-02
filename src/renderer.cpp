@@ -211,6 +211,15 @@ void Renderer::render(Player player) {
     glRotatef(-90 + player.Yrot, 1.f, 0.f, 0.f); 
     glRotatef(player.Zrot, 0.f, 0.f, 1.f); 
     glTranslatef(-player.X, -player.Y, -player.Z);    // Translate The Scene Based On Player Position
+    for(int i = 0; i < terrain.sizeX; i++)
+    {
+        for(int j = 0; j < terrain.sizeY; j++)
+        {
+            for(int k = 0; k < terrain.sizeZ; k++)
+            {
 
-    renderNode(terrain.GeneratedTerrain[Coord(0,0,0)], 0.f, 0.f, 0.f, 50.f);
+                renderNode(terrain.GeneratedTerrain[Coord(i,j,k)], i*terrain.chunkSize, j*terrain.chunkSize, k*terrain.chunkSize, terrain.chunkSize);
+            }
+        }
+    }
 }
