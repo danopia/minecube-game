@@ -4,9 +4,9 @@
 
 using namespace std;
 
-Terrain::Terrain() : Maxlevel(5), Minlevel(0), sizeX(1), sizeY(1), sizeZ(1) { Regenerate(); } /* Some sort of default values. TODO Discuss and decide whether these should be different */
+Terrain::Terrain() : Maxlevel(5), Minlevel(0), sizeX(1), sizeY(1), sizeZ(1), chunkSize(50) { Regenerate(); } /* Some sort of default values. TODO Discuss and decide whether these should be different */
 
-Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ) : Maxlevel(maxlevel), Minlevel(minlevel), sizeX(initsizeX), sizeY(initsizeY), sizeZ(initsizeZ) { Regenerate(); }
+Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ, int initChunkSize) : Maxlevel(maxlevel), Minlevel(minlevel), sizeX(initsizeX), sizeY(initsizeY), sizeZ(initsizeZ), chunkSize(initChunkSize) { Regenerate(); }
 
 void Terrain::Regenerate()
 {

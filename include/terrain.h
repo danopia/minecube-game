@@ -12,7 +12,7 @@ class Terrain
 {
     public:
         Terrain();
-        Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ);
+        Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ, int chunkSize);
 
         int Maxlevel; // Lowest level in the octree possible
         int Minlevel; // Minimum level at which we start getting leaves instead of nodes
