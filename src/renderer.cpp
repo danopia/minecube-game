@@ -1,5 +1,6 @@
 	#include <GL/glew.h>
-#include <SFML/Graphics.hpp>
+#include<SDL/SDL.h>
+#include<SDL/SDL_image.h>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -107,8 +108,8 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     
     glShadeModel(GL_SMOOTH); // Enable Smooth Shading
     
-    sf::Image Image;
-    if (!Image.LoadFromFile("data/tiles.png"))
+    SDL_Surface *image;
+    if(!(image = IMG_Load("data/tiles.png")))
         return;
     /*glGenTextures(1, &Texture);
     glBindTexture(GL_TEXTURE_2D, Texture);
@@ -125,7 +126,8 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
-    glTexImage3D(GL_TEXTURE_2D_ARRAY,0,GL_RGBA,Image.GetWidth()/2, Image.GetHeight()/2,4,0,GL_RGBA,GL_UNSIGNED_BYTE,Image.GetPixelsPtr());
+    glTexImage3D(GL_TEXTURE_2D_ARRAY,0,GL_RGBA,image->w/2, image->h/2, 4,0,GL_RGBA,GL_UNSIGNED_BYTE,image->pixels);
+    SDL_FreeSurface(image);
 //    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.GetWidth(), Image.GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, Image.GetPixelsPtr());
 
 
@@ -135,7 +137,7 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
 			printf("Ready for OpenGL 2.0\n");
 		else {
 			printf("OpenGL 2.0 not supported\n");
-			exit(1);
+            exit(1);
 		}
 		
     std::ifstream in("data/brick.vert");

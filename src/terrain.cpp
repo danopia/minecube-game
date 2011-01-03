@@ -1,6 +1,7 @@
 #include "terrain.h"
-#include <SFML/System.hpp>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 Terrain::Terrain() : Maxlevel(5), Minlevel(0), sizeX(1), sizeY(1), sizeZ(1), chunkSize(50) { Regenerate(); } /* Some sort of default values. TODO Discuss and decide whether these should be different */
 
@@ -22,16 +23,17 @@ void Terrain::Regenerate()
 }
 Octree<bool> Terrain::makeTerrainFrom(int level)
 {
+    srand(time(NULL));
     std::vector<Octree<bool> >blocks;
     for(int i = 0; i < 8; i++)
     {
-        bool leaf = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
+        bool leaf = ((rand() % 2) < 1 ? true : false);
         if(level < Maxlevel)
         {
 
             if(leaf && level > Minlevel)
             {
-                bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
+                bool type = ((rand() % 2) < 1 ? true : false);
                 blocks.push_back(Octree<bool>(type));
             } 
             else
@@ -41,7 +43,7 @@ Octree<bool> Terrain::makeTerrainFrom(int level)
         }
         else if(level == Maxlevel)
         {
-            bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
+            bool type = ((rand() % 2) < 1 ? true : false);
             blocks.push_back(Octree<bool>(type));
         }
     }

@@ -1,4 +1,3 @@
-#include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
 #include <stdio.h>
@@ -8,38 +7,46 @@
 #include "octree.h"
 #include "player.h"
 #include "terrain.h"
-
-
+#include "blocks.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_opengl.h>
 
 
 
 int main()
 {
+
     // Create the main window
-    sf::RenderWindow App(sf::VideoMode(800, 600, 32), "MineCube");
+    if(SDL_Init(SDL_INIT_VIDEO) != 0) 
+    {
+        printf("Failed to init SDL: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_Surface* screen = SDL_SetVideoMode(800, 600, 16, SDL_OPENGL);
+
 
     // Generate terrain
 
     // Create a renderer and input handler
     Renderer renderer(Terrain(5, 0, 2,1,1, 50));
-    InputHandler input_handler(&App);
+    InputHandler input_handler();
     
     //App.UseVerticalSync(true);
     
     Player player(5.f, 0.f, 180.f, 5.f, 70.f, 30.f, "Foo");
-    
     // Track elapsed time for player movement
-    sf::Clock Clock;
     
-    App.ShowMouseCursor(false);
-    App.PreserveOpenGLStates(true);
+    SDL_ShowCursor(SDL_DISABLE);
+//    App.PreserveOpenGLStates(true);
 
     char buf[10];
 
     // Start game loop
-    while (App.IsOpened())
+    while (true)
     {
-        const sf::Input& Input = App.GetInput();
+       /* const sf::Input& Input = App.GetInput();
         
         float Framerate = 1.f / App.GetFrameTime();
         
@@ -60,7 +67,6 @@ int main()
         // Rotate view based on mouse movement 
         float mouseDeltaX = Input.GetMouseX() - 100; 
         float mouseDeltaY = Input.GetMouseY() - 100;
-        App.SetCursorPosition(100, 100);
         
         if (!(mouseDeltaX == -100 && mouseDeltaY == -100) && !(mouseDeltaX == 0 && mouseDeltaY == 0)) 
             player.ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));
@@ -68,18 +74,12 @@ int main()
         // Set the active window before using OpenGL commands
         // It's useless here because active window is always the same,
         // but don't forget it if you use multiple windows or controls
-        App.SetActive();
-
+*/
         renderer.render(player);
         
-        snprintf(buf, 10, "%.1f FPS", Framerate);
-        sf::String Text;
-        Text.SetText(buf);
-        Text.SetFont(sf::Font::GetDefaultFont());
-        App.Draw(Text);
 
         // Finally, display rendered frame on screen
-        App.Display();
+        SDL_GL_SwapBuffers();
     }
 
     return EXIT_SUCCESS;
