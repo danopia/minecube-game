@@ -1,9 +1,16 @@
+	#include <GL/glew.h>
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <stdio.h>
+
 #include "renderer.h"
 #include "player.h"
 #include "coord.h"
-#include <SFML/Graphics.hpp>
 
 GLuint Texture = 0;
+    GLuint texture = 1;
 
   GLdouble norm = 1 / sqrt( 3 );
 
@@ -31,10 +38,10 @@ GLuint Texture = 0;
 
   GLdouble texcoords[24] = { 1.0, 0.0, 0.0,
 						     0.0, 1.0, 0.0,
-						     0.0, 0.0, 1.0,
+						     0.0, 0.0, 0.0,
 						     1.0, 0.0, 0.0,
 						     0.0, 1.0, 0.0,
-						     0.0, 0.0, 1.0,
+						     0.0, 0.0, 0.0,
 						     1.0, 0.0, 0.0,
 						     0.0, 1.0, 0.0 };
 
@@ -50,6 +57,22 @@ GLuint Texture = 0;
 						  1, 2, 3, 0,
 						  3, 7, 4, 0,
 						  6, 7, 3, 2 };
+
+GLuint shader1 = 0;
+GLuint shader2 = 0;
+GLuint program = 0;
+
+GLint getUniLoc(GLuint program, const GLchar *name)
+{
+    GLint loc;
+
+    loc = glGetUniformLocation(program, name);
+
+    if (loc == -1)
+        printf("No such uniform named \"%s\"\n", name);
+
+    return loc;
+}
 
 Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     // Set color and depth clear value
@@ -87,12 +110,69 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     sf::Image Image;
     if (!Image.LoadFromFile("data/tiles.png"))
         return;
-    glGenTextures(1, &Texture);
+    /*glGenTextures(1, &Texture);
     glBindTexture(GL_TEXTURE_2D, Texture);
     gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.GetWidth(), Image.GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, Image.GetPixelsPtr());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);*/
+    
+    
+
+    glGenTextures(1,&texture);
+    glBindTexture(GL_TEXTURE_2D_ARRAY,texture);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
+    glTexImage3D(GL_TEXTURE_2D_ARRAY,0,GL_RGBA,Image.GetWidth()/2, Image.GetHeight()/2,4,0,GL_RGBA,GL_UNSIGNED_BYTE,Image.GetPixelsPtr());
+//    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.GetWidth(), Image.GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, Image.GetPixelsPtr());
+
+
+		glewInit();
+
+		if (glewIsSupported("GL_VERSION_2_0"))
+			printf("Ready for OpenGL 2.0\n");
+		else {
+			printf("OpenGL 2.0 not supported\n");
+			exit(1);
+		}
+		
+    std::ifstream in("data/brick.vert");
+    std::string all;
+    while(in.good()) {
+        std::string line;
+        getline(in, line);
+        all += line + "\n";
+    };
+
+    shader1 = glCreateShader(GL_VERTEX_SHADER);
+    const GLchar* cstr = all.c_str();
+    int len = all.length();
+    glShaderSource(shader1, 1, &cstr, &len);
+    glCompileShader(shader1);
+		
+    std::ifstream in2("data/brick.frag");
+    std::string all2;
+    while(in2.good()) {
+        std::string line2;
+        getline(in2, line2);
+        all2 += line2 + "\n";
+    };
+
+    shader2 = glCreateShader(GL_FRAGMENT_SHADER);
+    const GLchar* cstr2 = all2.c_str();
+    int len2 = all2.length();
+    glShaderSource(shader2, 1, &cstr2, &len2);
+    glCompileShader(shader2);
+    
+    program = glCreateProgram();
+    glAttachShader(program, shader1);
+    glAttachShader(program, shader2);
+    glLinkProgram(program);
+    glUseProgram(program);
 }
+
 
 // Don't forget to destroy our texture 
 //glDeleteTextures(1, &Texture); 
@@ -106,7 +186,7 @@ void drawCube(float x, float y, float z, float length) {
     glTranslatef(x + sublength, y + sublength, z + sublength);
     glScalef(sublength, sublength, sublength);
 
-    glBindTexture(GL_TEXTURE_2D, Texture);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
     
   glEnableClientState( GL_VERTEX_ARRAY );
   glEnableClientState( GL_NORMAL_ARRAY );
