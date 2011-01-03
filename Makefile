@@ -18,7 +18,7 @@ CFLAGS := -I include -g -O2
 all: $(APPLICATION)
 
 $(APPLICATION): $(OBJFILES)
-	$(COMPILER) $+ -o $(APPLICATION) -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLU
+	$(COMPILER) $+ -o $(APPLICATION) -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLU -lGLEW
 
 %.o: %.cpp
 	$(COMPILER) $(CFLAGS) -c $< -o $@
