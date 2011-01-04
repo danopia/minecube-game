@@ -27,13 +27,13 @@ Octree<bool> Terrain::makeTerrainFrom(int level)
     std::vector<Octree<bool> >blocks;
     for(int i = 0; i < 8; i++)
     {
-        bool leaf = ((rand() % 2) < 1 ? true : false);
+        bool leaf = ((rand() % 2) < 0.5 ? true : false);
         if(level < Maxlevel)
         {
 
             if(leaf && level > Minlevel)
             {
-                bool type = ((rand() % 2) < 1 ? true : false);
+                bool type = ((rand() % 2) < 0.5 ? true : false);
                 blocks.push_back(Octree<bool>(type));
             } 
             else
@@ -43,7 +43,7 @@ Octree<bool> Terrain::makeTerrainFrom(int level)
         }
         else if(level == Maxlevel)
         {
-            bool type = ((rand() % 2) < 1 ? true : false);
+            bool type = ((rand() % 2) < 0.5 ? true : false);
             blocks.push_back(Octree<bool>(type));
         }
     }

@@ -1,6 +1,4 @@
-	#include <GL/glew.h>
-#include<SDL/SDL.h>
-#include<SDL/SDL_image.h>
+#include <SDL/SDL_image.h>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -11,7 +9,6 @@
 #include "coord.h"
 
 GLuint Texture = 0;
-    GLuint texture = 1;
 
   GLdouble norm = 1 / sqrtf( 3 );
 
@@ -37,43 +34,21 @@ GLuint Texture = 0;
 						   norm, norm, -norm,
 						   -norm, norm, -norm };
 
-  GLdouble texcoords[24] = { 1.0, 0.0, 0.0,
-						     0.0, 1.0, 0.0,
+  GLdouble texcoords[24] = { 0.125, 0.0, 0.0,
+						     0.0, 0.125, 0.0,
 						     0.0, 0.0, 0.0,
-						     1.0, 0.0, 0.0,
-						     0.0, 1.0, 0.0,
+						     0.125, 0.0, 0.0,
+						     0.0, 0.125, 0.0,
 						     0.0, 0.0, 0.0,
-						     1.0, 0.0, 0.0,
-						     0.0, 1.0, 0.0 };
+						     0.125, 0.0, 0.0,
+						     0.0, 0.125, 0.0 };
 
-  /*GLubyte indices[24] = { 4, 5, 6, 7,
-						  1, 2, 6, 5,
-						  0, 1, 5, 4,
-						  0, 3, 2, 1,
-						  0, 4, 7, 3,
-						  2, 3, 7, 6 };*/
   GLubyte indices[24] = { 7, 6, 5, 4,
 						  5, 6, 2, 1,
 						  4, 5, 1, 0,
 						  1, 2, 3, 0,
 						  3, 7, 4, 0,
 						  6, 7, 3, 2 };
-
-GLuint shader1 = 0;
-GLuint shader2 = 0;
-GLuint program = 0;
-
-GLint getUniLoc(GLuint program, const GLchar *name)
-{
-    GLint loc;
-
-    loc = glGetUniformLocation(program, name);
-
-    if (loc == -1)
-        printf("No such uniform named \"%s\"\n", name);
-
-    return loc;
-}
 
 Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     // Set color and depth clear value
@@ -111,68 +86,12 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     SDL_Surface *image;
     if(!(image = IMG_Load("data/tiles.png")))
         return;
-    /*glGenTextures(1, &Texture);
+    
+    glGenTextures(1, &Texture);
     glBindTexture(GL_TEXTURE_2D, Texture);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.GetWidth(), Image.GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, Image.GetPixelsPtr());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);*/
-    
-    
-
-    glGenTextures(1,&texture);
-    glBindTexture(GL_TEXTURE_2D_ARRAY,texture);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
-    glTexImage3D(GL_TEXTURE_2D_ARRAY,0,GL_RGBA,image->w/2, image->h/2, 4,0,GL_RGBA,GL_UNSIGNED_BYTE,image->pixels);
-    SDL_FreeSurface(image);
-//    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.GetWidth(), Image.GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, Image.GetPixelsPtr());
-
-
-		glewInit();
-
-		if (glewIsSupported("GL_VERSION_2_0"))
-			printf("Ready for OpenGL 2.0\n");
-		else {
-			printf("OpenGL 2.0 not supported\n");
-            exit(1);
-		}
-		
-    std::ifstream in("data/brick.vert");
-    std::string all;
-    while(in.good()) {
-        std::string line;
-        getline(in, line);
-        all += line + "\n";
-    };
-
-    shader1 = glCreateShader(GL_VERTEX_SHADER);
-    const GLchar* cstr = all.c_str();
-    int len = all.length();
-    glShaderSource(shader1, 1, &cstr, &len);
-    glCompileShader(shader1);
-		
-    std::ifstream in2("data/brick.frag");
-    std::string all2;
-    while(in2.good()) {
-        std::string line2;
-        getline(in2, line2);
-        all2 += line2 + "\n";
-    };
-
-    shader2 = glCreateShader(GL_FRAGMENT_SHADER);
-    const GLchar* cstr2 = all2.c_str();
-    int len2 = all2.length();
-    glShaderSource(shader2, 1, &cstr2, &len2);
-    glCompileShader(shader2);
-    
-    program = glCreateProgram();
-    glAttachShader(program, shader1);
-    glAttachShader(program, shader2);
-    glLinkProgram(program);
-    glUseProgram(program);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, image->w, image->h, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
 }
 
 
@@ -182,86 +101,28 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
 void drawCube(float x, float y, float z, float length) {
     float sublength = length / 2;
 
-	glPushMatrix(); // Preserve world matrix
-	  
-    // Apply some transformations
-    glTranslatef(x + sublength, y + sublength, z + sublength);
-    glScalef(sublength, sublength, sublength);
+    glPushMatrix(); // Preserve world matrix
 
-    glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
-    
-  glEnableClientState( GL_VERTEX_ARRAY );
-  glEnableClientState( GL_NORMAL_ARRAY );
-  glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-
-  glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
-  glNormalPointer( GL_DOUBLE, 0, &normals[0] );
-  glTexCoordPointer( 3, GL_DOUBLE, 0, &texcoords[0] );
-
-  glDrawElements( GL_QUADS, 24, GL_UNSIGNED_BYTE, indices );
-
-  glDisableClientState( GL_VERTEX_ARRAY );
-  glDisableClientState( GL_NORMAL_ARRAY );
-  glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-    
-    glPopMatrix(); // Undo the translations
-}
-
-void drawCube2(float x, float y, float z, float length) {
-    float sublength = length / 2;
-
-	glPushMatrix(); // Preserve world matrix
-	  
     // Apply some transformations
     glTranslatef(x + sublength, y + sublength, z + sublength);
     glScalef(sublength, sublength, sublength);
 
     glBindTexture(GL_TEXTURE_2D, Texture);
-    glBegin(GL_QUADS);
-    
-    // Top Face: Grass Top
-    glNormal3f( 0.0f, 0.0f, 1.0f);					// Normal Pointing Towards Viewer
-    glTexCoord2f(0.0f,   0.0f  ); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 1 (Front)
-    glTexCoord2f(0.125f, 0.0f  ); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 2 (Front)
-    glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Front)
-    glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 4 (Front)
 
-    // Bottom Face: Dirt
-    glNormal3f( 0.0f, 0.0f,-1.0f);					// Normal Pointing Away From Viewer
-    glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Back)
-    glTexCoord2f(0.125f, 0.375f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 2 (Back)
-    glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 3 (Back)
-    glTexCoord2f(0.0f,   0.375f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 4 (Back)
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glEnableClientState( GL_NORMAL_ARRAY );
+    glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
-    // Front Face: Grass Side
-    glNormal3f( 0.0f, 1.0f, 0.0f);					// Normal Pointing Up
-    glTexCoord2f(0.0f,   0.25f ); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 1 (Top)
-    glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 2 (Top)
-    glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Top)
-    glTexCoord2f(0.125f, 0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 4 (Top)
+    glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
+    glNormalPointer( GL_DOUBLE, 0, &normals[0] );
+    glTexCoordPointer( 3, GL_DOUBLE, 0, &texcoords[0] );
 
-    // Back Face: Grass Side
-    glNormal3f( 0.0f,-1.0f, 0.0f);					// Normal Pointing Down
-    glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Bottom)
-    glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 2 (Bottom)
-    glTexCoord2f(0.0f,   0.125f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 3 (Bottom)
-    glTexCoord2f(0.125f, 0.125f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 4 (Bottom)
+    glDrawElements( GL_QUADS, 24, GL_UNSIGNED_BYTE, indices );
 
-    // Left face: Grass Side
-    glNormal3f( 1.0f, 0.0f, 0.0f);					// Normal Pointing Right
-    glTexCoord2f(0.125f, 0.25f ); glVertex3f( 1.0f, -1.0f, -1.0f);	// Point 1 (Right)
-    glTexCoord2f(0.0f,   0.25f ); glVertex3f( 1.0f,  1.0f, -1.0f);	// Point 2 (Right)
-    glTexCoord2f(0.0f,   0.125f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Point 3 (Right)
-    glTexCoord2f(0.125f, 0.125f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Point 4 (Right)
+    glDisableClientState( GL_VERTEX_ARRAY );
+    glDisableClientState( GL_NORMAL_ARRAY );
+    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
-    // Right Face: Grass Side
-    glNormal3f(-1.0f, 0.0f, 0.0f);					// Normal Pointing Left
-    glTexCoord2f(0.0f,   0.25f ); glVertex3f(-1.0f, -1.0f, -1.0f);	// Point 1 (Left)
-    glTexCoord2f(0.0f,   0.125f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Point 2 (Left)
-    glTexCoord2f(0.125f, 0.125f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Point 3 (Left)
-    glTexCoord2f(0.125f, 0.25f ); glVertex3f(-1.0f,  1.0f, -1.0f);	// Point 4 (Left)
-		
-    glEnd(); // Done Drawing Quads
     glPopMatrix(); // Undo the translations
 }
 

@@ -1,22 +1,52 @@
 #include "input.h"
+#include <iostream>
 
-InputHandler::InputHandler(sf::Window* Window) : app(Window) {
+InputHandler::InputHandler(Player *initplayer, int initlastTick) : player(initplayer), lastTick(initlastTick) {}
+
+void InputHandler::handleEvents() 
+{
+    while(SDL_PollEvent(&current_event))
+    {
+        switch(current_event.type)
+        {
+        case SDL_KEYDOWN:
+            handleKeyDown();
+            break;
+        case SDL_KEYUP:
+            handleKeyUp();
+            break;
+        case SDL_MOUSEMOTION:
+            handleMouseMove();
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            handleMouseClick();
+            break;
+        }
+    }
+    lastTick = SDL_GetTicks();
+    return;
 }
 
-void InputHandler::handleEvent(sf::Event Event) {
-/*    // Close window : exit
-    if (Event.Type == sf::Event::Closed)
-        SDL_Exit(1)
-
-    // Escape key : exit
-    if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Escape))
-        app->Close();
-
-    // Resize event : adjust viewport
-    if (Event.Type == sf::Event::Resized)
-        glViewport(0, 0, Event.Size.Width, Event.Size.Height);*/
+void InputHandler::handleKeyDown()
+{
+    switch(current_event.key.keysym.sym)
+    {
+    case SDLK_LEFT:
+        std::cout << "LEFT" << std::endl;
+        player->Strafe(SDL_GetTicks() - lastTick);
+        break;
+    case SDLK_RIGHT:
+        std::cout << "RIGHT" << std::endl;
+        player->Strafe(SDL_GetTicks() - lastTick);
+    }
 }
 
-void InputHandler::handleEvents() {
-}
+void InputHandler::handleKeyUp()
+{}
+
+void InputHandler::handleMouseClick()
+{}
+
+void InputHandler::handleMouseMove()
+{}
 
