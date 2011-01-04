@@ -38,6 +38,9 @@ void InputHandler::handleKeyDown()
     case SDLK_RIGHT:
         std::cout << "RIGHT" << std::endl;
         player->Strafe(SDL_GetTicks() - lastTick);
+
+    case SDLK_ESCAPE:
+        SDL_Quit();
     }
 }
 

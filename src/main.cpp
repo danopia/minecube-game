@@ -55,9 +55,9 @@ int main(int argc, char **argv)
         if (!(mouseDeltaX == -100 && mouseDeltaY == -100) && !(mouseDeltaX == 0 && mouseDeltaY == 0)) 
             player.ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));*/
 
+        input.handleEvents();
         renderer.render(player);
         
-        input.handleEvents();
         // Finally, display rendered frame on screen
         SDL_GL_SwapBuffers();
     }
