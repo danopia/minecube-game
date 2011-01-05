@@ -20,7 +20,7 @@ int main()
     Player player(5.f, 0.f, 90.f, 5.f, 25.f, 60.f, "Foo");
 
     // Create a terrain and renderer
-    Renderer renderer(Terrain(5, 0, 1,1,1, 50));
+    Renderer renderer(Terrain(5, 0, 1,1,1, 50), &player);
     
     // Create input handler
     InputHandler input_handler(&App, &player);
@@ -30,6 +30,9 @@ int main()
 
     char buf[10];
     float Framerate;
+    
+    sf::String Text;
+    Text.SetFont(sf::Font::GetDefaultFont());
 
     // Start game loop
     while (App.IsOpened())
@@ -47,13 +50,11 @@ int main()
         //App.SetActive();
 
         // Draw entire scene
-        renderer.render(player);
+        renderer.render();
         
         // Draw FPS
         snprintf(buf, 10, "%.1f FPS", Framerate);
-        sf::String Text;
         Text.SetText(buf);
-        Text.SetFont(sf::Font::GetDefaultFont());
         App.Draw(Text);
 
         // Finally, display rendered frame on screen

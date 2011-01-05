@@ -50,7 +50,7 @@ GLdouble radius = 1;
 						  3, 7, 4, 0,
 						  6, 7, 3, 2 };
 
-Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
+Renderer::Renderer(Terrain initterrain, Player* player) : terrain(initterrain), player(player) {
     // Set color and depth clear value
     glClearDepth(1.f);
     glClearColor(0.f, 0.f, 0.f, 1.f); // black
@@ -121,7 +121,7 @@ void renderNode(Octree<bool> terrain, float x, float y, float z, float size) {
     }
 }
 
-void Renderer::render(Player player) {
+void Renderer::render() {
 
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -130,9 +130,9 @@ void Renderer::render(Player player) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(90.f, 1.f, 1.f, 500.f);
-    glRotatef(-90 + player.Yrot, 1.f, 0.f, 0.f);
-    glRotatef(player.Zrot, 0.f, 0.f, 1.f);
-    glTranslatef(-player.X, -player.Y, -player.Z);    // Translate The Scene Based On Player Position
+    glRotatef(-90 + player->Yrot, 1.f, 0.f, 0.f);
+    glRotatef(player->Zrot, 0.f, 0.f, 1.f);
+    glTranslatef(-player->X, -player->Y, -player->Z);    // Translate The Scene Based On Player Position
 
     glMatrixMode(GL_MODELVIEW);
     

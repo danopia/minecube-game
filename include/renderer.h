@@ -6,10 +6,11 @@
 
 class Renderer {
     public:
-        Renderer(Terrain initterrain);
-        void render(Player player);
+        Renderer(Terrain initterrain, Player* player);
+        void render();
         
         Terrain terrain;
+        Player *player;
 };
 
 #endif
