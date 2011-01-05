@@ -97,15 +97,12 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
 void drawCube(float x, float y, float z, float length) {
     float subsize = length / 2;
 
-    glPushMatrix(); // Preserve world matrix
-
     // Apply some transformations
+    glLoadIdentity();
     glTranslatef(x + subsize, y + subsize, z + subsize);
     glScalef(subsize, subsize, subsize);
 
     glDrawElements( GL_QUADS, 24, GL_UNSIGNED_BYTE, indices );
-
-    glPopMatrix(); // Undo the translations
 }
 
 void renderNode(Octree<bool> terrain, float x, float y, float z, float size) {
@@ -138,7 +135,6 @@ void Renderer::render(Player player) {
     glTranslatef(-player.X, -player.Y, -player.Z);    // Translate The Scene Based On Player Position
 
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
     
     glBindTexture(GL_TEXTURE_2D, Texture);
 
