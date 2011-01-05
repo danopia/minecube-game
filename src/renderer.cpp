@@ -10,12 +10,12 @@
 
 GLuint Texture = 0;
 
-  GLdouble norm = 1 / sqrt( 3 );
+GLdouble norm = 1 / sqrt( 3 );
 
-    GLdouble x = 0;
-    GLdouble y = 0;
-    GLdouble z = 0;
-    GLdouble radius = 1;
+GLdouble x = 0;
+GLdouble y = 0;
+GLdouble z = 0;
+GLdouble radius = 1;
   GLdouble vertices[24] = { x - radius, y - radius, z + radius,
 							x + radius, y - radius, z + radius,
 							x + radius, y + radius, z + radius,
@@ -25,14 +25,14 @@ GLuint Texture = 0;
 							x + radius, y + radius, z - radius,
 							x - radius, y + radius, z - radius };
 
-  GLdouble normals[24] = { -norm, -norm, norm,
-						   norm, -norm, norm,
-						   norm, norm, norm,
-						   -norm, norm, norm,
+  GLdouble normals[24] = { -norm, -norm,  norm,
+						    norm, -norm,  norm,
+						    norm,  norm,  norm,
+						   -norm,  norm,  norm,
 						   -norm, -norm, -norm,
-						   norm, -norm, -norm,
-						   norm, norm, -norm,
-						   -norm, norm, -norm };
+						    norm, -norm, -norm,
+						    norm,  norm, -norm,
+						   -norm,  norm, -norm };
 
   GLdouble texcoords[24] = { 0.125, 0.0, 0.0,
 						     0.0, 0.125, 0.0,
