@@ -27,15 +27,15 @@ int main(int argc, char **argv)
     SDL_Surface* screen = SDL_SetVideoMode(800, 600, 16, SDL_OPENGL);
 
 
-    // Generate terrain
-    std::cout << "HI" << std::endl;
     // Create a renderer
+    std::cout << "Started to generate terrain" << std::endl;
     Renderer renderer(Terrain(5, 0, 2,1,1, 50));
+    std::cout << "Finished!" << std::endl;
     
     //App.UseVerticalSync(true);
     
     Player player(5.f, 0.f, 180.f, 5.f, 70.f, 30.f, "Foo");
-    InputHandler input(&player, SDL_GetTicks());
+ //   InputHandler input(&player, SDL_GetTicks());
     
     SDL_ShowCursor(SDL_DISABLE);
 //    App.PreserveOpenGLStates(true);
@@ -43,10 +43,13 @@ int main(int argc, char **argv)
     char buf[10];
     int lastTick = SDL_GetTicks();
     std::cout << "HI" << std::endl;
+    int frameCount = 0;
     // Start game loop
     while (true)
     {
-        std::cout << "FRAME!" << std::endl;
+        float fps = (SDL_GetTicks() - lastTick) / 1000.0;
+        lastTick = SDL_GetTicks();
+        std::cout << "FPS: " << fps << std::endl;
         
         // Rotate view based on mouse movement 
        /* float mouseDeltaX = Input.GetMouseX() - 100; 
@@ -55,11 +58,12 @@ int main(int argc, char **argv)
         if (!(mouseDeltaX == -100 && mouseDeltaY == -100) && !(mouseDeltaX == 0 && mouseDeltaY == 0)) 
             player.ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));*/
 
-        input.handleEvents();
+//        input.handleEvents();
         renderer.render(player);
         
         // Finally, display rendered frame on screen
         SDL_GL_SwapBuffers();
+        
     }
 
     return EXIT_SUCCESS;

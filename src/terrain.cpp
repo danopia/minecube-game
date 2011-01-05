@@ -9,6 +9,7 @@ Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int i
 
 void Terrain::Regenerate()
 {
+
     GeneratedTerrain = std::map<Coord, Octree<bool> >();
     for(int i = 0; i < sizeX; i++)
     {
@@ -16,6 +17,7 @@ void Terrain::Regenerate()
         {
             for(int k = 0; k < sizeZ; k++)
             {
+                std::cout << "Generating chunk at " << i << "," << j << "," << k << std::endl;
                 GeneratedTerrain[Coord(i,j,k)] = makeTerrainFrom(0);
             }
         }
