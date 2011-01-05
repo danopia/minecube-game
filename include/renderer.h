@@ -8,6 +8,7 @@ class Renderer {
     public:
         Renderer(Terrain initterrain, Player* player);
         void render();
+        void renderNode(Octree<bool> terrain, float x, float y, float z, float size);
         
         Terrain terrain;
         Player *player;

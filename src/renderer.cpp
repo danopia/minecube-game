@@ -105,7 +105,14 @@ void drawCube(float x, float y, float z, float length) {
     glDrawElements( GL_QUADS, 24, GL_UNSIGNED_BYTE, indices );
 }
 
-void renderNode(Octree<bool> terrain, float x, float y, float z, float size) {
+bool current;
+
+void Renderer::renderNode(Octree<bool> terrain, float x, float y, float z, float size) {
+    // Collision check against player
+    if (player->X > x && player->Y > y && player->Z - 2.f > z
+     && player->X < x + size && player->Y < y + size && player->Z - 2.f < z + size)
+        current = true;
+    
     if (terrain.hasChildren) {
         float subsize = size / 2;
         renderNode(terrain.children[0], x,         y,         z,         subsize);
@@ -146,12 +153,19 @@ void Renderer::render() {
     glNormalPointer( GL_DOUBLE, 0, &normals[0] );
     glTexCoordPointer( 3, GL_DOUBLE, 0, &texcoords[0] );
     
+    // Store current cube
+    current = false;
+    
     // Loop through chunks and render them
     int i, j, k;
     for(i = 0; i < terrain.sizeX; i++)
         for(j = 0; j < terrain.sizeY; j++)
             for(k = 0; k < terrain.sizeZ; k++)
                 renderNode(terrain.GeneratedTerrain[Coord(i,j,k)], i*terrain.chunkSize, j*terrain.chunkSize, k*terrain.chunkSize, terrain.chunkSize);
+    
+    if (!current) {
+        player->Z -= 0.1f;
+    }
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
