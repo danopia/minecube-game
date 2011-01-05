@@ -99,13 +99,13 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
 //glDeleteTextures(1, &Texture);
 
 void drawCube(float x, float y, float z, float length) {
-    float sublength = length / 2;
+    float subsize = length / 2;
 
     glPushMatrix(); // Preserve world matrix
 
     // Apply some transformations
-    glTranslatef(x + sublength, y + sublength, z + sublength);
-    glScalef(sublength, sublength, sublength);
+    glTranslatef(x + subsize, y + subsize, z + subsize);
+    glScalef(subsize, subsize, subsize);
 
     glDrawElements( GL_QUADS, 24, GL_UNSIGNED_BYTE, indices );
 
@@ -150,19 +150,15 @@ void Renderer::render(Player player) {
     glRotatef(-90 + player.Yrot, 1.f, 0.f, 0.f); 
     glRotatef(player.Zrot, 0.f, 0.f, 1.f); 
     glTranslatef(-player.X, -player.Y, -player.Z);    // Translate The Scene Based On Player Position
-    for(int i = 0; i < terrain.sizeX; i++)
-    {
-        for(int j = 0; j < terrain.sizeY; j++)
-        {
-            for(int k = 0; k < terrain.sizeZ; k++)
-            {
-
+    
+    // Loop through chunks and render them
+    int i, j, k;
+    for(i = 0; i < terrain.sizeX; i++)
+        for(j = 0; j < terrain.sizeY; j++)
+            for(k = 0; k < terrain.sizeZ; k++)
                 renderNode(terrain.GeneratedTerrain[Coord(i,j,k)], i*terrain.chunkSize, j*terrain.chunkSize, k*terrain.chunkSize, terrain.chunkSize);
-            }
-        }
-    }
 
-    glDisableClientState( GL_VERTEX_ARRAY );
-    glDisableClientState( GL_NORMAL_ARRAY );
-    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }

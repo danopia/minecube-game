@@ -9,11 +9,12 @@ Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int i
 void Terrain::Regenerate()
 {
     GeneratedTerrain = std::map<Coord, Octree<bool> >();
-    for(int i = 0; i < sizeX; i++)
+    int i, j, k;
+    for(i = 0; i < sizeX; i++)
     {
-        for(int j = 0; j < sizeY; j++)
+        for(j = 0; j < sizeY; j++)
         {
-            for(int k = 0; k < sizeZ; k++)
+            for(k = 0; k < sizeZ; k++)
             {
                 GeneratedTerrain[Coord(i,j,k)] = makeTerrainFrom(0);
             }
@@ -25,10 +26,10 @@ Octree<bool> Terrain::makeTerrainFrom(int level)
     std::vector<Octree<bool> >blocks;
     for(int i = 0; i < 8; i++)
     {
-        bool leaf = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
         if(level < Maxlevel)
         {
-
+            bool leaf = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
+            
             if(leaf && level > Minlevel)
             {
                 bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
