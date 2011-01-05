@@ -9,69 +9,47 @@
 #include "player.h"
 #include "terrain.h"
 
-
-
-
-
 int main()
 {
     // Create the main window
     sf::RenderWindow App(sf::VideoMode(800, 600, 32), "MineCube");
-
-    // Generate terrain
-
-    // Create a renderer and input handler
-    Renderer renderer(Terrain(5, 0, 2,1,1, 50));
-    InputHandler input_handler(&App);
     
     //App.UseVerticalSync(true);
     
+    // Create player
     Player player(5.f, 0.f, 180.f, 5.f, 70.f, 30.f, "Foo");
+
+    // Create a terrain and renderer
+    Renderer renderer(Terrain(5, 0, 2,1,1, 50));
     
-    // Track elapsed time for player movement
-    sf::Clock Clock;
+    // Create input handler
+    InputHandler input_handler(&App, &player);
     
-    App.ShowMouseCursor(false);
+    // Set some stuff
     App.PreserveOpenGLStates(true);
 
     char buf[10];
+    float Framerate;
 
     // Start game loop
     while (App.IsOpened())
     {
-        const sf::Input& Input = App.GetInput();
+        Framerate = 1.f / App.GetFrameTime();
         
-        float Framerate = 1.f / App.GetFrameTime();
+        if (App.GetInput().IsKeyDown(sf::Key::Space)) renderer.terrain.Regenerate();
         
-        float ElapsedTime = Clock.GetElapsedTime();
-        Clock.Reset();
-        
-        if ((Input.IsKeyDown(sf::Key::S))) player.Forward(-ElapsedTime);
-        if ((Input.IsKeyDown(sf::Key::W))) player.Forward( ElapsedTime);
-        if ((Input.IsKeyDown(sf::Key::D))) player.Strafe(-ElapsedTime);
-        if ((Input.IsKeyDown(sf::Key::A))) player.Strafe( ElapsedTime);
-        if ((Input.IsKeyDown(sf::Key::Z))) player.Speed++;
-        if ((Input.IsKeyDown(sf::Key::X))) player.Speed--;
-        
-        if (Input.IsKeyDown(sf::Key::Space)) renderer.terrain.Regenerate();
-        
+        // Handle mouse and keyboard stuff
         input_handler.handleEvents();
-        
-        // Rotate view based on mouse movement 
-        float mouseDeltaX = Input.GetMouseX() - 100; 
-        float mouseDeltaY = Input.GetMouseY() - 100;
-        App.SetCursorPosition(100, 100);
-        
-        if (!(mouseDeltaX == -100 && mouseDeltaY == -100) && !(mouseDeltaX == 0 && mouseDeltaY == 0)) 
-            player.ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));
 
         // Set the active window before using OpenGL commands
         // It's useless here because active window is always the same,
         // but don't forget it if you use multiple windows or controls
-        App.SetActive();
+        //App.SetActive();
 
+        // Draw entire scene
         renderer.render(player);
         
+        // Draw FPS
         snprintf(buf, 10, "%.1f FPS", Framerate);
         sf::String Text;
         Text.SetText(buf);
