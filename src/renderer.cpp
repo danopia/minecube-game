@@ -61,11 +61,6 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
 
     // Face culling to render half the polys
     glEnable(GL_CULL_FACE);
-    
-    // Setup a perspective projection
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(90.f, 1.f, 1.f, 500.f);
 
     // Lighting
     GLfloat LightAmbient[]  = { 0.5f, 0.5f, 0.5f, 1.0f }; // Ambient Light Values
@@ -77,12 +72,13 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
     glEnable(GL_LIGHT1);							// Enable Light One
     
     //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE); // Let glcolor work with lighting
-    //glEnable(GL_COLOR_MATERIAL); // Enable lighting
-    glEnable(GL_TEXTURE_2D); // Enable textures
+    //glEnable(GL_COLOR_MATERIAL); // Enable lighting colors
     //glEnable(GL_LIGHTING); // Enable lighting
+    glEnable(GL_TEXTURE_2D); // Enable textures
     
     glShadeModel(GL_SMOOTH); // Enable Smooth Shading
     
+    // Load texture
     sf::Image Image;
     if (!Image.LoadFromFile("data/tiles.png"))
         return;
@@ -132,8 +128,17 @@ void Renderer::render(Player player) {
 
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    // Apply some transformations
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(90.f, 1.f, 1.f, 500.f);
+    glRotatef(-90 + player.Yrot, 1.f, 0.f, 0.f);
+    glRotatef(player.Zrot, 0.f, 0.f, 1.f);
+    glTranslatef(-player.X, -player.Y, -player.Z);    // Translate The Scene Based On Player Position
 
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     
     glBindTexture(GL_TEXTURE_2D, Texture);
 
@@ -144,12 +149,6 @@ void Renderer::render(Player player) {
     glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
     glNormalPointer( GL_DOUBLE, 0, &normals[0] );
     glTexCoordPointer( 3, GL_DOUBLE, 0, &texcoords[0] );
-    
-    // Apply some transformations
-    glLoadIdentity();
-    glRotatef(-90 + player.Yrot, 1.f, 0.f, 0.f); 
-    glRotatef(player.Zrot, 0.f, 0.f, 1.f); 
-    glTranslatef(-player.X, -player.Y, -player.Z);    // Translate The Scene Based On Player Position
     
     // Loop through chunks and render them
     int i, j, k;
