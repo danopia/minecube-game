@@ -96,7 +96,7 @@ Renderer::Renderer(Terrain initterrain) : terrain(initterrain) {
 
 
 // Don't forget to destroy our texture 
-//glDeleteTextures(1, &Texture); 
+//glDeleteTextures(1, &Texture);
 
 void drawCube(float x, float y, float z, float length) {
     float sublength = length / 2;
@@ -107,21 +107,7 @@ void drawCube(float x, float y, float z, float length) {
     glTranslatef(x + sublength, y + sublength, z + sublength);
     glScalef(sublength, sublength, sublength);
 
-    glBindTexture(GL_TEXTURE_2D, Texture);
-
-    glEnableClientState( GL_VERTEX_ARRAY );
-    glEnableClientState( GL_NORMAL_ARRAY );
-    glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-
-    glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
-    glNormalPointer( GL_DOUBLE, 0, &normals[0] );
-    glTexCoordPointer( 3, GL_DOUBLE, 0, &texcoords[0] );
-
     glDrawElements( GL_QUADS, 24, GL_UNSIGNED_BYTE, indices );
-
-    glDisableClientState( GL_VERTEX_ARRAY );
-    glDisableClientState( GL_NORMAL_ARRAY );
-    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
     glPopMatrix(); // Undo the translations
 }
@@ -149,6 +135,16 @@ void Renderer::render(Player player) {
 
     glMatrixMode(GL_MODELVIEW);
     
+    glBindTexture(GL_TEXTURE_2D, Texture);
+
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glEnableClientState( GL_NORMAL_ARRAY );
+    glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+    glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
+    glNormalPointer( GL_DOUBLE, 0, &normals[0] );
+    glTexCoordPointer( 3, GL_DOUBLE, 0, &texcoords[0] );
+    
     // Apply some transformations
     glLoadIdentity();
     glRotatef(-90 + player.Yrot, 1.f, 0.f, 0.f); 
@@ -165,4 +161,8 @@ void Renderer::render(Player player) {
             }
         }
     }
+
+    glDisableClientState( GL_VERTEX_ARRAY );
+    glDisableClientState( GL_NORMAL_ARRAY );
+    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 }
