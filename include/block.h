@@ -30,15 +30,49 @@ public:
     int DamageThreshold;
 };
 
+class StoneBlock: public Block
+{
+    public:
+
+        StoneBlock() : DamageTaken(0), faces(0), Type(1), DamageThreshold(50) {};
+
+        StoneBlock *newBlock()
+        {
+            return new StoneBlock();
+        }
+        
+        char faces;
+        char Type;
+        int DamageTaken;
+        int DamageThreshold;
+};
+
 class DirtBlock: public Block
 {
     public:
 
-        DirtBlock() : DamageTaken(0), faces(0), Type(1), DamageThreshold(10) {};
+        DirtBlock() : DamageTaken(0), faces(0), Type(2), DamageThreshold(10) {};
 
         DirtBlock *newBlock()
         {
             return new DirtBlock();
+        }
+        
+        char faces;
+        char Type;
+        int DamageTaken;
+        int DamageThreshold;
+};
+
+class GrassBlock: public Block
+{
+    public:
+
+        GrassBlock() : DamageTaken(0), faces(0), Type(3), DamageThreshold(15) {};
+
+        GrassBlock *newBlock()
+        {
+            return new GrassBlock();
         }
         
         char faces;

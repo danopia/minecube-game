@@ -20,13 +20,10 @@ int main()
     
     //App.UseVerticalSync(true);
     
-    // Create player
+    // Create some instances
     Player player(5.f, 0.f, 90.f, 5.f, 25.01f, 60.f, "Foo");
-
-    // Create a terrain and renderer
-    Renderer renderer(Terrain(5, 0, 1,1,1, 50), &player);
-    
-    // Create input handler
+    Terrain world (5, 0, 1,1,1, 50);
+    Renderer renderer(world, &player);
     InputHandler input_handler(&App, &player);
     
     // Set some stuff

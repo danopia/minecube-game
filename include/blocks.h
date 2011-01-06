@@ -12,7 +12,10 @@ class AllBlocks
 
         AllBlocks()
         {
-            Blocks[1] = new DirtBlock();
+            Blocks[0] = new AirBlock();
+            Blocks[1] = new StoneBlock();
+            Blocks[2] = new DirtBlock();
+            Blocks[3] = new GrassBlock();
         }
 };
 
