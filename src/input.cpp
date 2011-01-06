@@ -24,6 +24,7 @@ float mouseDeltaX, mouseDeltaY;
 void InputHandler::handleEvents() {
     const sf::Input& Input = app->GetInput();
     
+    // Constant movement speed
     ElapsedTime = Clock.GetElapsedTime();
     Clock.Reset();
     
@@ -35,6 +36,13 @@ void InputHandler::handleEvents() {
     if ((Input.IsKeyDown(sf::Key::Z))) player->Speed++;
     if ((Input.IsKeyDown(sf::Key::X))) player->Speed--;
         
+    // Handle other events
+    sf::Event Event;
+    while (app->GetEvent(Event))
+    {
+        handleEvent(Event);
+    }
+        
     // Rotate view based on mouse movement 
     mouseDeltaX = Input.GetMouseX() - 100; 
     mouseDeltaY = Input.GetMouseY() - 100;
@@ -42,12 +50,5 @@ void InputHandler::handleEvents() {
     
     if (!(mouseDeltaX == -100 && mouseDeltaY == -100) && !(mouseDeltaX == 0 && mouseDeltaY == 0)) 
         player->ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));
-        
-    // Handle other events
-    sf::Event Event;
-    while (app->GetEvent(Event))
-    {
-        handleEvent(Event);
-    }
 }
 
