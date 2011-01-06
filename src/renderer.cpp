@@ -60,7 +60,7 @@ Renderer::Renderer(Terrain initterrain, Player* player) : terrain(initterrain), 
     glDepthMask(GL_TRUE);
 
     // Face culling to render half the polys
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
     // Lighting
     GLfloat LightAmbient[]  = { 0.5f, 0.5f, 0.5f, 1.0f }; // Ambient Light Values
@@ -94,7 +94,7 @@ Renderer::Renderer(Terrain initterrain, Player* player) : terrain(initterrain), 
 // Don't forget to destroy our texture 
 //glDeleteTextures(1, &Texture);
 
-void drawCube(float x, float y, float z, float length) {
+void Renderer::drawCube(float x, float y, float z, float length) {
     float subsize = length / 2;
 
     // Apply some transformations
@@ -102,7 +102,12 @@ void drawCube(float x, float y, float z, float length) {
     glTranslatef(x + subsize, y + subsize, z + subsize);
     glScalef(subsize, subsize, subsize);
 
-    glDrawElements( GL_QUADS, 24, GL_UNSIGNED_BYTE, indices );
+    if (player->Z < z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[0] );
+    if (player->X > x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[4] );
+    if (player->Y < y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[8] );
+    if (player->Z > z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[12] );
+    if (player->X < x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[16] );
+    if (player->Y > y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[20] );
 }
 
 bool current;
@@ -118,7 +123,7 @@ void Renderer::renderNode(Octree<Block*> terrain, float x, float y, float z, flo
         renderNode(terrain.children[5], x+subsize, y,         z+subsize, subsize);
         renderNode(terrain.children[6], x,         y+subsize, z+subsize, subsize);
         renderNode(terrain.children[7], x+subsize, y+subsize, z+subsize, subsize);
-    } else if (terrain.value->Type) {
+    } else if (terrain.value->Type > 0) {
         // Collision check against player
         if (player->X > x && player->Y > y && player->Z - 2.f > z
          && player->X < x + size && player->Y < y + size && player->Z - 2.f < z + size)

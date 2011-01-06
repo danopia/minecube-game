@@ -34,7 +34,7 @@ class DirtBlock: public Block
 {
     public:
 
-        DirtBlock() : DamageTaken(0), faces(0), Type(0), DamageThreshold(10) {};
+        DirtBlock() : DamageTaken(0), faces(0), Type(1), DamageThreshold(10) {};
 
         DirtBlock *newBlock()
         {
