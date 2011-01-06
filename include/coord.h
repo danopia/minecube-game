@@ -13,7 +13,7 @@ class Coord
 
         bool operator <(const Coord& x) const
         {
-            return sqrt(pow(X,2) + pow(Y,2) + pow(Z,2)) < sqrt(pow(x.X,2) + pow(x.Y, 2) + pow(x.Z, 2));
+            return sqrtf(powf(X,2) + powf(Y,2) + powf(Z,2)) < sqrtf(powf(x.X,2) + powf(x.Y, 2) + powf(x.Z, 2));
         }
 };
 

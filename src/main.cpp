@@ -1,13 +1,17 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 
 #include "renderer.h"
 #include "input.h"
 #include "octree.h"
 #include "player.h"
 #include "terrain.h"
+
+#ifdef _WIN32 
+#define snprintf sprintf_s 
+#endif 
 
 int main()
 {

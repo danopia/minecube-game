@@ -10,7 +10,7 @@
 
 GLuint Texture = 0;
 
-GLdouble norm = 1 / sqrt( 3 );
+GLdouble norm = 1 / sqrtf( 3 );
 
 GLdouble x = 0;
 GLdouble y = 0;
