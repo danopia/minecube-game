@@ -5,20 +5,36 @@
 class Block
 {
     public:
-        Block() : DamageTaken(0), faces(0) {};
-        virtual Block *newBlock() { return new Block(); }
+        Block() {};
+        virtual Block *newBlock() {};
+        
         char faces; // Faces to render (using 6 bits)
-    protected:
-        const static int Type;
+        char Type;
         int DamageTaken;
-        const static int DamageThreshold;
+        int DamageThreshold;
+};
+
+class AirBlock: public Block
+{
+public:
+    AirBlock() : DamageTaken(0), faces(0), Type(0), DamageThreshold(-1) {};
+
+    AirBlock *newBlock()
+    {
+        return new AirBlock();
+    }
+
+    char faces;
+    int DamageTaken;
+    char Type;
+    int DamageThreshold;
 };
 
 class DirtBlock: public Block
 {
     public:
 
-        DirtBlock() : DamageTaken(0), faces(0) {};
+        DirtBlock() : DamageTaken(0), faces(0), Type(0), DamageThreshold(10) {};
 
         DirtBlock *newBlock()
         {
@@ -26,10 +42,8 @@ class DirtBlock: public Block
         }
         
         char faces;
-    protected:
-        const static int Type = 1;
+        char Type;
         int DamageTaken;
-        const static int DamageThreshold = 10;
+        int DamageThreshold;
 };
-
 #endif

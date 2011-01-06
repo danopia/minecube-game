@@ -3,12 +3,13 @@
 #include <SFML/Window.hpp>
 #include "player.h"
 #include "terrain.h"
+#include "block.h"
 
 class Renderer {
     public:
         Renderer(Terrain initterrain, Player* player);
         void render();
-        void renderNode(Octree<bool> terrain, float x, float y, float z, float size);
+        void renderNode(Octree<Block*> terrain, float x, float y, float z, float size);
         
         Terrain terrain;
         Player *player;

@@ -4,6 +4,7 @@
 
 #include "octree.h"
 #include "coord.h"
+#include "block.h"
 
 #include <map>
 
@@ -18,11 +19,11 @@ class Terrain
         int sizeX, sizeY, sizeZ; // Size in chunks in X,Y, and Z directions
         int chunkSize; // Chunk size in... units. >_>
 
-        std::map<Coord, Octree<bool> > GeneratedTerrain;
+        std::map<Coord, Octree<Block*> > GeneratedTerrain;
         void Regenerate();
 
     private:
-        Octree<bool> makeTerrainFrom(int level); //Generates the terrain from the specified level downwards. Almost always 0.
+        Octree<Block*> makeTerrainFrom(int level); //Generates the terrain from the specified level downwards. Almost always 0.
 };
 
 #endif

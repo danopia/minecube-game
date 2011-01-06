@@ -107,7 +107,7 @@ void drawCube(float x, float y, float z, float length) {
 
 bool current;
 
-void Renderer::renderNode(Octree<bool> terrain, float x, float y, float z, float size) {
+void Renderer::renderNode(Octree<Block*> terrain, float x, float y, float z, float size) {
     if (terrain.hasChildren) {
         float subsize = size / 2;
         renderNode(terrain.children[0], x,         y,         z,         subsize);
@@ -118,7 +118,7 @@ void Renderer::renderNode(Octree<bool> terrain, float x, float y, float z, float
         renderNode(terrain.children[5], x+subsize, y,         z+subsize, subsize);
         renderNode(terrain.children[6], x,         y+subsize, z+subsize, subsize);
         renderNode(terrain.children[7], x+subsize, y+subsize, z+subsize, subsize);
-    } else if (terrain.value) {
+    } else if (terrain.value->Type) {
         // Collision check against player
         if (player->X > x && player->Y > y && player->Z - 2.f > z
          && player->X < x + size && player->Y < y + size && player->Z - 2.f < z + size)

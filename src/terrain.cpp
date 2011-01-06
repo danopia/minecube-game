@@ -8,7 +8,7 @@ Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int i
 
 void Terrain::Regenerate()
 {
-    GeneratedTerrain = std::map<Coord, Octree<bool> >();
+    GeneratedTerrain = std::map<Coord, Octree<Block*> >();
     int i, j, k;
     for(i = 0; i < sizeX; i++)
     {
@@ -21,9 +21,9 @@ void Terrain::Regenerate()
         }
     }
 }
-Octree<bool> Terrain::makeTerrainFrom(int level)
+Octree<Block*> Terrain::makeTerrainFrom(int level)
 {
-    std::vector<Octree<bool> >blocks;
+    std::vector<Octree<Block*> >blocks;
     for(int i = 0; i < 8; i++)
     {
         if(level < Maxlevel)
@@ -32,8 +32,12 @@ Octree<bool> Terrain::makeTerrainFrom(int level)
             
             if(leaf && level > Minlevel)
             {
+                // TODO: Change to make a random block type, not only dirt or air
                 bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-                blocks.push_back(Octree<bool>(type));
+                if (type)
+                    blocks.push_back(Octree<Block*>(new DirtBlock()));
+                else
+                    blocks.push_back(Octree<Block*>(new AirBlock()));
             } 
             else
             {
@@ -42,11 +46,15 @@ Octree<bool> Terrain::makeTerrainFrom(int level)
         }
         else if(level == Maxlevel)
         {
+            // TODO: Same as above
             bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-            blocks.push_back(Octree<bool>(type));
+            if (type)
+                    blocks.push_back(Octree<Block*>(new DirtBlock()));
+            else
+                blocks.push_back(Octree<Block*>(new AirBlock()));
         }
     }
-    Octree<bool> terrain(blocks);
+    Octree<Block*> terrain(blocks);
     return terrain;
 }
 
