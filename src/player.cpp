@@ -48,14 +48,21 @@ void Player::ChangeRotation(float deltaYrot, float deltaZrot)
         Yrot = 90;
 }
 
+void Player::Jump()
+{
+    if (StandingOn) {
+        GravitySpeed = 9.8f;
+    }
+}
+
 void Player::DoStep(float amount)
 {
     Moving = false;
     
     if (!StandingOn)
     {
-        GravitySpeed += 9.8f * amount;
-        Z -= GravitySpeed * amount;
+        GravitySpeed -= 9.8f * amount;
+        Z += GravitySpeed * amount;
     }
     else
     {

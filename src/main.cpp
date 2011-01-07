@@ -40,7 +40,7 @@ int main()
     {
         Framerate = 1.f / App.GetFrameTime();
         
-        if (App.GetInput().IsKeyDown(sf::Key::Space)) renderer.terrain.Regenerate();
+        if (App.GetInput().IsKeyDown(sf::Key::F5)) renderer.terrain.Regenerate();
         
         // Handle mouse and keyboard stuff
         input_handler.handleEvents();

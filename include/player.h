@@ -25,6 +25,7 @@ public:
     void Forward(float amount);
     void Strafe(float amount);
     void ChangeRotation(float deltaYrot, float deltaZrot);
+    void Jump(); // Begins a jump
     
     void DoStep(float amount); // Gets called every frame
 };

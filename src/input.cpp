@@ -13,6 +13,10 @@ void InputHandler::handleEvent(sf::Event Event) {
     if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Escape))
         app->Close();
 
+    // Spacebar : jump
+    if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Space))
+        player->Jump();
+
     // Resize event : adjust viewport
     if (Event.Type == sf::Event::Resized)
         glViewport(0, 0, Event.Size.Width, Event.Size.Height);
