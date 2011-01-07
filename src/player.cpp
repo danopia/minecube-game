@@ -62,6 +62,7 @@ void Player::DoStep(float amount)
     if (!StandingOn)
     {
         GravitySpeed -= 9.8f * amount;
+        if (Z < 0) GravitySpeed = -GravitySpeed;
         Z += GravitySpeed * amount;
     }
     else
