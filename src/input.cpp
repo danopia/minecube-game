@@ -36,6 +36,8 @@ void InputHandler::handleEvents() {
     if ((Input.IsKeyDown(sf::Key::Z))) player->Speed++;
     if ((Input.IsKeyDown(sf::Key::X))) player->Speed--;
         
+    player->DoStep(ElapsedTime);
+        
     // Handle other events
     sf::Event Event;
     while (app->GetEvent(Event))

@@ -17,7 +17,7 @@ class Block
 class AirBlock: public Block
 {
 public:
-    AirBlock() : DamageTaken(0), faces(0), Type(0), DamageThreshold(-1) {};
+    AirBlock() : DamageTaken(0), faces(0x3F), Type(0), DamageThreshold(-1) {};
 
     AirBlock *newBlock()
     {
@@ -34,7 +34,7 @@ class StoneBlock: public Block
 {
     public:
 
-        StoneBlock() : DamageTaken(0), faces(0), Type(1), DamageThreshold(50) {};
+        StoneBlock() : DamageTaken(0), faces(0x3F), Type(1), DamageThreshold(50) {};
 
         StoneBlock *newBlock()
         {
@@ -51,7 +51,7 @@ class DirtBlock: public Block
 {
     public:
 
-        DirtBlock() : DamageTaken(0), faces(0), Type(2), DamageThreshold(10) {};
+        DirtBlock() : DamageTaken(0), faces(0x3F), Type(2), DamageThreshold(10) {};
 
         DirtBlock *newBlock()
         {
@@ -68,7 +68,7 @@ class GrassBlock: public Block
 {
     public:
 
-        GrassBlock() : DamageTaken(0), faces(0), Type(3), DamageThreshold(15) {};
+        GrassBlock() : DamageTaken(0), faces(0x3F), Type(3), DamageThreshold(15) {};
 
         GrassBlock *newBlock()
         {

@@ -10,7 +10,7 @@ class Renderer {
         Renderer(Terrain initterrain, Player* player);
         void render();
         void renderNode(Octree<Block*> terrain, float x, float y, float z, float size);
-        void drawCube(float x, float y, float z, float length);
+        void drawCube(Block *block, float x, float y, float z, float length);
         
         Terrain terrain;
         Player *player;

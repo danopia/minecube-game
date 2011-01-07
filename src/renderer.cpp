@@ -94,7 +94,7 @@ Renderer::Renderer(Terrain initterrain, Player* player) : terrain(initterrain), 
 // Don't forget to destroy our texture 
 //glDeleteTextures(1, &Texture);
 
-void Renderer::drawCube(float x, float y, float z, float length) {
+void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     float subsize = length / 2;
 
     // Apply some transformations
@@ -102,6 +102,14 @@ void Renderer::drawCube(float x, float y, float z, float length) {
     glTranslatef(x + subsize, y + subsize, z + subsize);
     glScalef(subsize, subsize, subsize);
 
+    /*
+    if (block->faces & 0x01 > 0 && player->Z < z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[0] );
+    if (block->faces & 0x02 > 0 && player->X > x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[4] );
+    if (block->faces & 0x04 > 0 && player->Y < y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[8] );
+    if (block->faces & 0x08 > 0 && player->Z > z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[12] );
+    if (block->faces & 0x10 > 0 && player->X < x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[16] );
+    if (block->faces & 0x20 > 0 && player->Y > y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[20] );
+    */
     if (player->Z < z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[0] );
     if (player->X > x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[4] );
     if (player->Y < y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[8] );
@@ -123,13 +131,15 @@ void Renderer::renderNode(Octree<Block*> terrain, float x, float y, float z, flo
         renderNode(terrain.children[5], x+subsize, y,         z+subsize, subsize);
         renderNode(terrain.children[6], x,         y+subsize, z+subsize, subsize);
         renderNode(terrain.children[7], x+subsize, y+subsize, z+subsize, subsize);
-    } else if (terrain.value->Type > 0) {
+    } else if (terrain.value->Type == 0) {
         // Collision check against player
         if (player->X > x && player->Y > y && player->Z - 2.f > z
-         && player->X < x + size && player->Y < y + size && player->Z - 2.f < z + size)
-            current = true;
+         && player->X < x + size && player->Y < y + size && player->Z - 2.f < z + size) {
+            player->StandingOn = &terrain;
+            player->SurfaceZ = z + size;
+        }
         
-        drawCube(x, y, z, size);
+        drawCube(terrain.value, x, y, z, size);
     }
 }
 
@@ -158,8 +168,7 @@ void Renderer::render() {
     glNormalPointer( GL_DOUBLE, 0, &normals[0] );
     glTexCoordPointer( 3, GL_DOUBLE, 0, &texcoords[0] );
     
-    // Store current cube
-    current = false;
+    player->StandingOn = NULL;
     
     // Loop through chunks and render them
     int i, j, k;
@@ -167,10 +176,6 @@ void Renderer::render() {
         for(j = 0; j < terrain.sizeY; j++)
             for(k = 0; k < terrain.sizeZ; k++)
                 renderNode(terrain.GeneratedTerrain[Coord(i,j,k)], i*terrain.chunkSize, j*terrain.chunkSize, k*terrain.chunkSize, terrain.chunkSize);
-    
-    if (!current) {
-        player->Z -= 0.1f;
-    }
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
