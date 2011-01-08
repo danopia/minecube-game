@@ -25,7 +25,6 @@ void InputHandler::handleEvent(sf::Event Event) {
     // F11 : toggle fullscreen
     if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::F11)) {
         fullscreen = !fullscreen;
-        app->Close();
         app->Create(sf::VideoMode(800, 600, 32), "MineCube", (fullscreen ? sf::Style::Fullscreen : sf::Style::Resize|sf::Style::Close));
         
         renderer->InitGraphics();
