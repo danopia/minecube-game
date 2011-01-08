@@ -34,6 +34,12 @@ int main()
     
     sf::String Text;
     Text.SetFont(sf::Font::GetDefaultFont());
+    
+    sf::Shape Hair1 = sf::Shape::Line(-15, 0, 15, 0, 2.5, sf::Color(255, 255, 255, 127));
+    sf::Shape Hair2 = sf::Shape::Line(0, -15, 0, 15, 2.5, sf::Color(255, 255, 255, 127));
+
+    Hair1.SetPosition(App.GetWidth() / 2, App.GetHeight() / 2);
+    Hair2.SetPosition(Hair1.GetPosition());
 
     // Start game loop
     while (App.IsOpened())
@@ -55,6 +61,11 @@ int main()
         snprintf(buf, 10, "%.1f FPS", Framerate);
         Text.SetText(buf);
         App.Draw(Text);
+        
+        // Draw crosshair
+        App.Draw(Hair1);
+        App.Draw(Hair2);
+
 
         // Finally, display rendered frame on screen
         App.Display();
