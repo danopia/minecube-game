@@ -24,7 +24,7 @@ int main()
     Player player(5.f, 0.f, 90.f, 5.f, 25.f, 60.f, "Foo");
     Terrain world (5, 0, 1,1,1, 50);
     Renderer renderer(world, &player);
-    InputHandler input_handler(&App, &player);
+    InputHandler input_handler(&App, &player, &renderer);
     
     // Set some stuff
     App.PreserveOpenGLStates(true);
@@ -39,8 +39,6 @@ int main()
     while (App.IsOpened())
     {
         Framerate = 1.f / App.GetFrameTime();
-        
-        if (App.GetInput().IsKeyDown(sf::Key::F5)) renderer.terrain.Regenerate();
         
         // Handle mouse and keyboard stuff
         input_handler.handleEvents();

@@ -51,6 +51,10 @@ GLdouble radius = 1;
 						  6, 7, 3, 2 };
 
 Renderer::Renderer(Terrain initterrain, Player* player) : terrain(initterrain), player(player) {
+    InitGraphics();
+}
+
+void Renderer::InitGraphics() {
     // Set color and depth clear value
     glClearDepth(1.f);
     glClearColor(0.f, 0.f, 0.f, 1.f); // black
@@ -89,7 +93,6 @@ Renderer::Renderer(Terrain initterrain, Player* player) : terrain(initterrain), 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.GetWidth(), Image.GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, Image.GetPixelsPtr());
 }
-
 
 // Don't forget to destroy our texture 
 //glDeleteTextures(1, &Texture);
