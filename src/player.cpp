@@ -13,7 +13,7 @@ void Player::Forward(float amount)
     float xStep = Speed * sin((PI * Rotation.Z) / 180) * amount;
     float yStep = Speed * cos((PI * Rotation.Z) / 180) * amount;
     //float zStep = -Speed * sin((PI * Rotation.Y) / 180) * amount;
-    Pos.Z += (xStep);// * cos((PI * Rotation.Y) / 180));
+    Pos.X += (xStep);// * cos((PI * Rotation.Y) / 180));
     Pos.Y += (yStep);// * cos((PI * Rotation.Y) / 180));
     //Z += zStep;
 }

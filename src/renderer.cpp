@@ -205,7 +205,7 @@ void Renderer::render() {
     player->StandingOn = NULL;
     
     // Loop through chunks and render them
-    int i, j, k;
+    float i, j, k;
     for(i = 0; i < terrain.sizeX; i++)
         for(j = 0; j < terrain.sizeY; j++)
             for(k = 0; k < terrain.sizeZ; k++)

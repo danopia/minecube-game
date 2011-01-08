@@ -7,9 +7,9 @@ class Vector3
 {
     public:
         Vector3() : X(0), Y(), Z(0) {}
-        Vector3(int x, int y, int z) : X(x), Y(y), Z(z) {}
+        Vector3(float x, float y, float z) : X(x), Y(y), Z(z) {}
 
-        int X,Y,Z;
+        float X,Y,Z;
 
         bool operator <(const Vector3& x) const
         {
