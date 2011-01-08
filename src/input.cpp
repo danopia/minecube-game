@@ -40,8 +40,6 @@ void InputHandler::handleEvents() {
     if ((Input.IsKeyDown(sf::Key::Z))) player->Speed++;
     if ((Input.IsKeyDown(sf::Key::X))) player->Speed--;
         
-    player->DoStep(ElapsedTime);
-        
     // Handle other events
     sf::Event Event;
     while (app->GetEvent(Event))
@@ -56,5 +54,7 @@ void InputHandler::handleEvents() {
     
     if (!(mouseDeltaX == -100 && mouseDeltaY == -100) && !(mouseDeltaX == 0 && mouseDeltaY == 0)) 
         player->ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));
+        
+    player->DoStep(ElapsedTime);
 }
 

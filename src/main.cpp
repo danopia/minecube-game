@@ -21,7 +21,7 @@ int main()
     //App.UseVerticalSync(true);
     
     // Create some instances
-    Player player(5.f, 0.f, 90.f, 5.f, 25.01f, 60.f, "Foo");
+    Player player(5.f, 0.f, 90.f, 5.f, 25.f, 60.f, "Foo");
     Terrain world (5, 0, 1,1,1, 50);
     Renderer renderer(world, &player);
     InputHandler input_handler(&App, &player);

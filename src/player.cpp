@@ -51,7 +51,8 @@ void Player::ChangeRotation(float deltaYrot, float deltaZrot)
 void Player::Jump()
 {
     if (StandingOn) {
-        GravitySpeed = 9.8f;
+        GravitySpeed = 5.f;
+        StandingOn = NULL;
     }
 }
 
