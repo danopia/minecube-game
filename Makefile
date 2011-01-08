@@ -13,7 +13,7 @@ SOURCE_SUFFIXES := '(' -name '*.cpp' ')'
 SRCFILES := $(shell find 'src' $(SOURCE_SUFFIXES))
 OBJFILES := $(patsubst %.cpp,%.o,$(SRCFILES))
 
-CFLAGS := -I include -g -O2
+CFLAGS := -I include -g -O2 -fno-rtti
 
 all: $(APPLICATION)
 

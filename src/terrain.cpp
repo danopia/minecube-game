@@ -8,7 +8,7 @@ Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int i
 
 void Terrain::Regenerate()
 {
-    GeneratedTerrain = std::map<Coord, Octree<Block*> >();
+    GeneratedTerrain = std::map<Vector3, Octree<Block*> >();
     int i, j, k;
     for(i = 0; i < sizeX; i++)
     {
@@ -16,7 +16,7 @@ void Terrain::Regenerate()
         {
             for(k = 0; k < sizeZ; k++)
             {
-                GeneratedTerrain[Coord(i,j,k)] = makeTerrainFrom(0);
+                GeneratedTerrain[Vector3(i,j,k)] = makeTerrainFrom(0);
             }
         }
     }

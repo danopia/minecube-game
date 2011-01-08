@@ -3,7 +3,7 @@
 #define TERRAIN_H
 
 #include "octree.h"
-#include "coord.h"
+#include "vector3.h"
 #include "block.h"
 
 #include <map>
@@ -19,7 +19,7 @@ class Terrain
         int sizeX, sizeY, sizeZ; // Size in chunks in X,Y, and Z directions
         int chunkSize; // Chunk size in... units. >_>
 
-        std::map<Coord, Octree<Block*> > GeneratedTerrain;
+        std::map<Vector3, Octree<Block*> > GeneratedTerrain;
         void Regenerate();
 
     private:

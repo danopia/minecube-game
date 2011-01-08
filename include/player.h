@@ -5,13 +5,13 @@
 
 #include "octree.h"
 #include "block.h"
+#include "entity.h"
+#include "vector3.h"
 
-class Player
+class Player : public Entity
 {
 public:
     float Speed;
-    float Yrot, Zrot; // Pitch and yaw, respectively
-    float X, Y, Z;
     bool Moving;
     std::string Name;
     Octree<Block*> *StandingOn;
@@ -19,7 +19,7 @@ public:
     float GravitySpeed;
     
     Player();
-    Player(float initspeed, float inityrot, float initzrot, float initX, float initY, float initZ, std::string Name);
+    Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name);
     
     // Moves the player around
     void Forward(float amount);
@@ -28,6 +28,8 @@ public:
     void Jump(); // Begins a jump
     
     void DoStep(float amount); // Gets called every frame
+
+    void Render(); //Render!
 };
 
 #endif

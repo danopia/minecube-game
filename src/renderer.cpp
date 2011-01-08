@@ -6,7 +6,7 @@
 
 #include "renderer.h"
 #include "player.h"
-#include "coord.h"
+#include "vector3.h"
 
 GLuint Texture = 0;
 
@@ -137,19 +137,19 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     glScalef(subsize, subsize, subsize);
 
     /*
-    if (block->faces & 0x01 > 0 && player->Z < z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[0] );
-    if (block->faces & 0x02 > 0 && player->X > x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[4] );
-    if (block->faces & 0x04 > 0 && player->Y < y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[8] );
-    if (block->faces & 0x08 > 0 && player->Z > z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[12] );
-    if (block->faces & 0x10 > 0 && player->X < x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[16] );
-    if (block->faces & 0x20 > 0 && player->Y > y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[20] );
+    if (block->faces & 0x01 > 0 && player->Pos.Z < z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[0] );
+    if (block->faces & 0x02 > 0 && player->Pos.X > x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[4] );
+    if (block->faces & 0x04 > 0 && player->Pos.Y < y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[8] );
+    if (block->faces & 0x08 > 0 && player->Pos.Z > z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[12] );
+    if (block->faces & 0x10 > 0 && player->Pos.X < x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[16] );
+    if (block->faces & 0x20 > 0 && player->Pos.Y > y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[20] );
     */
-    if (player->Z < z) glDrawArrays(GL_QUADS, 0, 4);
-    if (player->X > x) glDrawArrays(GL_QUADS, 4, 4);
-    if (player->Y < y) glDrawArrays(GL_QUADS, 8, 4);
-    if (player->Z > z) glDrawArrays(GL_QUADS, 12, 4);
-    if (player->X < x) glDrawArrays(GL_QUADS, 16, 4);
-    if (player->Y > y) glDrawArrays(GL_QUADS, 20, 4);
+    if (player->Pos.Z < z) glDrawArrays(GL_QUADS, 0, 4);
+    if (player->Pos.X > x) glDrawArrays(GL_QUADS, 4, 4);
+    if (player->Pos.Y < y) glDrawArrays(GL_QUADS, 8, 4);
+    if (player->Pos.Z > z) glDrawArrays(GL_QUADS, 12, 4);
+    if (player->Pos.X < x) glDrawArrays(GL_QUADS, 16, 4);
+    if (player->Pos.Y > y) glDrawArrays(GL_QUADS, 20, 4);
 }
 
 bool current;
@@ -167,8 +167,8 @@ void Renderer::renderNode(Octree<Block*> terrain, float x, float y, float z, flo
         renderNode(terrain.children[7], x+subsize, y+subsize, z+subsize, subsize);
     } else if (terrain.value->Type == 0) {
         // Collision check against player
-        if (player->X > x && player->Y > y && player->Z - 2.f > z
-         && player->X <= x + size && player->Y <= y + size && player->Z - 2.f <= z + size) {
+        if (player->Pos.X > x && player->Pos.Y > y && player->Pos.Z - 2.f > z
+         && player->Pos.X <= x + size && player->Pos.Y <= y + size && player->Pos.Z - 2.f <= z + size) {
             player->StandingOn = &terrain;
             player->SurfaceZ = z + size;
         }
@@ -186,9 +186,9 @@ void Renderer::render() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(90.f, 1.f, 1.f, 500.f);
-    glRotatef(-90 + player->Yrot, 1.f, 0.f, 0.f);
-    glRotatef(player->Zrot, 0.f, 0.f, 1.f);
-    glTranslatef(-player->X, -player->Y, -player->Z);    // Translate The Scene Based On Player Position
+    glRotatef(-90 + player->Rotation.Y, 1.f, 0.f, 0.f);
+    glRotatef(player->Rotation.Z, 0.f, 0.f, 1.f);
+    glTranslatef(-player->Pos.X, -player->Pos.Y, -player->Pos.Z);    // Translate The Scene Based On Player Position
 
     glMatrixMode(GL_MODELVIEW);
     
@@ -209,7 +209,7 @@ void Renderer::render() {
     for(i = 0; i < terrain.sizeX; i++)
         for(j = 0; j < terrain.sizeY; j++)
             for(k = 0; k < terrain.sizeZ; k++)
-                renderNode(terrain.GeneratedTerrain[Coord(i,j,k)], i*terrain.chunkSize, j*terrain.chunkSize, k*terrain.chunkSize, terrain.chunkSize);
+                renderNode(terrain.GeneratedTerrain[Vector3(i,j,k)], i*terrain.chunkSize, j*terrain.chunkSize, k*terrain.chunkSize, terrain.chunkSize);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     //glDisableClientState(GL_NORMAL_ARRAY);
