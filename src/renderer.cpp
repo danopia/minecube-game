@@ -10,45 +10,66 @@
 
 GLuint Texture = 0;
 
-GLdouble norm = 1 / sqrtf( 3 );
+  GLdouble vertices[96] = { -1,  1, -1,
+							 1,  1, -1,
+							 1, -1, -1,
+							-1, -1, -1,
+							
+							 1, -1, -1,
+							 1,  1, -1,
+							 1,  1,  1,
+							 1, -1,  1,
+							
+							-1, -1, -1,
+							 1, -1, -1,
+							 1, -1,  1,
+                            -1, -1,  1,
+                            
+							 1, -1,  1,
+							 1,  1,  1,
+							-1,  1,  1,
+                            -1, -1,  1,
+                            
+							-1,  1,  1,
+							-1,  1, -1,
+							-1, -1, -1,
+                            -1, -1,  1,
+                            
+							 1,  1, -1,
+							-1,  1, -1,
+							-1,  1,  1,
+							 1,  1,  1, };
 
-GLdouble x = 0;
-GLdouble y = 0;
-GLdouble z = 0;
-GLdouble radius = 1;
-  GLdouble vertices[24] = { x - radius, y - radius, z + radius,
-							x + radius, y - radius, z + radius,
-							x + radius, y + radius, z + radius,
-							x - radius, y + radius, z + radius,
-							x - radius, y - radius, z - radius,
-							x + radius, y - radius, z - radius,
-							x + radius, y + radius, z - radius,
-							x - radius, y + radius, z - radius };
-
-  GLdouble normals[24] = { -norm, -norm,  norm,
-						    norm, -norm,  norm,
-						    norm,  norm,  norm,
-						   -norm,  norm,  norm,
-						   -norm, -norm, -norm,
-						    norm, -norm, -norm,
-						    norm,  norm, -norm,
-						   -norm,  norm, -norm };
-
-  GLdouble texcoords[24] = { 0.125, 0.0, 0.0,
-						     0.0, 0.125, 0.0,
-						     0.0, 0.0, 0.0,
-						     0.125, 0.0, 0.0,
-						     0.0, 0.125, 0.0,
-						     0.0, 0.0, 0.0,
-						     0.125, 0.0, 0.0,
-						     0.0, 0.125, 0.0 };
-
-  GLubyte indices[24] = { 7, 6, 5, 4,
-						  5, 6, 2, 1,
-						  4, 5, 1, 0,
-						  1, 2, 3, 0,
-						  3, 7, 4, 0,
-						  6, 7, 3, 2 };
+  // For grass
+  GLdouble texcoords[96] = { 0.0,   0.0,   0.0,
+						     0.125, 0.0,   0.0,
+						     0.125, 0.125, 0.0,
+						     0.0,   0.125, 0.0,
+						     
+						     0.0,   0.0,   0.0,
+						     0.125, 0.0,   0.0,
+						     0.125, 0.125, 0.0,
+						     0.0,   0.125, 0.0,
+						     
+						     0.0,   0.0,   0.0,
+						     0.125, 0.0,   0.0,
+						     0.125, 0.125, 0.0,
+						     0.0,   0.125, 0.0,
+                             
+						     0.0,   0.0,   0.0,
+						     0.125, 0.0,   0.0,
+						     0.125, 0.125, 0.0,
+						     0.0,   0.125, 0.0,
+                             
+						     0.0,   0.0,   0.0,
+						     0.125, 0.0,   0.0,
+						     0.125, 0.125, 0.0,
+						     0.0,   0.125, 0.0,
+                             
+						     0.0,   0.0,   0.0,
+						     0.125, 0.0,   0.0,
+						     0.125, 0.125, 0.0,
+						     0.0,   0.125, 0.0, };
 
 Renderer::Renderer(Terrain initterrain, Player* player) : terrain(initterrain), player(player) {
     InitGraphics();
@@ -113,12 +134,12 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     if (block->faces & 0x10 > 0 && player->X < x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[16] );
     if (block->faces & 0x20 > 0 && player->Y > y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[20] );
     */
-    if (player->Z < z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[0] );
-    if (player->X > x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[4] );
-    if (player->Y < y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[8] );
-    if (player->Z > z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[12] );
-    if (player->X < x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[16] );
-    if (player->Y > y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[20] );
+    if (player->Z < z) glDrawArrays(GL_QUADS, 0, 4);
+    if (player->X > x) glDrawArrays(GL_QUADS, 4, 4);
+    if (player->Y < y) glDrawArrays(GL_QUADS, 8, 4);
+    if (player->Z > z) glDrawArrays(GL_QUADS, 12, 4);
+    if (player->X < x) glDrawArrays(GL_QUADS, 16, 4);
+    if (player->Y > y) glDrawArrays(GL_QUADS, 20, 4);
 }
 
 bool current;
@@ -164,11 +185,11 @@ void Renderer::render() {
     glBindTexture(GL_TEXTURE_2D, Texture);
 
     glEnableClientState( GL_VERTEX_ARRAY );
-    glEnableClientState( GL_NORMAL_ARRAY );
+    //glEnableClientState( GL_NORMAL_ARRAY );
     glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
     glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
-    glNormalPointer( GL_DOUBLE, 0, &normals[0] );
+    //glNormalPointer( GL_DOUBLE, 0, &vertices[0] );
     glTexCoordPointer( 3, GL_DOUBLE, 0, &texcoords[0] );
     
     player->StandingOn = NULL;
@@ -181,6 +202,6 @@ void Renderer::render() {
                 renderNode(terrain.GeneratedTerrain[Coord(i,j,k)], i*terrain.chunkSize, j*terrain.chunkSize, k*terrain.chunkSize, terrain.chunkSize);
 
     glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
+    //glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
