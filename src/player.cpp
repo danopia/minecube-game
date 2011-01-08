@@ -20,8 +20,8 @@ void Player::Forward(float amount)
 
 void Player::Strafe(float amount)
 {
-    float xStep = Speed * sin((PI * Rotation.Y) / 180) * amount;
-    float yStep = Speed * cos((PI * Rotation.Y) / 180) * amount;
+    float yStep = Speed * sin((PI * Rotation.Z) / 180) * amount;
+    float xStep = Speed * cos((PI * Rotation.Z) / 180) * amount;
     if(Moving == true)
     {
         xStep *= 0.707106;        
