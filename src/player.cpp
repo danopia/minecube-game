@@ -5,7 +5,7 @@ const double PI = 3.14159265358979323846264338329750288419716939937510582;
 
 Player::Player() : Speed(0), Moving(false), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(Vector3(0,0,0), Vector3(0,0,0), Vector3(0,0,0)) {};
 
-Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), Moving(false), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 2, 1)) {};
+Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), Moving(false), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
 
 void Player::Forward(float amount)
 {
@@ -69,7 +69,7 @@ void Player::DoStep(float amount)
     else
     {
         GravitySpeed = 0.f;
-        Pos.Z = SurfaceZ + 2.f;
+        Pos.Z = SurfaceZ;
     }
 }
 

@@ -37,9 +37,9 @@ int main()
     
     sf::Shape Hair1 = sf::Shape::Line(-15, 0, 15, 0, 2.5, sf::Color(255, 255, 255, 127));
     sf::Shape Hair2 = sf::Shape::Line(0, -15, 0, 15, 2.5, sf::Color(255, 255, 255, 127));
-
-    Hair1.SetPosition(App.GetWidth() / 2, App.GetHeight() / 2);
-    Hair2.SetPosition(Hair1.GetPosition());
+    
+        Hair1.SetPosition(App.GetWidth() / 2, App.GetHeight() / 2);
+        Hair2.SetPosition(Hair1.GetPosition());
 
     // Start game loop
     while (App.IsOpened())
@@ -59,6 +59,7 @@ int main()
         
         // Draw FPS
         snprintf(buf, 10, "%.1f FPS", Framerate);
+        snprintf(buf, 10, "%f", player.Pos.Z);
         Text.SetText(buf);
         App.Draw(Text);
         

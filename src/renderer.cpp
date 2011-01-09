@@ -144,12 +144,12 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     if (block->faces & 0x10 > 0 && player->Pos.X < x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[16] );
     if (block->faces & 0x20 > 0 && player->Pos.Y > y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[20] );
     */
-    if (player->Pos.Z < z) glDrawArrays(GL_QUADS, 0, 4);
-    if (player->Pos.X > x) glDrawArrays(GL_QUADS, 4, 4);
-    if (player->Pos.Y < y) glDrawArrays(GL_QUADS, 8, 4);
-    if (player->Pos.Z > z) glDrawArrays(GL_QUADS, 12, 4);
-    if (player->Pos.X < x) glDrawArrays(GL_QUADS, 16, 4);
-    if (player->Pos.Y > y) glDrawArrays(GL_QUADS, 20, 4);
+    if (player->Pos.Z + 1.5f < z) glDrawArrays(GL_QUADS, 0, 4);
+    if (player->Pos.X + 0.5f > x) glDrawArrays(GL_QUADS, 4, 4);
+    if (player->Pos.Y - 0.5f < y) glDrawArrays(GL_QUADS, 8, 4);
+    if (player->Pos.Z + 1.5f > z) glDrawArrays(GL_QUADS, 12, 4);
+    if (player->Pos.X - 0.5f < x) glDrawArrays(GL_QUADS, 16, 4);
+    if (player->Pos.Y + 0.5f > y) glDrawArrays(GL_QUADS, 20, 4);
 }
 
 bool current;
@@ -167,8 +167,8 @@ void Renderer::renderNode(Octree<Block*> terrain, float x, float y, float z, flo
         renderNode(terrain.children[7], x+subsize, y+subsize, z+subsize, subsize);
     } else if (terrain.value->Type == 0) {
         // Collision check against player
-        if (player->Pos.X > x && player->Pos.Y > y && player->Pos.Z - 2.f > z
-         && player->Pos.X <= x + size && player->Pos.Y <= y + size && player->Pos.Z - 2.f <= z + size) {
+        if (player->Pos.X > x && player->Pos.Y > y && player->Pos.Z > z
+         && player->Pos.X <= x + size && player->Pos.Y <= y + size && player->Pos.Z <= z + size) {
             player->StandingOn = &terrain;
             player->SurfaceZ = z + size;
         }
@@ -188,7 +188,7 @@ void Renderer::render() {
     gluPerspective(90.f, 1.f, 1.f, 500.f);
     glRotatef(-90 + player->Rotation.Y, 1.f, 0.f, 0.f);
     glRotatef(player->Rotation.Z, 0.f, 0.f, 1.f);
-    glTranslatef(-player->Pos.X, -player->Pos.Y, -player->Pos.Z);    // Translate The Scene Based On Player Position
+    glTranslatef(-player->Pos.X - -0.5f, -player->Pos.Y - -0.5f, -player->Pos.Z - 1.5f);    // Translate The Scene Based On Player Position
 
     glMatrixMode(GL_MODELVIEW);
     
