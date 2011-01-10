@@ -60,8 +60,8 @@ void InputHandler::handleEvents() {
     if (Input.IsKeyDown(sf::Key::W))     player->Forward( ElapsedTime);
     if (Input.IsKeyDown(sf::Key::D))     player->Strafe(-ElapsedTime);
     if (Input.IsKeyDown(sf::Key::A))     player->Strafe( ElapsedTime);
-    if (Input.IsKeyDown(sf::Key::Z))     player->Speed++;
-    if (Input.IsKeyDown(sf::Key::X))     player->Speed--;
+//    if (Input.IsKeyDown(sf::Key::Z))     player->Speed++;
+//    if (Input.IsKeyDown(sf::Key::X))     player->Speed--;
     if (Input.IsKeyDown(sf::Key::Space)) player->Jump();
     //if (Input.IsKeyDown(sf::Key::C))     player->toggleCrouch();
         
