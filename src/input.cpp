@@ -24,6 +24,14 @@ void InputHandler::handleEvent(sf::Event Event) {
             case sf::Key::F11:
                 toggleFullscreen();
                 break;
+            // C : crouch
+            case sf::Key::C:
+                player->toggleCrouch();
+                break;
+            // L : crawl (lay down)
+            case sf::Key::L:
+                player->toggleCrawl();
+                break;
         }
     }
 
@@ -50,6 +58,7 @@ void InputHandler::handleEvents() {
     if (Input.IsKeyDown(sf::Key::Z))     player->Speed++;
     if (Input.IsKeyDown(sf::Key::X))     player->Speed--;
     if (Input.IsKeyDown(sf::Key::Space)) player->Jump();
+    //if (Input.IsKeyDown(sf::Key::C))     player->toggleCrouch();
         
     // Handle other events
     sf::Event Event;

@@ -13,6 +13,8 @@ class Player : public Entity
 public:
     float Speed;
     bool Moving;
+    bool Crouching;
+    bool Crawling;
     std::string Name;
     Octree<Block*> *StandingOn;
     float SurfaceZ;
@@ -26,6 +28,13 @@ public:
     void Strafe(float amount);
     void ChangeRotation(float deltaYrot, float deltaZrot);
     void Jump(); // Begins a jump
+    void Stand();  // Stand up (stops crouching and crawling)
+    
+    void Crouch();        // Begin crouching
+    bool toggleCrouch();  // Begin or end crouching
+    
+    void Crawl();         // Begin crawling
+    bool toggleCrawl();   // Begin or end crawling
     
     void DoStep(float amount); // Gets called every frame
 

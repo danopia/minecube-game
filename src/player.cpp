@@ -2,10 +2,12 @@
 #include <cmath>
 
 const double PI = 3.14159265358979323846264338329750288419716939937510582;
+const double CROUCH_OFFSET = 0.30;
+const double CRAWL_OFFSET  = 0.70;
 
-Player::Player() : Speed(0), Moving(false), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(Vector3(0,0,0), Vector3(0,0,0), Vector3(0,0,0)) {};
+Player::Player() : Speed(0), Moving(false), Crouching(false), Crawling(false), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(Vector3(0,0,0), Vector3(0,0,0), Vector3(0,0,0)) {};
 
-Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), Moving(false), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
+Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), Moving(false), Crouching(false), Crawling(false), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
 
 void Player::Forward(float amount)
 {
@@ -53,7 +55,36 @@ void Player::Jump()
     if (StandingOn) {
         GravitySpeed = 5.f;
         StandingOn = NULL;
+        Crouching = false;
     }
+}
+
+void Player::Stand()
+{
+    Crouching = false;
+    Crawling = false;
+}
+
+void Player::Crouch()
+{
+    Crouching = true;
+}
+
+bool Player::toggleCrouch()
+{
+    Crouching = !Crouching;
+    return Crouching;
+}
+
+void Player::Crawl()
+{
+    Crawling = true;
+}
+
+bool Player::toggleCrawl()
+{
+    Crawling = !Crawling;
+    return Crawling;
 }
 
 void Player::DoStep(float amount)
@@ -70,6 +101,14 @@ void Player::DoStep(float amount)
     {
         GravitySpeed = 0.f;
         Pos.Z = SurfaceZ;
+        Hitbox.Z = 2;
+        if (Crawling) {
+            Pos.Z -= CRAWL_OFFSET;
+            Hitbox.Z -= CRAWL_OFFSET;
+        } else if (Crouching) {
+            Pos.Z -= CROUCH_OFFSET;
+            Hitbox.Z -= CROUCH_OFFSET;
+        }
     }
 }
 
