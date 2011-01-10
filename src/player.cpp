@@ -5,7 +5,12 @@ const double PI = 3.14159265358979323846264338329750288419716939937510582;
 const double CROUCH_OFFSET = 0.30;
 const double CRAWL_OFFSET  = 0.70;
 
-Player::Player() : Speed(0), Moving(false), Crouching(false), Crawling(false), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(Vector3(0,0,0), Vector3(0,0,0), Vector3(0,0,0)) {};
+const double RUN_SPEED     = 7.0;
+const double WALK_SPEED    = 5.0;
+const double CROUCH_SPEED  = 3.0;
+const double CRAWL_SPEED   = 2.0;
+
+Player::Player() : Speed(WALK_SPEED), Moving(false), Crouching(false), Crawling(false), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(Vector3(0,0,0), Vector3(0,0,0), Vector3(0,0,0)) {};
 
 Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), Moving(false), Crouching(false), Crawling(false), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
 
@@ -18,6 +23,7 @@ void Player::Forward(float amount)
     Pos.X += (xStep);// * cos((PI * Rotation.Y) / 180));
     Pos.Y += (yStep);// * cos((PI * Rotation.Y) / 180));
     //Z += zStep;
+std::cout << Speed << std::endl;
 }
 
 void Player::Strafe(float amount)
@@ -26,7 +32,7 @@ void Player::Strafe(float amount)
     float xStep = Speed * cos((PI * Rotation.Z) / 180) * amount;
     if(Moving == true)
     {
-        xStep *= 0.707106;        
+        xStep *= 0.707106;
         yStep *= 0.707106;
     }
 
@@ -59,14 +65,34 @@ void Player::Jump()
     }
 }
 
-void Player::Stand()
+void Player::Walk()
 {
+    Speed = WALK_SPEED;
     Crouching = false;
-    Crawling = false;
+    Crawling  = false;
+    Running   = false;
+}
+
+void Player::Run()
+{
+    Speed = RUN_SPEED;
+    Crouching = false;
+    Crawling  = false;
+    Running   = true;
+}
+
+bool Player::toggleRun()
+{
+    if(Running)
+        Walk();
+    else
+        Run();
+    return Running;
 }
 
 void Player::Crouch()
 {
+    Speed = CROUCH_SPEED;
     Crouching = true;
     Crawling = false;
 }
@@ -74,7 +100,7 @@ void Player::Crouch()
 bool Player::toggleCrouch()
 {
     if(Crouching)
-        Stand();
+        Walk();
     else
         Crouch();
     return Crouching;
@@ -82,6 +108,7 @@ bool Player::toggleCrouch()
 
 void Player::Crawl()
 {
+    Speed = CRAWL_SPEED;
     Crouching = false;
     Crawling = true;
 }
@@ -89,7 +116,7 @@ void Player::Crawl()
 bool Player::toggleCrawl()
 {
     if(Crawling)
-        Stand();
+        Walk();
     else
         Crawl();
     return Crawling;

@@ -15,6 +15,7 @@ public:
     bool Moving;
     bool Crouching;
     bool Crawling;
+    bool Running;
     std::string Name;
     Octree<Block*> *StandingOn;
     float SurfaceZ;
@@ -27,8 +28,13 @@ public:
     void Forward(float amount);
     void Strafe(float amount);
     void ChangeRotation(float deltaYrot, float deltaZrot);
-    void Jump(); // Begins a jump
-    void Stand();  // Stand up (stops crouching and crawling)
+    void Jump();          // Begins a jump
+    
+    // Speed/height adjustment
+    void Walk();          // Stands up, walks at default speed
+    
+    void Run();           // Start running
+    bool toggleRun();     // Begin or end running
     
     void Crouch();        // Begin crouching
     bool toggleCrouch();  // Begin or end crouching

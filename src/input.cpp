@@ -28,9 +28,13 @@ void InputHandler::handleEvent(sf::Event Event) {
             case sf::Key::C:
                 player->toggleCrouch();
                 break;
-            // L : crawl (lay down)
-            case sf::Key::L:
+            // V : crawl (crawl, it's close to C and it looks like an arrow ;P)
+            case sf::Key::V:
                 player->toggleCrawl();
+                break;
+            // Left Shift : run
+            case sf::Key::LShift:
+                player->toggleRun();
                 break;
         }
     }
