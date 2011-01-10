@@ -47,12 +47,12 @@ void InputHandler::handleEvents() {
     Clock.Reset();
     
     // Handle held keys
-    if ((Input.IsKeyDown(sf::Key::S))) player->Forward(-ElapsedTime);
-    if ((Input.IsKeyDown(sf::Key::W))) player->Forward( ElapsedTime);
-    if ((Input.IsKeyDown(sf::Key::D))) player->Strafe(-ElapsedTime);
-    if ((Input.IsKeyDown(sf::Key::A))) player->Strafe( ElapsedTime);
-    if ((Input.IsKeyDown(sf::Key::Z))) player->Speed++;
-    if ((Input.IsKeyDown(sf::Key::X))) player->Speed--;
+    if (Input.IsKeyDown(sf::Key::S)) player->Forward(-ElapsedTime);
+    if (Input.IsKeyDown(sf::Key::W)) player->Forward( ElapsedTime);
+    if (Input.IsKeyDown(sf::Key::D)) player->Strafe(-ElapsedTime);
+    if (Input.IsKeyDown(sf::Key::A)) player->Strafe( ElapsedTime);
+    if (Input.IsKeyDown(sf::Key::Z)) player->Speed++;
+    if (Input.IsKeyDown(sf::Key::X)) player->Speed--;
         
     // Handle other events
     sf::Event Event;
