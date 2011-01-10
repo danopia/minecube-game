@@ -16,10 +16,10 @@ void InputHandler::handleEvent(sf::Event Event) {
             case sf::Key::Escape:
                 app->Close();
                 break;
-            // Spacebar : jump
+/*            // Spacebar : jump
             case sf::Key::Space:
                 player->Jump();
-                break;
+                break;*/
             // F5 : regenerate terrain
             case sf::Key::F5:
                 renderer->terrain.Regenerate();
@@ -47,12 +47,13 @@ void InputHandler::handleEvents() {
     Clock.Reset();
     
     // Handle held keys
-    if (Input.IsKeyDown(sf::Key::S)) player->Forward(-ElapsedTime);
-    if (Input.IsKeyDown(sf::Key::W)) player->Forward( ElapsedTime);
-    if (Input.IsKeyDown(sf::Key::D)) player->Strafe(-ElapsedTime);
-    if (Input.IsKeyDown(sf::Key::A)) player->Strafe( ElapsedTime);
-    if (Input.IsKeyDown(sf::Key::Z)) player->Speed++;
-    if (Input.IsKeyDown(sf::Key::X)) player->Speed--;
+    if (Input.IsKeyDown(sf::Key::S))     player->Forward(-ElapsedTime);
+    if (Input.IsKeyDown(sf::Key::W))     player->Forward( ElapsedTime);
+    if (Input.IsKeyDown(sf::Key::D))     player->Strafe(-ElapsedTime);
+    if (Input.IsKeyDown(sf::Key::A))     player->Strafe( ElapsedTime);
+    if (Input.IsKeyDown(sf::Key::Z))     player->Speed++;
+    if (Input.IsKeyDown(sf::Key::X))     player->Speed--;
+    if (Input.IsKeyDown(sf::Key::Space)) player->Jump();
         
     // Handle other events
     sf::Event Event;
