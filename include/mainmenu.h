@@ -16,6 +16,8 @@ class MainMenu
     public:
         MainMenu(sf::RenderWindow *app);
         void Loop();
+        void ItemSelected(std::string Label);
+        void drawBackground();
 
         sf::RenderWindow *app;
 };

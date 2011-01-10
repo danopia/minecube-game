@@ -5,6 +5,7 @@ Game::Game(sf::RenderWindow* app) : app(app), player(5.f, Vector3(0.f, 0.f, 90.f
 void Game::Loop() {
     // Set some stuff
     app->PreserveOpenGLStates(true);
+    app->UseVerticalSync(false);
     
     char buf[10];
     float Framerate;

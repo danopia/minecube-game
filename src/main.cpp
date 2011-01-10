@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 
 #include "mainmenu.h"
-#include "game.h"
 
 int main()
 {
@@ -13,10 +12,6 @@ int main()
     // Create TEH MENU
     MainMenu menu(&App);
     menu.Loop();
-    
-    // Create TEH GAME
-    Game game(&App);
-    game.Loop();
     
     return EXIT_SUCCESS;
 }
