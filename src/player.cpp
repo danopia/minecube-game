@@ -68,22 +68,30 @@ void Player::Stand()
 void Player::Crouch()
 {
     Crouching = true;
+    Crawling = false;
 }
 
 bool Player::toggleCrouch()
 {
-    Crouching = !Crouching;
+    if(Crouching)
+        Stand();
+    else
+        Crouch();
     return Crouching;
 }
 
 void Player::Crawl()
 {
+    Crouching = false;
     Crawling = true;
 }
 
 bool Player::toggleCrawl()
 {
-    Crawling = !Crawling;
+    if(Crawling)
+        Stand();
+    else
+        Crawl();
     return Crawling;
 }
 
