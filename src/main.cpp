@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 
+#include "mainmenu.h"
 #include "game.h"
 
 int main()
@@ -8,6 +9,10 @@ int main()
     sf::RenderWindow App(sf::VideoMode(800, 600, 32), "MineCube");
     
     //App.UseVerticalSync(true);
+    
+    // Create TEH MENU
+    MainMenu menu(&App);
+    menu.Loop();
     
     // Create TEH GAME
     Game game(&App);
