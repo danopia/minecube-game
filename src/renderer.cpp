@@ -189,7 +189,7 @@ void Renderer::render() {
     gluPerspective(90.f, 1.f, 1.f, 500.f);
     glRotatef(-90 + player->Rotation.Y, 1.f, 0.f, 0.f);
     glRotatef(player->Rotation.Z, 0.f, 0.f, 1.f);
-    glTranslatef(-player->Pos.X - -0.5f, -player->Pos.Y - -0.5f, -player->Pos.Z - 1.5f);    // Translate The Scene Based On Player Position
+    glTranslatef(-player->Pos.X - 0.5f, -player->Pos.Y - 0.5f, -player->Pos.Z - 1.5f);    // Translate The Scene Based On Player Position
 
     glMatrixMode(GL_MODELVIEW);
     
