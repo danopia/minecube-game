@@ -24,7 +24,8 @@ void InputHandler::handleEvent(sf::Event Event) {
             case sf::Key::F11:
                 toggleFullscreen();
                 break;
-            // C : crouch
+            // Left Control, C : crouch
+            case sf::Key::LControl:
             case sf::Key::C:
                 player->toggleCrouch();
                 break;
