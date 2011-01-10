@@ -59,7 +59,7 @@ int main()
         
         // Draw FPS
         snprintf(buf, 10, "%.1f FPS", Framerate);
-        snprintf(buf, 10, "%f", player.Pos.Z);
+        //snprintf(buf, 10, "%f", player.Pos.Z);
         Text.SetText(buf);
         App.Draw(Text);
         

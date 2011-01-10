@@ -165,10 +165,11 @@ void Renderer::renderNode(Octree<Block*> terrain, float x, float y, float z, flo
         renderNode(terrain.children[5], x+subsize, y,         z+subsize, subsize);
         renderNode(terrain.children[6], x,         y+subsize, z+subsize, subsize);
         renderNode(terrain.children[7], x+subsize, y+subsize, z+subsize, subsize);
-    } else if (terrain.value->Type == 0) {
+    } else if (terrain.value->Type > 0) {
         // Collision check against player
-        if (player->Pos.X > x && player->Pos.Y > y && player->Pos.Z > z
-         && player->Pos.X <= x + size && player->Pos.Y <= y + size && player->Pos.Z <= z + size) {
+        if (player->Pos.X + player->Hitbox.X >= x && player->Pos.X <= x + size
+         && player->Pos.Y + player->Hitbox.Y >= y && player->Pos.Y <= y + size
+         && player->Pos.Z + player->Hitbox.Z >= z && player->Pos.Z <= z + size) {
             player->StandingOn = &terrain;
             player->SurfaceZ = z + size;
         }

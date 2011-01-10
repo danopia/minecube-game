@@ -9,7 +9,7 @@ class Entity
 public:
     Vector3 Pos; 
     Vector3 Rotation;
-    Vector3 Hitbox; // Width, height, depth
+    Vector3 Hitbox;
     virtual void Render();
     Entity(Vector3 initpos, Vector3 initrotation, Vector3 inithitbox) : Pos(initpos), Rotation(initrotation), Hitbox(inithitbox) {};
 };
