@@ -16,10 +16,6 @@ void InputHandler::handleEvent(sf::Event Event) {
             case sf::Key::Escape:
                 app->Close();
                 break;
-/*            // Spacebar : jump
-            case sf::Key::Space:
-                player->Jump();
-                break;*/
             // F5 : regenerate terrain
             case sf::Key::F5:
                 renderer->terrain.Regenerate();
