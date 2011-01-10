@@ -10,25 +10,25 @@ void InputHandler::handleEvent(sf::Event Event) {
     if (Event.Type == sf::Event::Closed)
         app->Close();
 
-    // Escape key : exit
-    if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Escape))
-        app->Close();
-
-    // Spacebar : jump
-    if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Space))
-        player->Jump();
-
-    // F5 : regenerate terrain
-    if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::F5))
-        renderer->terrain.Regenerate();
-    
-    // F11 : toggle fullscreen
-    if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::F11)) {
-        fullscreen = !fullscreen;
-        app->Create(sf::VideoMode(800, 600, 32), "MineCube", (fullscreen ? sf::Style::Fullscreen : sf::Style::Resize|sf::Style::Close));
-        
-        renderer->InitGraphics();
-        app->ShowMouseCursor(false);
+    if(Event.Type == sf::Event::KeyPressed) {
+        switch(Event.Key.Code) {
+            // Escape key : exit
+            case sf::Key::Escape:
+                app->Close();
+                break;
+            // Spacebar : jump
+            case sf::Key::Space:
+                player->Jump();
+                break;
+            // F5 : regenerate terrain
+            case sf::Key::F5:
+                renderer->terrain.Regenerate();
+                break;
+            // F11 : toggle fullscreen
+            case sf::Key::F11:
+                toggleFullscreen();
+                break;
+        }
     }
 
     // Resize event : adjust viewport
@@ -72,3 +72,10 @@ void InputHandler::handleEvents() {
     player->DoStep(ElapsedTime);
 }
 
+void InputHandler::toggleFullscreen() {
+    fullscreen = !fullscreen;
+    app->Create(sf::VideoMode(800, 600, 32), "MineCube", (fullscreen ? sf::Style::Fullscreen : sf::Style::Resize|sf::Style::Close));
+        
+    renderer->InitGraphics();
+    app->ShowMouseCursor(false);
+}

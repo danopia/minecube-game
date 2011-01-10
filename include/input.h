@@ -10,6 +10,7 @@ class InputHandler {
         InputHandler(sf::Window* Window, Player* Player, Renderer* Renderer);
         void handleEvent(sf::Event Event);
         void handleEvents();
+        void toggleFullscreen();
         
         sf::Window *app;
         sf::Clock Clock; // Track elapsed time for player movement
