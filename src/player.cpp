@@ -23,7 +23,6 @@ void Player::Forward(float amount)
     Pos.X += (xStep);// * cos((PI * Rotation.Y) / 180));
     Pos.Y += (yStep);// * cos((PI * Rotation.Y) / 180));
     //Z += zStep;
-std::cout << Speed << std::endl;
 }
 
 void Player::Strafe(float amount)
