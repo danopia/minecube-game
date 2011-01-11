@@ -1,6 +1,6 @@
 #ifndef _RENDERER_H_
     #define _RENDERER_H_
-#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include "player.h"
 #include "terrain.h"
 #include "block.h"
