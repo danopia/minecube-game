@@ -1,6 +1,8 @@
+// File adopted by Nick Markwell (duckinator)
+
 #include "input.h"
 
-InputHandler::InputHandler(sf::Window* Window, Player* Player, Renderer* Renderer) : app(Window), player(Player), renderer(Renderer) {
+InputHandler::InputHandler(sf::Window* Window, Player* Player, Renderer* Renderer) : app(Window), player(Player), renderer(Renderer), WasRunning(false), WasCrouching(false), WasCrawling(false) {
     app->ShowMouseCursor(false);
 }
 
@@ -48,18 +50,21 @@ void InputHandler::handleEvent(sf::Event Event) {
             case sf::Key::LControl:
             case sf::Key::C:
                 MovementTimer.Reset();
+                WasCrouching = player->Crouching;
                 player->Crouching = true;
                 break;
             
             // V : crawl
             case sf::Key::V:
                 MovementTimer.Reset();
+                WasCrawling = player->Crawling;
                 player->Crawling = true;
                 break;
             
             // Left Shift : run
             case sf::Key::LShift:
                 MovementTimer.Reset();
+                WasRunning = player->Running;
                 player->Running = true;
                 break;
             
@@ -72,7 +77,7 @@ void InputHandler::handleEvent(sf::Event Event) {
 
     if (Event.Type == sf::Event::KeyReleased) {
         time = MovementTimer.GetElapsedTime();
-        std::cout << "Crouch/Crawl/Run time: " << time << std::endl;
+
         switch(Event.Key.Code) {
             // W : forward
             case sf::Key::W:
@@ -94,26 +99,26 @@ void InputHandler::handleEvent(sf::Event Event) {
             // Left Control, C : crouch
             case sf::Key::LControl:
             case sf::Key::C:
-                if (time > 0.2)
+                if (time > 0.1)
                     player->Crouching = false;
                 else
-                    player->toggleCrouch();
+                    player->Crouching = !WasCrouching;
                 break;
             
             // V : crawl
             case sf::Key::V:
-                if (time > 0.2)
+                if (time > 0.1)
                     player->Crawling = false;
                 else
-                    player->toggleCrawl();
+                    player->Crawling = !WasCrawling;
                 break;
             
             // Left Shift : run
             case sf::Key::LShift:
-                if (time > 0.2)
+                if (time > 0.1)
                     player->Running = false;
                 else
-                    player->toggleRun();
+                    player->Running = !WasRunning;
         }
     }
 

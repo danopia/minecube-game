@@ -12,6 +12,9 @@ class InputHandler {
         void handleEvents();
         void toggleFullscreen();
         
+        // Booleans for pre-keypress movement
+        bool WasRunning, WasCrouching, WasCrawling;
+        
         sf::Window *app;
         sf::Clock Clock; // Track elapsed time for player movement
         sf::Clock MovementTimer; // Track elapsed time for crouching, crawling, running
