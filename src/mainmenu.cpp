@@ -89,15 +89,9 @@ void MainMenu::Loop() {
                 ItemSelected(Items[Current]);
         }
         
-        // Place grass
+        // Set up the stage
         app->Draw(Sprite);
-        
-        Title.SetColor(sf::Color(255, 255, 255, 255));
-        app->Draw(Title);
-        
         drawBackground();
-        
-        Title.SetColor(sf::Color(255, 255, 255, 63));
         app->Draw(Title);
         
         Button.SetPosition(app->GetWidth() / 2, 150);
