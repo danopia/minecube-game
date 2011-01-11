@@ -147,8 +147,6 @@ void Player::DoStep(float amount)
         Speed = WALK_SPEED;
     }
 
-    // Yes, I know the following is ugly... But it's more efficient
-    // than having 8 function calls where 4 suffice
     SinStep = Speed * sin((PI * Rotation.Z) / 180) * amount;
     CosStep = Speed * cos((PI * Rotation.Z) / 180) * amount;
     
@@ -168,7 +166,7 @@ void Player::DoStep(float amount)
         Pos.Y += SinStep * yStepOffset;
     } else if (Right) {
         Pos.X -= -CosStep * xStepOffset;
-        Pos.Y += SinStep * yStepOffset;
+        Pos.Y += -SinStep * yStepOffset;
     }
 
     
