@@ -6,11 +6,13 @@ InputHandler::InputHandler(sf::Window* Window, Player* Player, Renderer* Rendere
 
 bool fullscreen = false;
 void InputHandler::handleEvent(sf::Event Event) {
+    float time;
+
     // Close window : exit
     if (Event.Type == sf::Event::Closed)
         app->Close();
 
-    if(Event.Type == sf::Event::KeyPressed) {
+    if (Event.Type == sf::Event::KeyPressed) {
         switch(Event.Key.Code) {
             // Escape key : exit
             case sf::Key::Escape:
@@ -24,19 +26,94 @@ void InputHandler::handleEvent(sf::Event Event) {
             case sf::Key::F11:
                 toggleFullscreen();
                 break;
+                
+            // W : forward
+            case sf::Key::W:
+                player->Forward = true;
+                break;
+            // S : backward
+            case sf::Key::S:
+                player->Backward = true;
+                break;
+            // A : left
+            case sf::Key::A:
+                player->Left = true;
+                break;
+            // D : right
+            case sf::Key::D:
+                player->Right = true;
+                break;
+            
             // Left Control, C : crouch
             case sf::Key::LControl:
             case sf::Key::C:
-                player->toggleCrouch();
+                MovementTimer.Reset();
+                player->Crouching = true;
                 break;
-            // V : crawl (crawl, it's close to C and it looks like an arrow ;P)
+            
+            // V : crawl
             case sf::Key::V:
-                player->toggleCrawl();
+                MovementTimer.Reset();
+                player->Crawling = true;
                 break;
+            
             // Left Shift : run
             case sf::Key::LShift:
-                player->toggleRun();
+                MovementTimer.Reset();
+                player->Running = true;
                 break;
+            
+            // Space : jump
+            case sf::Key::Space:
+                player->Jump();
+                break;
+        }
+    }
+
+    if (Event.Type == sf::Event::KeyReleased) {
+        time = MovementTimer.GetElapsedTime();
+        std::cout << "Crouch/Crawl/Run time: " << time << std::endl;
+        switch(Event.Key.Code) {
+            // W : forward
+            case sf::Key::W:
+                player->Forward = false;
+                break;
+            // S : backward
+            case sf::Key::S:
+                player->Backward = false;
+                break;
+            // A : left
+            case sf::Key::A:
+                player->Left = false;
+                break;
+            // D : right
+            case sf::Key::D:
+                player->Right = false;
+                break;
+            
+            // Left Control, C : crouch
+            case sf::Key::LControl:
+            case sf::Key::C:
+                if (time > 0.2)
+                    player->Crouching = false;
+                else
+                    player->toggleCrouch();
+                break;
+            
+            // V : crawl
+            case sf::Key::V:
+                if (time > 0.2)
+                    player->Crawling = false;
+                else
+                    player->toggleCrawl();
+                break;
+            
+            // Left Shift : run
+            case sf::Key::LShift:
+                if (time > 0.2)
+                    player->Running = false;
+                else
+                    player->toggleRun();
         }
     }
 
@@ -56,13 +133,13 @@ void InputHandler::handleEvents() {
     Clock.Reset();
     
     // Handle held keys
-    if (Input.IsKeyDown(sf::Key::S))     player->Forward(-ElapsedTime);
+/*    if (Input.IsKeyDown(sf::Key::S))     player->Forward(-ElapsedTime);
     if (Input.IsKeyDown(sf::Key::W))     player->Forward( ElapsedTime);
     if (Input.IsKeyDown(sf::Key::D))     player->Strafe(-ElapsedTime);
-    if (Input.IsKeyDown(sf::Key::A))     player->Strafe( ElapsedTime);
+    if (Input.IsKeyDown(sf::Key::A))     player->Strafe( ElapsedTime);*/
 //    if (Input.IsKeyDown(sf::Key::Z))     player->Speed++;
 //    if (Input.IsKeyDown(sf::Key::X))     player->Speed--;
-    if (Input.IsKeyDown(sf::Key::Space)) player->Jump();
+//    if (Input.IsKeyDown(sf::Key::Space)) player->Jump();
     //if (Input.IsKeyDown(sf::Key::C))     player->toggleCrouch();
         
     // Handle other events

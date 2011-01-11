@@ -12,7 +12,12 @@ class Player : public Entity
 {
 public:
     float Speed;
+    bool Forward;
+    bool Backward;
+    bool Left;
+    bool Right;
     bool Moving;
+    bool Walking;
     bool Crouching;
     bool Crawling;
     bool Running;
@@ -25,10 +30,10 @@ public:
     Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name);
     
     // Moves the player around
-    void Forward(float amount);
-    void Strafe(float amount);
+    /*void Forward(float amount);
+    void Strafe(float amount);*/
     void ChangeRotation(float deltaYrot, float deltaZrot);
-    void Jump();          // Begins a jump
+    bool Jump();          // Begins a jump
     
     // Speed/height adjustment
     void Walk();          // Stands up, walks at default speed
