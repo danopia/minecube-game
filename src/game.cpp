@@ -15,7 +15,8 @@ void Game::Loop() {
     float Framerate;
     
     sf::String Text;
-    Text.SetFont(sf::Font::GetDefaultFont());
+    Text.SetFont(renderer.Font);
+    Text.SetSize(renderer.Font.GetCharacterSize());
     
     sf::Shape Hair1 = sf::Shape::Line(-15, 0, 15, 0, 2.5, sf::Color(255, 255, 255, 127));
     sf::Shape Hair2 = sf::Shape::Line(0, -15, 0, 15, 2.5, sf::Color(255, 255, 255, 127));

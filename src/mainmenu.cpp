@@ -26,16 +26,21 @@ void MainMenu::Loop() {
     
     int Current = 0;
     
-    sf::String Title("MineCube");
-    Title.SetFont(sf::Font::GetDefaultFont());
-    Title.SetSize(50);
-    Title.SetPosition((app->GetWidth() / 2) - (Title.GetRect().GetWidth() / 2), 50);
+    sf::Font TitleFnt;
+    TitleFnt.LoadFromFile("data/Inconsolata.ttf", 90);
+    
+    sf::String Title("MineCube", TitleFnt, 90);
+    Title.SetPosition((app->GetWidth() / 2) - (Title.GetRect().GetWidth() / 2), 30);
 
 
     sf::Shape Button = sf::Shape::Rectangle(-200, -20, 200, 20, sf::Color(127.f, 127.f, 127.f), 2, sf::Color::Black);
     
+    sf::Font ButtonFnt;
+    ButtonFnt.LoadFromFile("data/Inconsolata.ttf", 30);
+    
     sf::String Label;
-    Label.SetFont(sf::Font::GetDefaultFont());
+    Label.SetFont(ButtonFnt);
+    Label.SetSize(30);
     
    
     // Load texture
@@ -116,7 +121,7 @@ void MainMenu::Loop() {
                 Button.SetColor(sf::Color(127.f, 127.f, 127.f, 180.f));
         
             Label.SetText(Items[i]);
-            Label.SetPosition(Button.GetPosition().x - (Label.GetRect().GetWidth() / 2), (Button.GetPosition().y - (Label.GetRect().GetHeight() / 2)));
+            Label.SetPosition(Button.GetPosition().x - (Label.GetRect().GetWidth() / 2), Button.GetPosition().y - 20);
             
             app->Draw(Button);
             app->Draw(Label);
@@ -199,5 +204,7 @@ void MainMenu::drawBackground() {
     glEnd();
     
     glDisable(GL_DEPTH_TEST);
+    
+    glLoadIdentity();
 }
 

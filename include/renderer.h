@@ -15,6 +15,8 @@ class Renderer {
         
         Terrain terrain;
         Player *player;
+        
+        sf::Font Font;
 };
 
 #endif
