@@ -138,6 +138,7 @@ void MainMenu::Loop() {
 void startGame(sf::RenderWindow* app) {
     Game game(app);
     game.Loop();
+    app->ShowMouseCursor(true); // MainMenu needs a way to re-setup the graphics
 }
 
 void MainMenu::ItemSelected(std::string Label) {
