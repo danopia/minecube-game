@@ -58,3 +58,51 @@ Octree<Block*> Terrain::makeTerrainFrom(int level)
     return terrain;
 }
 
+void SerializeOctree(std::ofstream *out, Octree<Block*> octree) {
+    if (octree.hasChildren) {
+        char bitfield = 0;
+        
+        for (int i = 0; i < 8; i++)
+            if (octree.children[i].hasChildren)
+                bitfield |= (1 << i);
+        
+        out->write(&bitfield, 1);
+        
+        for (int i = 0; i < 8; i++)
+            SerializeOctree(out, octree.children[i]);
+    } else {
+        out->write(&octree.value->Type, 1);
+    }
+}
+
+void Terrain::Serialize() {
+    std::ofstream out("terrain.bin", std::ios::binary);
+    
+    out.write("MCworld-0\n", 10); // Magic number
+    
+    out.write((char*)&Maxlevel, sizeof(Maxlevel));
+    out.write((char*)&Minlevel, sizeof(Minlevel));
+    out.write((char*)&sizeX, sizeof(sizeX));
+    out.write((char*)&sizeY, sizeof(sizeY));
+    out.write((char*)&sizeZ, sizeof(sizeZ));
+    out.write((char*)&chunkSize, sizeof(chunkSize));
+    
+    int chunks = GeneratedTerrain.size();
+    out.write((char*)&chunks, sizeof(chunks));
+    
+    std::map<Vector3, Octree<Block*> >::iterator Iter;
+    for (Iter = GeneratedTerrain.begin(); Iter != GeneratedTerrain.end(); ++Iter) {
+        out.write((char*)&Iter->first.X, sizeof(Iter->first.X));
+        out.write((char*)&Iter->first.Y, sizeof(Iter->first.Y));
+        out.write((char*)&Iter->first.Z, sizeof(Iter->first.Z));
+        
+        out.write((char*)&Iter->second.hasChildren, sizeof(Iter->second.hasChildren));
+        
+        SerializeOctree(&out, Iter->second);
+    }
+
+    out.close();
+}
+
+//    ifstream in("binary.txt", ios::binary); 
+//    in.read((char*)&read, sizeof(read)); 

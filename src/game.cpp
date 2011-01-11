@@ -1,6 +1,8 @@
 #include "game.h"
 
-Game::Game(sf::RenderWindow* app) : app(app), player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(5.f, 25.f, 60.f), "Foo"), terrain(5, 0, 1,1,1, 50), renderer(terrain, &player), inputHandler(app, &player, &renderer) {}
+Game::Game(sf::RenderWindow* app) : app(app), player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(5.f, 25.f, 60.f), "Foo"), terrain(5, 0, 1,1,1, 50), renderer(terrain, &player), inputHandler(app, &player, &renderer) {
+    terrain.Serialize();
+}
 
 void Game::Loop() {
     // Set some stuff
