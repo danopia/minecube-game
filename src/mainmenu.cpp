@@ -138,13 +138,13 @@ void MainMenu::Loop() {
 void startGame(sf::RenderWindow* app) {
     Game game(app);
     game.Loop();
-    app->ShowMouseCursor(true); // MainMenu needs a way to re-setup the graphics
 }
 
 void MainMenu::ItemSelected(std::string Label) {
-    if (Label == "Singleplayer")
+    if (Label == "Singleplayer") {
         startGame(app);
-    else if (Label == "Exit")
+        app->ShowMouseCursor(true); // MainMenu needs a way to re-setup the graphics
+    } else if (Label == "Exit")
         app->Close();
 }
 
