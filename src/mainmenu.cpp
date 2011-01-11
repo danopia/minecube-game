@@ -27,6 +27,7 @@ void MainMenu::Loop() {
     
     sf::String Title("MineCube");
     Title.SetFont(sf::Font::GetDefaultFont());
+    Title.SetSize(50);
     Title.SetPosition((app->GetWidth() / 2) - (Title.GetRect().GetWidth() / 2), 50);
 
 
@@ -88,8 +89,15 @@ void MainMenu::Loop() {
                 ItemSelected(Items[Current]);
         }
         
+        // Place grass
+        app->Draw(Sprite);
+        
+        Title.SetColor(sf::Color(255, 255, 255, 255));
+        app->Draw(Title);
+        
         drawBackground();
         
+        Title.SetColor(sf::Color(255, 255, 255, 63));
         app->Draw(Title);
         
         Button.SetPosition(app->GetWidth() / 2, 150);
@@ -140,9 +148,6 @@ void MainMenu::ItemSelected(std::string Label) {
 }
 
 void MainMenu::drawBackground() {
-    // Place grass
-    app->Draw(Sprite);
-
     // Enable Z-buffer read and write
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
