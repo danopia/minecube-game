@@ -65,8 +65,6 @@ void Player::DoStep(float amount)
           SinStep_Pos, CosStep_Pos,
           SinStep_Neg, CosStep_Neg;
     
-    //Pos.Z = SurfaceZ;
-    //Hitbox.Z = 2;
     Speed = 0;
     
     if (Crouching && !WasCrouching) {
