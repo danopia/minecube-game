@@ -14,31 +14,6 @@ Player::Player() : Speed(0), Forward(false), Backward(false), Left(false), Right
 
 Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), Forward(false), Backward(false), Left(false), Right(false), Moving(false), Running(false), Walking(false), Crouching(false), Crawling(false), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
 
-/*void Player::Forward(float amount)
-{
-    Moving = true;
-    float xStep = Speed * sin((PI * Rotation.Z) / 180) * amount;
-    float yStep = Speed * cos((PI * Rotation.Z) / 180) * amount;
-    //float zStep = -Speed * sin((PI * Rotation.Y) / 180) * amount;
-    Pos.X += (xStep);// * cos((PI * Rotation.Y) / 180));
-    Pos.Y += (yStep);// * cos((PI * Rotation.Y) / 180));
-    //Z += zStep;
-}
-
-void Player::Strafe(float amount)
-{
-    float yStep = Speed * sin((PI * Rotation.Z) / 180) * amount;
-    float xStep = Speed * cos((PI * Rotation.Z) / 180) * amount;
-    if(Moving == true)
-    {
-        xStep *= 0.707106;
-        yStep *= 0.707106;
-    }
-
-    Pos.X -= xStep;
-    Pos.Y += yStep;
-}*/
-
 void Player::ChangeRotation(float deltaYRotation, float deltaZRotation)
 {
     Rotation.Y += deltaYRotation;
@@ -65,54 +40,18 @@ bool Player::Jump()
     return false;
 }
 
-/*void Player::Walk()
-{
-    Speed = WALK_SPEED;
-    Walking   = true;
-    Crouching = false;
-    Crawling  = false;
-    Running   = false;
-}
-
-void Player::Run()
-{
-    Speed = RUN_SPEED;
-    Walking   = false;
-    Crouching = false;
-    Crawling  = false;
-    Running   = true;
-}
-*/
 bool Player::toggleRun()
 {
     Running = !Running;
     return Running;
 }
-/*
-void Player::Crouch()
-{
-    Speed = CROUCH_SPEED;
-    Walking   = false;
-    Crouching = true;
-    Crawling  = false;
-    Running   = false;
-}
-*/
+
 bool Player::toggleCrouch()
 {
     Crouching = !Crouching;
     return Crouching;
 }
-/*
-void Player::Crawl()
-{
-    Speed = CRAWL_SPEED;
-    Walking   = false;
-    Crouching = false;
-    Crawling  = true;
-    Running    = false;
-}
-*/
+
 bool Player::toggleCrawl()
 {
     Crawling = !Crawling;
@@ -126,7 +65,6 @@ void Player::DoStep(float amount)
           SinStep_Pos, CosStep_Pos,
           SinStep_Neg, CosStep_Neg;
     
-    //GravitySpeed = 0.f;
     Pos.Z = SurfaceZ;
     Hitbox.Z = 2;
     Speed = 0;
@@ -147,8 +85,6 @@ void Player::DoStep(float amount)
         Speed = WALK_SPEED;
     }
 
-    // Yes, I know the following is ugly... But it's more efficient
-    // than having 8 function calls where 4 suffice
     SinStep = Speed * sin((PI * Rotation.Z) / 180) * amount;
     CosStep = Speed * cos((PI * Rotation.Z) / 180) * amount;
     
@@ -167,8 +103,8 @@ void Player::DoStep(float amount)
         Pos.X -= CosStep * xStepOffset;
         Pos.Y += SinStep * yStepOffset;
     } else if (Right) {
-        Pos.X -= -CosStep * xStepOffset;
-        Pos.Y += SinStep * yStepOffset;
+        Pos.X += CosStep * xStepOffset;
+        Pos.Y -= SinStep * yStepOffset;
     }
 
     
