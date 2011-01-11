@@ -8,8 +8,8 @@ Debug/
 *.exe
 *.lib
 *.dll
-client
-server
+/client
+/server
 *.swp
 *~
 terrain.bin
