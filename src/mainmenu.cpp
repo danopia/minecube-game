@@ -108,9 +108,9 @@ void MainMenu::Loop() {
             }
             
             if (i == Current)
-                Button.SetColor(sf::Color(220.f, 220.f, 220.f));
+                Button.SetColor(sf::Color(220.f, 220.f, 220.f, 180.f));
             else
-                Button.SetColor(sf::Color(127.f, 127.f, 127.f));
+                Button.SetColor(sf::Color(127.f, 127.f, 127.f, 180.f));
         
             Label.SetText(Items[i]);
             Label.SetPosition(Button.GetPosition().x - (Label.GetRect().GetWidth() / 2), (Button.GetPosition().y - (Label.GetRect().GetHeight() / 2)));
