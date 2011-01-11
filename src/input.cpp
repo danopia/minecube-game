@@ -2,7 +2,7 @@
 
 #include "input.h"
 
-InputHandler::InputHandler(sf::Window* Window, Player* Player, Renderer* Renderer) : app(Window), player(Player), renderer(Renderer), WasRunning(false), WasCrouching(false), WasCrawling(false) {
+InputHandler::InputHandler(sf::Window* Window, Player* Player, Renderer* Renderer) : app(Window), player(Player), renderer(Renderer) {
     app->ShowMouseCursor(false);
 }
 
@@ -70,7 +70,7 @@ void InputHandler::handleEvent(sf::Event Event) {
             
             // Space : jump
             case sf::Key::Space:
-                player->Jump();
+                player->Jumping = true;
                 break;
         }
     }
@@ -119,6 +119,11 @@ void InputHandler::handleEvent(sf::Event Event) {
                     player->Running = false;
                 else
                     player->Running = !WasRunning;
+
+            // Space : jump
+            case sf::Key::Space:
+                player->Jumping = false;
+                break;
         }
     }
 

@@ -10,9 +10,9 @@ const double WALK_SPEED    = 5.0;
 const double CROUCH_SPEED  = 3.0;
 const double CRAWL_SPEED   = 2.0;
 
-Player::Player() : Speed(0), Forward(false), Backward(false), Left(false), Right(false), Moving(false), Running(false), Walking(false), Crouching(false), Crawling(false), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(Vector3(0,0,0), Vector3(0,0,0), Vector3(0,0,0)) {};
+Player::Player() : Speed(0), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(Vector3(0,0,0), Vector3(0,0,0), Vector3(0,0,0)) {};
 
-Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), Forward(false), Backward(false), Left(false), Right(false), Moving(false), Running(false), Walking(false), Crouching(false), Crawling(false), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
+Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
 
 void Player::ChangeRotation(float deltaYRotation, float deltaZRotation)
 {
@@ -65,30 +65,45 @@ void Player::DoStep(float amount)
           SinStep_Pos, CosStep_Pos,
           SinStep_Neg, CosStep_Neg;
     
-    Pos.Z = SurfaceZ;
-    Hitbox.Z = 2;
+    //Pos.Z = SurfaceZ;
+    //Hitbox.Z = 2;
     Speed = 0;
     
-    if (Forward && Backward) {
-        // Stay still if both forward + backward
-    } else if (Running) {
-        Speed = RUN_SPEED;
-    } else if (Crouching) {
-        Speed = CROUCH_SPEED;
-        Pos.Z -= CROUCH_OFFSET;
+    if (Crouching && !WasCrouching) {
+        Pos.Z    -= CROUCH_OFFSET;
         Hitbox.Z -= CROUCH_OFFSET;
-    } else if (Crawling) {
-        Speed = CRAWL_SPEED;
-        Pos.Z -= CRAWL_OFFSET;
-        Hitbox.Z -= CRAWL_OFFSET;
-    } else if (Forward || Backward || Left || Right)  {
-        Speed = WALK_SPEED;
+        WasCrouching = true;
+    } else if (!Crouching && WasCrouching) {
+        Pos.Z    += CROUCH_OFFSET;
+        Hitbox.Z += CROUCH_OFFSET;
+        WasCrouching = false;
     }
+    
+    if (Crawling && !WasCrawling) {
+        Pos.Z    -= CRAWL_OFFSET;
+        Hitbox.Z -= CRAWL_OFFSET;
+        WasCrawling = true;
+    } else if (!Crawling && WasCrawling) {
+        Pos.Z    += CRAWL_OFFSET;
+        Hitbox.Z += CRAWL_OFFSET;
+        WasCrawling = false;
+    }
+    
+    if (Running || (Forward && Left && Right))
+        Speed = RUN_SPEED;
+    else if (Crouching)
+        Speed = CROUCH_SPEED;
+    else if (Crawling)
+        Speed = CRAWL_SPEED;
+    else if (Forward || Backward || Left || Right) 
+        Speed = WALK_SPEED;
 
     SinStep = Speed * sin((PI * Rotation.Z) / 180) * amount;
     CosStep = Speed * cos((PI * Rotation.Z) / 180) * amount;
     
-    if (Forward) {
+    if (Forward && Backward) {
+        // Ignore if both forward + backward
+    } else if (Forward) {
         Pos.X += SinStep;
         Pos.Y += CosStep;
     } else if (Backward) {
@@ -99,14 +114,18 @@ void Player::DoStep(float amount)
         xStepOffset = 0.707106;
         yStepOffset = 0.707106;
     }
-    if (Left) {
+    if (Left && Right) {
+        // Ignore if both left + right
+    } else if (Left) {
         Pos.X -= CosStep * xStepOffset;
         Pos.Y += SinStep * yStepOffset;
     } else if (Right) {
         Pos.X += CosStep * xStepOffset;
         Pos.Y -= SinStep * yStepOffset;
     }
-
+    
+    if (Jumping)
+        Jump();
     
     if (!StandingOn) {
         GravitySpeed -= 9.8f * amount;

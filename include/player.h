@@ -16,11 +16,11 @@ public:
     bool Backward;
     bool Left;
     bool Right;
-    bool Moving;
     bool Walking;
     bool Crouching;
     bool Crawling;
     bool Running;
+    bool Jumping;
     std::string Name;
     Octree<Block*> *StandingOn;
     float SurfaceZ;
@@ -28,6 +28,9 @@ public:
     
     Player();
     Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name);
+    
+    // Booleans for helping adjust camera height
+    bool WasRunning, WasCrouching, WasCrawling;
     
     // Moves the player around
     /*void Forward(float amount);
