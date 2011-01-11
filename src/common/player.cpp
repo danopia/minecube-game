@@ -1,4 +1,4 @@
-#include "player.h"
+#include "common/player.h"
 #include <cmath>
 
 const double PI = 3.14159265358979323846264338329750288419716939937510582;

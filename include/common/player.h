@@ -3,10 +3,10 @@
 #define PLAYER_H
 #include <string>
 
-#include "octree.h"
-#include "block.h"
-#include "entity.h"
-#include "vector3.h"
+#include "common/octree.h"
+#include "common/block.h"
+#include "common/entity.h"
+#include "common/vector3.h"
 
 class Player : public Entity
 {

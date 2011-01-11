@@ -2,9 +2,9 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
-#include "octree.h"
-#include "vector3.h"
-#include "block.h"
+#include "common/octree.h"
+#include "common/vector3.h"
+#include "common/block.h"
 
 #include <map>
 #include <iostream>

@@ -2,7 +2,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "vector3.h"
+#include "common/vector3.h"
 
 class Entity
 {

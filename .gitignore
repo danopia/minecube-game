@@ -8,7 +8,8 @@ Debug/
 *.exe
 *.lib
 *.dll
-minecube
+client
+server
 *.swp
 *~
 terrain.bin

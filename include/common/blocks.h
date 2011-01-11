@@ -2,7 +2,7 @@
 #ifndef BLOCKS_H
 #define BLOCKS_H
 
-#include "block.h"
+#include "common/block.h"
 #include <map>
 
 class AllBlocks
