@@ -81,7 +81,7 @@ GLdouble texcoords[64] = {
     0.125, 0.125,
 };
 
-Renderer::Renderer(Terrain initterrain, Player* player) : terrain(initterrain), player(player) {
+Renderer::Renderer(Terrain *initterrain, Player *player) : terrain(initterrain), player(player) {
     InitGraphics();
 }
 
@@ -209,10 +209,10 @@ void Renderer::render() {
     
     // Loop through chunks and render them
     float i, j, k;
-    for(i = 0; i < terrain.sizeX; i++)
-        for(j = 0; j < terrain.sizeY; j++)
-            for(k = 0; k < terrain.sizeZ; k++)
-                renderNode(terrain.GeneratedTerrain[Vector3(i,j,k)], i*terrain.chunkSize, j*terrain.chunkSize, k*terrain.chunkSize, terrain.chunkSize);
+    for(i = 0; i < terrain->sizeX; i++)
+        for(j = 0; j < terrain->sizeY; j++)
+            for(k = 0; k < terrain->sizeZ; k++)
+                renderNode(terrain->GeneratedTerrain[Vector3(i,j,k)], i*terrain->chunkSize, j*terrain->chunkSize, k*terrain->chunkSize, terrain->chunkSize);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     //glDisableClientState(GL_NORMAL_ARRAY);

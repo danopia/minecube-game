@@ -2,9 +2,9 @@
 #include <SFML/System.hpp>
 #include <iostream>
 
-Terrain::Terrain() : Maxlevel(5), Minlevel(0), sizeX(1), sizeY(1), sizeZ(1), chunkSize(50) { Regenerate(); } /* Some sort of default values. TODO Discuss and decide whether these should be different */
+Terrain::Terrain() : Maxlevel(5), Minlevel(0), sizeX(1), sizeY(1), sizeZ(1), chunkSize(50) {} /* Some sort of default values. TODO Discuss and decide whether these should be different */
 
-Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ, int initChunkSize) : Maxlevel(maxlevel), Minlevel(minlevel), sizeX(initsizeX), sizeY(initsizeY), sizeZ(initsizeZ), chunkSize(initChunkSize) { Regenerate(); }
+Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ, int initChunkSize) : Maxlevel(maxlevel), Minlevel(minlevel), sizeX(initsizeX), sizeY(initsizeY), sizeZ(initsizeZ), chunkSize(initChunkSize) {}
 
 void Terrain::Regenerate()
 {
@@ -35,7 +35,7 @@ Octree<Block*> Terrain::makeTerrainFrom(int level)
                 // TODO: Change to make a random block type, not only dirt or air
                 bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
                 if (type)
-                    blocks.push_back(Octree<Block*>(new DirtBlock()));
+                    blocks.push_back(Octree<Block*>(new GrassBlock()));
                 else
                     blocks.push_back(Octree<Block*>(new AirBlock()));
             } 
@@ -49,7 +49,7 @@ Octree<Block*> Terrain::makeTerrainFrom(int level)
             // TODO: Same as above
             bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
             if (type)
-                    blocks.push_back(Octree<Block*>(new DirtBlock()));
+                    blocks.push_back(Octree<Block*>(new GrassBlock()));
             else
                 blocks.push_back(Octree<Block*>(new AirBlock()));
         }
@@ -57,6 +57,8 @@ Octree<Block*> Terrain::makeTerrainFrom(int level)
     Octree<Block*> terrain(blocks);
     return terrain;
 }
+
+
 
 void SerializeOctree(std::ofstream *out, Octree<Block*> octree) {
     if (octree.hasChildren) {
@@ -75,8 +77,8 @@ void SerializeOctree(std::ofstream *out, Octree<Block*> octree) {
     }
 }
 
-void Terrain::Serialize() {
-    std::ofstream out("terrain.bin", std::ios::binary);
+void Terrain::SaveToFile(char* filename) {
+    std::ofstream out(filename, std::ios::binary);
     
     out.write("MCworld-0\n", 10); // Magic number
     
@@ -104,5 +106,62 @@ void Terrain::Serialize() {
     out.close();
 }
 
-//    ifstream in("binary.txt", ios::binary); 
-//    in.read((char*)&read, sizeof(read)); 
+
+
+Octree<Block*> UnserializeOctree(std::ifstream *in, bool parent) {
+    if (parent) {
+        char bitfield = 0;
+        in->read(&bitfield, 1);
+        
+        std::vector<Octree<Block*> >blocks;
+        for (int i = 0; i < 8; i++) {
+            bool parent = (bitfield & (1 << i)) > 0;
+            blocks.push_back(UnserializeOctree(in, parent));
+        }
+        
+        return Octree<Block*>(blocks);
+        
+    } else {
+        char type = 0;
+        in->read(&type, 1);
+        
+        if (type == 3)
+            return Octree<Block*>(new GrassBlock());
+        else
+            return Octree<Block*>(new AirBlock());
+    }
+}
+
+void Terrain::LoadFromFile(char* filename) {
+    std::ifstream in(filename, std::ios::binary);
+    
+    char buf[11];
+    in.read(buf, 10); // Magic number
+    if (buf != "MCworld-0\n") int MUAHAHAHAHAHAHAHAHA = 1/0;
+    
+    in.read((char*)&Maxlevel, sizeof(Maxlevel));
+    in.read((char*)&Minlevel, sizeof(Minlevel));
+    in.read((char*)&sizeX, sizeof(sizeX));
+    in.read((char*)&sizeY, sizeof(sizeY));
+    in.read((char*)&sizeZ, sizeof(sizeZ));
+    in.read((char*)&chunkSize, sizeof(chunkSize));
+    
+    int chunks = 0;
+    in.read((char*)&chunks, sizeof(chunks));
+    
+    GeneratedTerrain = std::map<Vector3, Octree<Block*> >();
+    for (int i = 0; i < chunks; i++) {
+        Vector3 coord;
+        in.read((char*)&coord.X, sizeof(coord.X));
+        in.read((char*)&coord.Y, sizeof(coord.Y));
+        in.read((char*)&coord.Z, sizeof(coord.Z));
+        
+        char parent;
+        in.read(&parent, 1);
+        
+        GeneratedTerrain[coord] = UnserializeOctree(&in, parent == 1);
+    }
+
+    in.close();
+}
+

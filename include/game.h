@@ -30,6 +30,12 @@ class Game
         InputHandler inputHandler;
         
         bool Running;
+        char *file;
+        
+        void Generate();
+        void Load(char* filename);
+        void Save();
+        void Save(char* filename);
 };
 
 #endif

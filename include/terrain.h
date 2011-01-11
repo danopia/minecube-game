@@ -24,7 +24,8 @@ class Terrain
         std::map<Vector3, Octree<Block*> > GeneratedTerrain;
         void Regenerate();
         
-        void Serialize();
+        void SaveToFile(char* filename);
+        void LoadFromFile(char* filename);
 
     private:
         Octree<Block*> makeTerrainFrom(int level); //Generates the terrain from the specified level downwards. Almost always 0.

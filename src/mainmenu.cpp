@@ -19,7 +19,8 @@ void MainMenu::Loop() {
     app->ShowMouseCursor(true);
     
     std::vector<std::string> Items;
-    Items.push_back("Singleplayer");
+    Items.push_back("New game");
+    Items.push_back("Continue");
     Items.push_back("Multiplayer");
     Items.push_back("Options");
     Items.push_back("Exit");
@@ -135,17 +136,29 @@ void MainMenu::Loop() {
 }
 
 // Create TEH GAME
-void startGame(sf::RenderWindow* app) {
+void startGame(sf::RenderWindow* app, bool loadprevious) {
     Game game(app);
+    
+    if (loadprevious)
+        game.Load("terrain.bin");
+    else {
+        game.Generate();
+        game.Save("terrain.bin");
+    }
+    
     game.Loop();
+    game.Save();
 }
 
 void MainMenu::ItemSelected(std::string Label) {
-    if (Label == "Singleplayer") {
-        startGame(app);
-        app->ShowMouseCursor(true); // MainMenu needs a way to re-setup the graphics
-    } else if (Label == "Exit")
+    if (Label == "New game")
+        startGame(app, false);
+    else if (Label == "Continue")
+        startGame(app, true);
+    else if (Label == "Exit")
         app->Close();
+    
+    app->ShowMouseCursor(true); // MainMenu needs a way to re-setup the graphics
 }
 
 void MainMenu::drawBackground() {

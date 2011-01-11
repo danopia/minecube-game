@@ -7,13 +7,13 @@
 
 class Renderer {
     public:
-        Renderer(Terrain initterrain, Player* player);
+        Renderer(Terrain *initterrain, Player *player);
         void InitGraphics();
         void render();
         void renderNode(Octree<Block*> terrain, float x, float y, float z, float size);
         void drawCube(Block *block, float x, float y, float z, float length);
         
-        Terrain terrain;
+        Terrain *terrain;
         Player *player;
         
         sf::Font Font;

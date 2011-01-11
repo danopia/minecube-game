@@ -23,7 +23,7 @@ void InputHandler::handleEvent(sf::Event Event) {
                 break;
             // F5 : regenerate terrain
             case sf::Key::F5:
-                renderer->terrain.Regenerate();
+                renderer->terrain->Regenerate();
                 break;
             // F11 : toggle fullscreen
             case sf::Key::F11:
