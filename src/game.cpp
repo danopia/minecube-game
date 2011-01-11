@@ -5,6 +5,8 @@ Game::Game(sf::RenderWindow* app) : app(app), player(5.f, Vector3(0.f, 0.f, 90.f
 }
 
 void Game::Loop() {
+    Running = true;
+    
     // Set some stuff
     app->PreserveOpenGLStates(true);
     app->UseVerticalSync(false);
@@ -22,12 +24,13 @@ void Game::Loop() {
     Hair2.SetPosition(Hair1.GetPosition());
 
     // Start game loop
-    while (app->IsOpened())
+    while (app->IsOpened() && Running)
     {
         Framerate = 1.f / app->GetFrameTime();
         
         // Handle mouse and keyboard stuff
-        inputHandler.handleEvents();
+        if (!inputHandler.handleEvents())
+            Running = false;
 
         // Set the active window before using OpenGL commands
         // It's useless here because active window is always the same,

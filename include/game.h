@@ -28,6 +28,8 @@ class Game
         Terrain terrain;
         Renderer renderer;
         InputHandler inputHandler;
+        
+        bool Running;
 };
 
 #endif

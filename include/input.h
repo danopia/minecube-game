@@ -9,7 +9,7 @@ class InputHandler {
     public:
         InputHandler(sf::Window* Window, Player* Player, Renderer* Renderer);
         void handleEvent(sf::Event Event);
-        void handleEvents();
+        bool handleEvents();
         void toggleFullscreen();
         
         // Booleans for pre-keypress movement

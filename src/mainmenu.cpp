@@ -16,6 +16,7 @@ void MainMenu::Loop() {
     // Set some stuff
     app->PreserveOpenGLStates(false);
     app->UseVerticalSync(true);
+    app->ShowMouseCursor(true);
     
     std::vector<std::string> Items;
     Items.push_back("Singleplayer");

@@ -6,6 +6,7 @@ InputHandler::InputHandler(sf::Window* Window, Player* Player, Renderer* Rendere
     app->ShowMouseCursor(false);
 }
 
+bool running = true;
 bool fullscreen = false;
 void InputHandler::handleEvent(sf::Event Event) {
     float time;
@@ -18,7 +19,7 @@ void InputHandler::handleEvent(sf::Event Event) {
         switch(Event.Key.Code) {
             // Escape key : exit
             case sf::Key::Escape:
-                app->Close();
+                running = false;
                 break;
             // F5 : regenerate terrain
             case sf::Key::F5:
@@ -135,8 +136,9 @@ void InputHandler::handleEvent(sf::Event Event) {
 float ElapsedTime;
 float mouseDeltaX, mouseDeltaY;
 
-void InputHandler::handleEvents() {
+bool InputHandler::handleEvents() {
     const sf::Input& Input = app->GetInput();
+    running = true;
     
     // Constant movement speed
     ElapsedTime = Clock.GetElapsedTime();
@@ -158,6 +160,8 @@ void InputHandler::handleEvents() {
         player->ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));
         
     player->DoStep(ElapsedTime);
+    
+    return running;
 }
 
 void InputHandler::toggleFullscreen() {
