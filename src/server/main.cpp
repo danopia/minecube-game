@@ -1,11 +1,39 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 
+#include "common/terrain.h"
+
 // Choose a random port for opening sockets (ports < 1024 are reserved)
 const unsigned short Port = 28997;
 
+Terrain *terrain;
+
+void sendTerrain(sf::SocketTCP Client) {
+    std::ifstream file("server.mcube", std::ios::in | std::ios::binary | std::ios::ate);
+
+    std::ifstream::pos_type size;
+    char *memblock;
+    
+    size = file.tellg();
+    memblock = new char[size];
+    file.seekg(0, std::ios::beg);
+    file.read(memblock, size);
+    file.close();
+
+    sf::Packet Packet;
+    Packet << std::string(memblock, size);
+    Client.Send(Packet);
+
+    delete[] memblock;
+}
+
 // Launch a server and receive incoming messages
 int main() {
+    std::cout << "Setting up terrain..." << std::endl;
+    terrain = new Terrain(5, 0, 1,1,1, 50);
+    terrain->Regenerate();
+    terrain->SaveToFile("server.mcube");
+    
     // Create a socket for listening to incoming connections
     sf::SocketTCP Listener;
     if (!Listener.Listen(Port))
@@ -40,6 +68,8 @@ int main() {
 
                 // Add it to the selector
                 Selector.Add(Client);
+                
+                sendTerrain(Client);
             }
             else
             {
@@ -55,6 +85,7 @@ int main() {
                 else
                 {
                     // Error: we'd better remove the socket from the selector
+                    std::cout << "Client disconnected" << std::endl;
                     Selector.Remove(Socket);
                 }
             }

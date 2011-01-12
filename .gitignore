@@ -12,4 +12,5 @@ Debug/
 /server
 *.swp
 *~
-terrain.bin
+*.bin
+*.mcube
