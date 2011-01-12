@@ -1,5 +1,7 @@
-#ifndef _RENDERER_H_
-    #define _RENDERER_H_
+#pragma once
+#ifndef RENDERER_H
+#define RENDERER_H
+
 #include <SFML/Graphics.hpp>
 #include "common/player.h"
 #include "common/terrain.h"

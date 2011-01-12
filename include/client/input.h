@@ -1,5 +1,7 @@
-#ifndef _INPUT_H_
-    #define _INPUT_H_
+#pragma once
+#ifndef INPUT_H
+#define INPUT_H
+
 #include <SFML/Window.hpp>
 
 #include "common/player.h"
