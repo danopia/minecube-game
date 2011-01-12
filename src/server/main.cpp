@@ -105,22 +105,9 @@ void DoServer(unsigned short Port)
 int main()
 {
     // Choose a random port for opening sockets (ports < 1024 are reserved)
-    const unsigned short Port = 2435;
+    const unsigned short Port = 28997;
 
-    // Client or server ?
-    char Who;
-    std::cout << "Do you want to be the server ('s') or a client ('c') ? ";
-    std::cin  >> Who;
-
-    if (Who == 's')
-        DoServer(Port);
-    else
-        DoClient(Port);
-
-    // Wait until the user presses 'enter' key
-    std::cout << "Press enter to exit..." << std::endl;
-    std::cin.ignore(10000, '\n');
-    std::cin.ignore(10000, '\n');
+    DoServer(Port);
 
     return EXIT_SUCCESS;
 }

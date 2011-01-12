@@ -3,6 +3,7 @@
 #define MAINMENU_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
 #include <cmath>
 #include <iostream>
 #include <cstdio>
