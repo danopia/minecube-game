@@ -68,8 +68,6 @@ int main() {
 
                 // Add it to the selector
                 Selector.Add(Client);
-                
-                sendTerrain(Client);
             }
             else
             {
@@ -80,7 +78,11 @@ int main() {
                     // Extract the message and display it
                     std::string Message;
                     Packet >> Message;
-                    std::cout << "A client says: \"" << Message << "\"" << std::endl;
+                    
+                    if (Message == "Terrain pl0z")
+                        sendTerrain(Socket);
+                    else
+                        std::cout << "A client says: \"" << Message << "\"" << std::endl;
                 }
                 else
                 {

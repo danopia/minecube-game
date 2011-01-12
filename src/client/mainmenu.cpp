@@ -185,7 +185,7 @@ void multiplayer(sf::RenderWindow* app) {
     
     // Send it to the server
     sf::Packet Packet;
-    Packet << "Ohai thar";
+    Packet << "Terrain pl0z";
     Socket.Send(Packet);
     //Connected = (Socket.Send(Packet) == sf::Socket::Done);
     
