@@ -5,14 +5,14 @@ Game::Game(sf::RenderWindow* app) : app(app), player(5.f, Vector3(0.f, 0.f, 90.f
 void Game::Generate() {
     terrain.Regenerate();
 }
-void Game::Load(char* filename) {
+void Game::Load(std::string filename) {
     terrain.LoadFromFile(filename);
     file = filename;
 }
 void Game::Save() {
-    if (file) Save(file);
+    if ("" != file) Save(file);
 }
-void Game::Save(char* filename) {
+void Game::Save(std::string filename) {
     terrain.SaveToFile(filename);
 }
 

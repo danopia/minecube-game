@@ -77,8 +77,8 @@ void SerializeOctree(std::ofstream *out, Octree<Block*> octree) {
     }
 }
 
-void Terrain::SaveToFile(char* filename) {
-    std::ofstream out(filename, std::ios::binary);
+void Terrain::SaveToFile(std::string filename) {
+    std::ofstream out(filename.c_str(), std::ios::binary);
     
     out.write("MCworld-0\n", 10); // Magic number
     
@@ -132,8 +132,8 @@ Octree<Block*> UnserializeOctree(std::ifstream *in, bool parent) {
     }
 }
 
-void Terrain::LoadFromFile(char* filename) {
-    std::ifstream in(filename, std::ios::binary);
+void Terrain::LoadFromFile(std::string filename) {
+    std::ifstream in(filename.c_str(), std::ios::binary);
     
     char buf[11];
     in.read(buf, 10); // Magic number

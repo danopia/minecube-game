@@ -30,12 +30,12 @@ class Game
         InputHandler inputHandler;
         
         bool Running;
-        char *file;
+        std::string file;
         
         void Generate();
-        void Load(char* filename);
+        void Load(std::string filename);
         void Save();
-        void Save(char* filename);
+        void Save(std::string filename);
 };
 
 #endif
