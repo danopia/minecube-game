@@ -1,53 +1,15 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 
-
-// Create a client and connect it to the server
-void DoClient(unsigned short Port)
-{
-    // Ask for server address
-    sf::IPAddress ServerAddress;
-    do
-    {
-        std::cout << "Type the address or name of the server to connect to : ";
-        std::cin  >> ServerAddress;
-    }
-    while (!ServerAddress.IsValid());
-    std::cin.ignore(10000, '\n');
-
-    // Create a socket for exchanging data with the server
-    sf::SocketTCP Socket;
-
-    // Connect to the server
-    if (Socket.Connect(Port, ServerAddress) != sf::Socket::Done)
-        return;
-
-    // Send messages until we are disconnected
-    bool Connected = true;
-    while (Connected)
-    {
-        // Let the user write a message
-        std::string Message;
-        std::cout << "Say something to the server : ";
-        std::getline(std::cin, Message);
-
-        // Send it to the server
-        sf::Packet Packet;
-        Packet << Message;
-        Connected = (Socket.Send(Packet) == sf::Socket::Done);
-    }
-
-    // Close the socket
-    Socket.Close();
-}
+// Choose a random port for opening sockets (ports < 1024 are reserved)
+const unsigned short Port = 28997;
 
 // Launch a server and receive incoming messages
-void DoServer(unsigned short Port)
-{
+int main() {
     // Create a socket for listening to incoming connections
     sf::SocketTCP Listener;
     if (!Listener.Listen(Port))
-        return;
+        return EXIT_FAILURE;
     std::cout << "Listening to port " << Port << ", waiting for connections..." << std::endl;
 
     // Create a selector for handling several sockets (the listener + the socket associated to each client)
@@ -74,7 +36,7 @@ void DoServer(unsigned short Port)
                 sf::IPAddress Address;
                 sf::SocketTCP Client;
                 Listener.Accept(Client, &Address);
-                std::cout << "Client connected ! (" << Address << ")" << std::endl;
+                std::cout << "Client connected: " << Address << std::endl;
 
                 // Add it to the selector
                 Selector.Add(Client);
@@ -88,26 +50,16 @@ void DoServer(unsigned short Port)
                     // Extract the message and display it
                     std::string Message;
                     Packet >> Message;
-                    std::cout << "A client says : \"" << Message << "\"" << std::endl;
+                    std::cout << "A client says: \"" << Message << "\"" << std::endl;
                 }
                 else
                 {
-                    // Error : we'd better remove the socket from the selector
+                    // Error: we'd better remove the socket from the selector
                     Selector.Remove(Socket);
                 }
             }
         }
     }
-}
-
-
-// Entry point of application
-int main()
-{
-    // Choose a random port for opening sockets (ports < 1024 are reserved)
-    const unsigned short Port = 28997;
-
-    DoServer(Port);
 
     return EXIT_SUCCESS;
 }
