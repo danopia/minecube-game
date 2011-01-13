@@ -28,24 +28,25 @@ void sendTerrain(sf::SocketTCP Client) {
     delete[] memblock;
 }
 
+const int KeySize = 32;
 
 void saveKey(std::string key) {
+    if (key.length() != KeySize) return; // TODO: throw error
+    
     std::ofstream file("key.txt");
-    file.write(key.c_str(), key.length());
-    file.close();
+    file << key;
 }
 
 // TODO: error handling
 std::string readKey() {
     std::ifstream file("key.txt");
 
-    if (!file) return ""; // No key is saved
+    if (!file) return ""; // No key is saved; it'll grab a new one
     
-    char memblock[33];
-    file.read(memblock, 32);
-    file.close();
+    char memblock[KeySize];
+    file.read(memblock, KeySize);
 
-    return std::string(memblock);
+    return std::string(memblock, KeySize);
 }
 
 sf::Http Http;
