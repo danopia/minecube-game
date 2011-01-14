@@ -34,7 +34,7 @@ std::vector<std::string> FetchServers() {
     return combos;
 }
 
-ServerList::ServerList(sf::RenderWindow* App) : UIPage(App, true) {
+ServerList::ServerList(sf::RenderWindow* App) : UIPage(App, "Server List", true) {
     Buttons = FetchServers();
 }
 

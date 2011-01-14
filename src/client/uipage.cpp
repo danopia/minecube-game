@@ -2,7 +2,7 @@
 
 sf::Clock UIPage::Clock;
 
-UIPage::UIPage(sf::RenderWindow* App, bool Background) : App(App), Background(Background), BG(64, 64), Sprite(BG), Current(0) {
+UIPage::UIPage(sf::RenderWindow* App, std::string Subtitle, bool Background) : App(App), Subtitle(Subtitle), Background(Background), BG(64, 64), Sprite(BG), Current(0) {
     InitGraphics();
 }
 
@@ -33,9 +33,12 @@ void UIPage::InitGraphics() {
 }
 
 void UIPage::Loop() {
-
     sf::String Title("MineCube", TitleFnt, 90);
-    Title.SetPosition((App->GetWidth() / 2) - (Title.GetRect().GetWidth() / 2), 30);
+    Title.SetPosition((App->GetWidth() / 2) - (Title.GetRect().GetWidth() / 2), 20);
+
+    
+    sf::String STitle(Subtitle, ButtonFnt, 30);
+    STitle.SetPosition((App->GetWidth() / 2) - (STitle.GetRect().GetWidth() / 2), 130);
     
     sf::String Label("Button", ButtonFnt, 30);
     sf::Shape Button = sf::Shape::Rectangle(-200, -20, 200, 20, sf::Color(127.f, 127.f, 127.f), 2, sf::Color::Black);
@@ -88,7 +91,9 @@ void UIPage::Loop() {
         // Set up the stage
         if (Background)
             DrawBackground();
+        
         App->Draw(Title);
+        App->Draw(STitle);
         
         Button.SetPosition(App->GetWidth() / 2, 150);
         

@@ -9,7 +9,7 @@
 class UIPage
 {
     public:
-        UIPage(sf::RenderWindow *App, bool Background = true);
+        UIPage(sf::RenderWindow *App, std::string Subtitle = "", bool Background = true);
         void InitGraphics();
         void Loop();
         virtual void ItemSelected(std::string Label) {};
@@ -17,6 +17,7 @@ class UIPage
         // TODO: another class for button pages
         std::vector<std::string> Buttons;
         
+        std::string Subtitle;
         bool Background;
 
     protected:
@@ -27,9 +28,9 @@ class UIPage
         sf::Image Tiles;
         sf::Image BG;
         sf::Sprite Sprite;
-            
-        sf::Font ButtonFnt;
+        
         sf::Font TitleFnt;
+        sf::Font ButtonFnt;
         
         // index of highlighted button
         int Current;
