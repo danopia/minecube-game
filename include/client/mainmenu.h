@@ -8,19 +8,17 @@
 #include <iostream>
 #include <cstdio>
 
+#include "client/uipage.h"
+
 #ifdef _WIN32
 #define snprintf sprintf_s
 #endif
 
-class MainMenu
+class MainMenu : public UIPage
 {
     public:
         MainMenu(sf::RenderWindow *app);
-        void Loop();
         void ItemSelected(std::string Label);
-        void drawBackground();
-
-        sf::RenderWindow *app;
 };
 
 #endif

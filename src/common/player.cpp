@@ -19,14 +19,14 @@ void Player::ChangeRotation(float deltaYRotation, float deltaZRotation)
     Rotation.Y += deltaYRotation;
     Rotation.Z += deltaZRotation;
 
-    if(Rotation.Z >= 360)
+    if (Rotation.Z >= 360)
         Rotation.Z -= 360;
     else if (Rotation.Z < 0)
         Rotation.Z += 360;
 
-    if(Rotation.Y < -90)
+    if (Rotation.Y < -90)
         Rotation.Y = -90;
-    else if(Rotation.Y >= 90)
+    else if (Rotation.Y >= 90)
         Rotation.Y = 90;
 }
 
