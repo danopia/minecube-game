@@ -1,10 +1,41 @@
 #include "client/serverlist.h"
 
+std::string doHTTP() {
+    using namespace sf;
+    
+    Http Client("mc-heartbeat.heroku.com");
+
+    // Prepare a request to beat the heart
+    Http::Request Request;
+    Request.SetURI("/servers.txt");
+
+    // Send it and get the response returned by the server
+    Http::Response Page = Client.SendRequest(Request);
+
+    if (Page.GetStatus() != 200) {
+        std::cerr << "Error while grabbing the server list. (HTTP " << Page.GetStatus() << ")" << std::endl;
+        return "";
+    }
+    
+    return Page.GetBody();
+}
+
+std::vector<std::string> FetchServers() {
+    using namespace std;
+    
+    string raw = doHTTP();
+    vector<string> combos;
+    
+    istringstream iss(raw);
+    copy(istream_iterator<string>(iss),
+        istream_iterator<string>(),
+        back_inserter<vector<string> >(combos));
+    
+    return combos;
+}
+
 ServerList::ServerList(sf::RenderWindow* App) : UIPage(App, true) {
-    Buttons.push_back("localhost");
-    Buttons.push_back("danopia");
-    Buttons.push_back("duckinator");
-    Buttons.push_back("somewhere else...");
+    Buttons = FetchServers();
 }
 
 void multiplayer(sf::RenderWindow* App) {

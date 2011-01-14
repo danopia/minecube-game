@@ -5,6 +5,12 @@
 #include <SFML/Network.hpp>
 #include <cstdio>
 
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
+
 #include "client/uipage.h"
 #include "client/game.h"
 
