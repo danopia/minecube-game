@@ -36,9 +36,10 @@ std::vector<std::string> FetchServers() {
 
 ServerList::ServerList(sf::RenderWindow* App) : UIPage(App, "Server List", true) {
     Buttons = FetchServers();
+    Buttons.push_back("localhost:28997");
 }
 
-void multiplayer(sf::RenderWindow* App) {
+void multiplayer(sf::RenderWindow* App, std::string hostname, int port) {
     /* Ask for server address
     sf::IPAddress ServerAddress;
     do
@@ -53,7 +54,7 @@ void multiplayer(sf::RenderWindow* App) {
     sf::SocketTCP Socket;
 
     // Connect to the server
-    if (Socket.Connect(28997, "home.danopia.net") != sf::Socket::Done)
+    if (Socket.Connect(port, hostname) != sf::Socket::Done)
         return;
 
     /* Send messages until we are disconnected
@@ -96,7 +97,17 @@ void multiplayer(sf::RenderWindow* App) {
 }
 
 void ServerList::ItemSelected(std::string Label) {
-    multiplayer(App);
+    std::stringstream ss(Label);
+    
+    std::string ip;
+    std::getline(ss, ip, ':');
+    
+    std::string port;
+    std::getline(ss, port, ':'); // should go to the end
+    
+    int iPort = atoi(port.c_str());
+    
+    multiplayer(App, ip, iPort);
     
     InitGraphics();
 }
