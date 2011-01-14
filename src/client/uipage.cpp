@@ -47,6 +47,8 @@ void UIPage::Loop() {
     // Start menu loop
     while (App->IsOpened())
     {
+        mouseX = App->GetInput().GetMouseX();
+        mouseY = App->GetInput().GetMouseY();
         clicked = false;
         
         // Handle mouse and keyboard stuff
