@@ -27,6 +27,8 @@ public:
     float SurfaceZ;
     float GravitySpeed;
     
+    bool Dirty;
+    
     Player();
     Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name);
     

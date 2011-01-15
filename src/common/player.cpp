@@ -10,14 +10,16 @@ const double WALK_SPEED    = 5.0;
 const double CROUCH_SPEED  = 3.0;
 const double CRAWL_SPEED   = 2.0;
 
-Player::Player() : Speed(0), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(Vector3(0,0,0), Vector3(0,0,0), Vector3(0,0,0)) {};
+Player::Player() : Speed(0), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 2)) {};
 
-Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
+Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name(Name), StandingOn(NULL), GravitySpeed(0.f), SurfaceZ(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
 
 void Player::ChangeRotation(float deltaYRotation, float deltaZRotation)
 {
     Rotation.Y += deltaYRotation;
     Rotation.Z += deltaZRotation;
+    
+    Dirty = true;
 
     if (Rotation.Z >= 360)
         Rotation.Z -= 360;
@@ -35,26 +37,31 @@ bool Player::Jump()
     if (StandingOn) {
         GravitySpeed = 5.f;
         StandingOn = NULL;
+        Dirty = true;
         return true;
     }
+    
     return false;
 }
 
 bool Player::toggleRun()
 {
     Running = !Running;
+    Dirty = true;
     return Running;
 }
 
 bool Player::toggleCrouch()
 {
     Crouching = !Crouching;
+    Dirty = true;
     return Crouching;
 }
 
 bool Player::toggleCrawl()
 {
     Crawling = !Crawling;
+    Dirty = true;
     return Crawling;
 }
 
