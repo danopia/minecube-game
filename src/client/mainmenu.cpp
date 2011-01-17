@@ -1,9 +1,9 @@
 #include "client/mainmenu.h"
 
 MainMenu::MainMenu(sf::RenderWindow* App) : UIPage(App, "Choose your adventure", true) {
-    Buttons.push_back("New game");
-    Buttons.push_back("Continue");
-    Buttons.push_back("Multiplayer");
+    //Buttons.push_back("New game");
+    //Buttons.push_back("Continue");
+    Buttons.push_back("Connect");
     Buttons.push_back("Options");
     Buttons.push_back("Exit");
 }
