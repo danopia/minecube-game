@@ -35,6 +35,16 @@ void sendTerrain(sf::SocketTCP Client, Vector3 ChunkIndex) {
     printf("(%f,%f,%f)\n", ChunkIndex.X, ChunkIndex.Y, ChunkIndex.Z);
     
     Octree<Block*> Chunk = terrain->GeneratedTerrain[ChunkIndex];
+    
+    if (!Chunk) {
+        sf::Packet Packet;
+        Packet << "Take this chunk. It will be useful in times of need.";
+        Packet << (int) 0;
+        Client.Send(Packet);
+        
+        return;
+    }
+    
     std::vector<PositionedBlock> Blocks;
     listBlocks(&Blocks, Chunk,
                ChunkIndex.X * terrain->chunkSize,
