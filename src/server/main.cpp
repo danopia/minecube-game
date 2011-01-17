@@ -24,7 +24,7 @@ void sendTerrain(sf::SocketTCP Client) {
     file.close();
 
     sf::Packet Packet;
-    Packet << std::string(memblock, size);
+    Packet << "Take this terrain. It will be useful." << std::string(memblock, size);
     Client.Send(Packet);
 
     delete[] memblock;
