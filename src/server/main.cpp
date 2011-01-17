@@ -32,6 +32,8 @@ void listBlocks(std::vector<PositionedBlock> *Blocks, Octree<Block*> octree, flo
 }
 
 void sendTerrain(sf::SocketTCP Client, Vector3 ChunkIndex) {
+    printf("(%f,%f,%f)\n", ChunkIndex.X, ChunkIndex.Y, ChunkIndex.Z);
+    
     Octree<Block*> Chunk = terrain->GeneratedTerrain[ChunkIndex];
     std::vector<PositionedBlock> Blocks;
     listBlocks(&Blocks, Chunk,
@@ -60,7 +62,7 @@ int main() {
         std::cout << "Error while sending heartbeat!" << std::endl;
     
     std::cout << "Setting up terrain..." << std::endl;
-    terrain = new Terrain(5, 0, 1,1,1, 50);
+    terrain = new Terrain(3, 0, 10,10,10, 25);
     terrain->Regenerate();
     terrain->SaveToFile("server.mcube");
     
@@ -95,6 +97,11 @@ int main() {
                 sf::SocketTCP Client;
                 Listener.Accept(Client, &Address);
                 std::cout << "Client connected: " << Address << std::endl;
+                
+                sf::Packet Packet;
+                Packet << "First, I have to let you in on this secret.";
+                Packet << terrain->chunkSize;
+                Client.Send(Packet);
 
                 // Add it to the selector
                 Selector.Add(Client);

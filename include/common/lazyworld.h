@@ -4,6 +4,7 @@
 
 #include <SFML/Network.hpp>
 #include <vector>
+#include <algorithm>
 
 #include "common/positionedblock.h"
 #include "common/entity.h"
@@ -20,7 +21,12 @@ class LazyWorld
         std::vector<PositionedBlock> Blocks;
         std::vector<Entity> Entities;
         
+        int ChunkSize;
+        std::vector<Vector3> LoadedChunks;
+        
         void LoadChunk(sf::Packet Packet);
+        void HandleRequests(Vector3 Pos);
+        void RequestChunk(Vector3 ChunkIndex);
 };
 
 #endif

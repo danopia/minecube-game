@@ -1,6 +1,6 @@
 #include "client/game.h"
 
-Game::Game(sf::RenderWindow* app, sf::SocketTCP *socket) : app(app), socket(socket), world(socket), player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(5.f, 25.f, 60.f), "Foo"), renderer(&world, &player), inputHandler(app, &player, &renderer) {}
+Game::Game(sf::RenderWindow* app, sf::SocketTCP *socket) : app(app), socket(socket), world(socket), player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(5.f, 25.f, 49.f), "Foo"), renderer(&world, &player), inputHandler(app, &player, &renderer) {}
 
 void Game::Loop() {
     Running = true;
@@ -51,6 +51,8 @@ void Game::Loop() {
 
         // Finally, display rendered frame on screen
         app->Display();
+        
+        world.HandleRequests(player.Pos);
     }
 }
 

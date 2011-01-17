@@ -72,23 +72,16 @@ void multiplayer(sf::RenderWindow* App, std::string hostname, int port) {
         Connected = (Socket.Send(Packet) == sf::Socket::Done);
     }*/
     
-    // Send it to the server
-    sf::Packet Packet;
-    Packet << "Terrain pl0z" << Vector3(0, 0, 0);
-    Socket.Send(Packet);
-    //Connected = (Socket.Send(Packet) == sf::Socket::Done);
-    
     // Load up a game
     Game game(App, &Socket);
     
-    // Extract the terrain and save it
+    // Grab the secret (the chunk size)
+    sf::Packet Packet;
     Socket.Receive(Packet);
     std::string command;
     Packet >> command;
-    
-    if (command == "Take this chunk. It will be useful in times of need.") {
-        game.world.LoadChunk(Packet);
-    }
+    if (command == "First, I have to let you in on this secret.")
+        Packet >> game.world.ChunkSize;
     
     // Run the game
     game.Loop();
