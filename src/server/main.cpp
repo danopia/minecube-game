@@ -128,6 +128,10 @@ int main() {
                         Vector3 ChunkIndex;
                         Packet >> ChunkIndex;
                         sendTerrain(Socket, ChunkIndex);
+                    } else if (Message == "Move me or ELSE!") {
+                        /*Vector3 ChunkIndex;
+                        Packet >> ChunkIndex;
+                        sendTerrain(Socket, ChunkIndex);*/
                     } else
                         std::cout << "A client says: \"" << Message << "\"" << std::endl;
                 }
