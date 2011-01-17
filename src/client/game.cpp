@@ -12,6 +12,9 @@ void Game::Loop() {
     char buf[10];
     float Framerate;
     
+    sf::Clock UpdateTimer;
+    sf::Clock LoaderTimer;
+
     sf::String Text;
     Text.SetFont(renderer.Font);
     Text.SetSize(renderer.Font.GetCharacterSize());
@@ -52,7 +55,20 @@ void Game::Loop() {
         // Finally, display rendered frame on screen
         app->Display();
         
-        world.HandleRequests(player.Pos);
+        if (LoaderTimer.GetElapsedTime() > 1.f) {
+            world.HandleRequests(player.Pos);
+            LoaderTimer.Reset();
+        }
+        
+        if ((player.Dirty && (UpdateTimer.GetElapsedTime() > 0.5f))
+         || (UpdateTimer.GetElapsedTime() > 5.f)) {
+            sf::Packet Packet;
+            Packet << "Move me or ELSE!" << player;
+            socket->Send(Packet);
+            
+            player.Dirty = false;
+            UpdateTimer.Reset();
+        }
     }
 }
 

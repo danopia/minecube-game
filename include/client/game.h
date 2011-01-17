@@ -13,6 +13,7 @@
 #include "common/player.h"
 #include "common/terrain.h"
 #include "common/lazyworld.h"
+#include "common/packets.h"
 
 #ifdef _WIN32
 #define snprintf sprintf_s

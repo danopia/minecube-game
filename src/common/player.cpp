@@ -143,6 +143,8 @@ void Player::DoStep(float amount)
         if (Pos.Z < 0) GravitySpeed = -GravitySpeed;
         Pos.Z += GravitySpeed * amount;
     }
+    
+    if (Forward || Backward || Left || Right) Dirty = true;
 }
 
 void Player::Render()
