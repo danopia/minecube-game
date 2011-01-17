@@ -74,31 +74,24 @@ void multiplayer(sf::RenderWindow* App, std::string hostname, int port) {
     
     // Send it to the server
     sf::Packet Packet;
-    Packet << "Terrain pl0z";
+    Packet << "Terrain pl0z" << Vector3(0, 0, 0);
     Socket.Send(Packet);
     //Connected = (Socket.Send(Packet) == sf::Socket::Done);
     
     // Load up a game
-    Game game(App);
+    Game game(App, &Socket);
     
     // Extract the terrain and save it
     Socket.Receive(Packet);
     std::string command;
     Packet >> command;
     
-    if (command == "Take this terrain. It will be useful.") {
-        std::string data;
-        Packet >> data;
-        std::ofstream out("client.mcube", std::ios::binary);
-        out.write(data.c_str(), data.size());
-        out.close();
-        
-        game.Load("client.mcube");
+    if (command == "Take this chunk. It will be useful in times of need.") {
+        game.world.LoadChunk(Packet);
     }
     
     // Run the game
     game.Loop();
-    game.Save();
 
     // Close the socket
     Socket.Close();

@@ -1,8 +1,12 @@
 #include <SFML/Network.hpp>
 #include <iostream>
+#include <vector>
 
 #include "common/terrain.h"
+#include "common/vector3.h"
+#include "common/octree.h"
 #include "common/player.h"
+#include "common/packets.h"
 #include "server/heartbeat.h"
 
 // Choose a random port for opening sockets (ports < 1024 are reserved)
@@ -11,23 +15,39 @@ const unsigned short Port = 28997;
 Terrain *terrain;
 Heartbeat beater;
 
-void sendTerrain(sf::SocketTCP Client) {
-    std::ifstream file("server.mcube", std::ios::in | std::ios::binary | std::ios::ate);
+void listBlocks(std::vector<PositionedBlock> *Blocks, Octree<Block*> octree, float x, float y, float z, float size) {
+    if (octree.hasChildren) {
+        float subsize = size / 2;
+        listBlocks(Blocks, octree.children[0], x,         y,         z,         subsize);
+        listBlocks(Blocks, octree.children[1], x+subsize, y,         z,         subsize);
+        listBlocks(Blocks, octree.children[2], x,         y+subsize, z,         subsize);
+        listBlocks(Blocks, octree.children[3], x+subsize, y+subsize, z,         subsize);
+        listBlocks(Blocks, octree.children[4], x,         y,         z+subsize, subsize);
+        listBlocks(Blocks, octree.children[5], x+subsize, y,         z+subsize, subsize);
+        listBlocks(Blocks, octree.children[6], x,         y+subsize, z+subsize, subsize);
+        listBlocks(Blocks, octree.children[7], x+subsize, y+subsize, z+subsize, subsize);
+    } else if (octree.value->Type > 0) {
+        Blocks->push_back(PositionedBlock(octree.value, Vector3(x, y, z), size));
+    }
+}
 
-    std::ifstream::pos_type size;
-    char *memblock;
+void sendTerrain(sf::SocketTCP Client, Vector3 ChunkIndex) {
+    Octree<Block*> Chunk = terrain->GeneratedTerrain[ChunkIndex];
+    std::vector<PositionedBlock> Blocks;
+    listBlocks(&Blocks, Chunk,
+               ChunkIndex.X * terrain->chunkSize,
+               ChunkIndex.Y * terrain->chunkSize,
+               ChunkIndex.Z * terrain->chunkSize,
+                              terrain->chunkSize);
     
-    size = file.tellg();
-    memblock = new char[size];
-    file.seekg(0, std::ios::beg);
-    file.read(memblock, size);
-    file.close();
-
     sf::Packet Packet;
-    Packet << "Take this terrain. It will be useful." << std::string(memblock, size);
-    Client.Send(Packet);
+    Packet << "Take this chunk. It will be useful in times of need.";
+    Packet << (int) Blocks.size();
+    
+    for (int i = 0; i < Blocks.size(); i++) // << (char)Blocks[i].block->Type 
+        Packet << Blocks[i].pos << Blocks[i].sideLength;
 
-    delete[] memblock;
+    Client.Send(Packet);
 }
 
 std::map<sf::SocketTCP, Player> players();
@@ -89,9 +109,11 @@ int main() {
                     std::string Message;
                     Packet >> Message;
                     
-                    if (Message == "Terrain pl0z")
-                        sendTerrain(Socket);
-                    else
+                    if (Message == "Terrain pl0z") {
+                        Vector3 ChunkIndex;
+                        Packet >> ChunkIndex;
+                        sendTerrain(Socket, ChunkIndex);
+                    } else
                         std::cout << "A client says: \"" << Message << "\"" << std::endl;
                 }
                 else

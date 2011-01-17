@@ -6,16 +6,17 @@
 #include "common/player.h"
 #include "common/terrain.h"
 #include "common/block.h"
+#include "common/lazyworld.h"
 
 class Renderer {
     public:
-        Renderer(Terrain *initterrain, Player *player);
+        Renderer(LazyWorld *world, Player *player);
         void InitGraphics();
         void render();
-        void renderNode(Octree<Block*> terrain, float x, float y, float z, float size);
+        void renderBlock(PositionedBlock block);
         void drawCube(Block *block, float x, float y, float z, float length);
         
-        Terrain *terrain;
+        LazyWorld *world;
         Player *player;
         
         sf::Font Font;

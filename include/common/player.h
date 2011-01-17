@@ -8,6 +8,7 @@
 #include "common/block.h"
 #include "common/entity.h"
 #include "common/vector3.h"
+#include "common/positionedblock.h"
 
 class Player : public Entity
 {
@@ -23,8 +24,7 @@ public:
     bool Running;
     bool Jumping;
     std::string Name;
-    Octree<Block*> *StandingOn;
-    float SurfaceZ;
+    PositionedBlock *StandingOn;
     float GravitySpeed;
     
     bool Dirty;

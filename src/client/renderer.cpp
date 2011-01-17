@@ -81,7 +81,7 @@ GLdouble texcoords[64] = {
     0.125, 0.125,
 };
 
-Renderer::Renderer(Terrain *initterrain, Player *player) : terrain(initterrain), player(player) {
+Renderer::Renderer(LazyWorld *world, Player *player): world(world), player(player) {
     InitGraphics();
 }
 
@@ -154,34 +154,18 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     if (player->Pos.Y + 0.5f > y) glDrawArrays(GL_QUADS, 20, 4);
 }
 
-bool current;
-
-void Renderer::renderNode(Octree<Block*> terrain, float x, float y, float z, float size) {
-    if (terrain.hasChildren) {
-        float subsize = size / 2;
-        renderNode(terrain.children[0], x,         y,         z,         subsize);
-        renderNode(terrain.children[1], x+subsize, y,         z,         subsize);
-        renderNode(terrain.children[2], x,         y+subsize, z,         subsize);
-        renderNode(terrain.children[3], x+subsize, y+subsize, z,         subsize);
-        renderNode(terrain.children[4], x,         y,         z+subsize, subsize);
-        renderNode(terrain.children[5], x+subsize, y,         z+subsize, subsize);
-        renderNode(terrain.children[6], x,         y+subsize, z+subsize, subsize);
-        renderNode(terrain.children[7], x+subsize, y+subsize, z+subsize, subsize);
-    } else if (terrain.value->Type > 0) {
-        // Collision check against player
-        if (player->Pos.X + player->Hitbox.X >= x && player->Pos.X <= x + size
-         && player->Pos.Y + player->Hitbox.Y >= y && player->Pos.Y <= y + size
-         && player->Pos.Z + player->Hitbox.Z >= z && player->Pos.Z <= z + size) {
-            player->StandingOn = &terrain;
-            player->SurfaceZ = z + size;
-        }
-        
-        drawCube(terrain.value, x, y, z, size);
+void Renderer::renderBlock(PositionedBlock block) {
+    // Collision check against player
+    if (player->Pos.X + player->Hitbox.X >= block.pos.X && player->Pos.X <= block.pos.X + block.sideLength
+     && player->Pos.Y + player->Hitbox.Y >= block.pos.Y && player->Pos.Y <= block.pos.Y + block.sideLength
+     && player->Pos.Z + player->Hitbox.Z >= block.pos.Z && player->Pos.Z <= block.pos.Z + block.sideLength) {
+        player->StandingOn = &block;
     }
+    
+    drawCube(block.block, block.pos.X, block.pos.Y, block.pos.Z, block.sideLength);
 }
 
 void Renderer::render() {
-
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -207,12 +191,9 @@ void Renderer::render() {
     
     player->StandingOn = NULL;
     
-    // Loop through chunks and render them
-    float i, j, k;
-    for(i = 0; i < terrain->sizeX; i++)
-        for(j = 0; j < terrain->sizeY; j++)
-            for(k = 0; k < terrain->sizeZ; k++)
-                renderNode(terrain->GeneratedTerrain[Vector3(i,j,k)], i*terrain->chunkSize, j*terrain->chunkSize, k*terrain->chunkSize, terrain->chunkSize);
+    // Loop through blocks and render them
+    for (int i = 0; i < world->Blocks.size(); i++)
+        renderBlock(world->Blocks[i]);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     //glDisableClientState(GL_NORMAL_ARRAY);
