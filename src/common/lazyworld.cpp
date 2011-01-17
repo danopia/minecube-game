@@ -1,6 +1,5 @@
 #include "common/lazyworld.h"
 #include <cmath>
-#include <stdio.h>
 
 bool contains(std::vector<Vector3> vector, Vector3 value) {
     for (int i = 0; i < vector.size(); i++)
@@ -36,8 +35,6 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
 void LazyWorld::HandleRequests(Vector3 Pos) {
     Vector3 CurrentChunk;
     
-    printf("%f\n", ChunkSize);
-    printf("%f\n", Pos.X / ChunkSize);
     CurrentChunk.X = floor(Pos.X / ChunkSize);
     CurrentChunk.Y = floor(Pos.Y / ChunkSize);
     CurrentChunk.Z = floor(Pos.Z / ChunkSize);
@@ -49,7 +46,6 @@ void LazyWorld::HandleRequests(Vector3 Pos) {
 void LazyWorld::RequestChunk(Vector3 ChunkIndex) {
     // Send it to the server
     sf::Packet Packet;
-    printf("(%f,%f,%f)\n", ChunkIndex.X, ChunkIndex.Y, ChunkIndex.Z);
     Packet << "Terrain pl0z" << ChunkIndex;
     Socket->Send(Packet);
     

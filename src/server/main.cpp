@@ -32,11 +32,9 @@ void listBlocks(std::vector<PositionedBlock> *Blocks, Octree<Block*> octree, flo
 }
 
 void sendTerrain(sf::SocketTCP Client, Vector3 ChunkIndex) {
-    printf("(%f,%f,%f)\n", ChunkIndex.X, ChunkIndex.Y, ChunkIndex.Z);
-    
     Octree<Block*> Chunk = terrain->GeneratedTerrain[ChunkIndex];
     
-    if (!Chunk) {
+    if (!Chunk.hasChildren) { // TODO: This is a stupid check to see if the chunk was just created by the stupid map thing.
         sf::Packet Packet;
         Packet << "Take this chunk. It will be useful in times of need.";
         Packet << (int) 0;
