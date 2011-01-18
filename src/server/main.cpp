@@ -62,13 +62,18 @@ void sendTerrain(sf::SocketTCP Client, Vector3 ChunkIndex) {
 
 std::map<sf::SocketTCP, Player> players();
 
-// Launch a server and receive incoming messages
-int main() {
+sf::Clock BeatTimer;
+void beat() {
     if (beater.Beat())
         std::cout << "Heartbeat successful." << std::endl;
     else
         std::cout << "Error while sending heartbeat!" << std::endl;
     
+    BeatTimer.Reset();
+}
+
+// Launch a server and receive incoming messages
+int main() {
     std::cout << "Setting up terrain..." << std::endl;
     terrain = new Terrain(3, 0, 10,10,10, 25);
     terrain->Regenerate();
@@ -79,6 +84,9 @@ int main() {
     if (!Listener.Listen(Port))
         return EXIT_FAILURE;
     std::cout << "Listening to port " << Port << ", waiting for connections..." << std::endl;
+    
+    // Send heartbeat now that server is up
+    beat();
 
     // Create a selector for handling several sockets (the listener + the socket associated to each client)
     sf::SelectorTCP Selector;
@@ -90,7 +98,7 @@ int main() {
     while (true)
     {
         // Get the sockets ready for reading
-        unsigned int NbSockets = Selector.Wait();
+        unsigned int NbSockets = Selector.Wait(60.f);
 
         // We can read from each returned socket
         for (unsigned int i = 0; i < NbSockets; ++i)
@@ -143,6 +151,10 @@ int main() {
                 }
             }
         }
+        
+        // Send heartbeat after at least 5 minutes
+        if (BeatTimer.GetElapsedTime() > 300.f)
+            beat();
     }
 
     return EXIT_SUCCESS;
