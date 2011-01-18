@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 
-#include "client/mainmenu.h"
+#include "client/ui/mainmenu.h"
 
 int main()
 {

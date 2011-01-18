@@ -1,4 +1,4 @@
-#include "client/serverlist.h"
+#include "client/ui/serverlist.h"
 
 std::string doHTTP() {
     using namespace sf;

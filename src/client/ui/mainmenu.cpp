@@ -1,4 +1,4 @@
-#include "client/mainmenu.h"
+#include "client/ui/mainmenu.h"
 
 MainMenu::MainMenu(sf::RenderWindow* App) : UIPage(App, "Choose your adventure", true) {
     Buttons.push_back("Start server");

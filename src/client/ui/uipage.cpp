@@ -1,4 +1,4 @@
-#include "client/uipage.h"
+#include "client/ui/uipage.h"
 
 sf::Clock UIPage::Clock;
 
