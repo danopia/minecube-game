@@ -1,6 +1,9 @@
 #include "client/game.h"
 
-Game::Game(sf::RenderWindow* app, sf::SocketTCP *socket) : app(app), socket(socket), world(socket), player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(5.f, 25.f, 49.f), "Foo"), renderer(&world, &player), inputHandler(app, &player, &renderer) {}
+Game::Game(sf::RenderWindow* app, Socket *socket) : app(app), socket(socket), world(socket->socket), player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(5.f, 25.f, 49.f), "Foo"), renderer(&world, &player), inputHandler(app, &player, &renderer) {
+    socket->world = &world;
+    socket->player = &player;
+}
 
 void Game::Loop() {
     Running = true;
@@ -12,7 +15,6 @@ void Game::Loop() {
     char buf[10];
     float Framerate;
     
-    sf::Clock UpdateTimer;
     sf::Clock LoaderTimer;
 
     sf::String Text;
@@ -60,15 +62,7 @@ void Game::Loop() {
             LoaderTimer.Reset();
         }
         
-        if ((player.Dirty && (UpdateTimer.GetElapsedTime() > 0.5f))
-         || (UpdateTimer.GetElapsedTime() > 5.f)) {
-            sf::Packet Packet;
-            Packet << "Move me or ELSE!" << player;
-            socket->Send(Packet);
-            
-            player.Dirty = false;
-            UpdateTimer.Reset();
-        }
+        socket->DoStep();
     }
 }
 

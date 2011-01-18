@@ -12,6 +12,7 @@
 
 #include "client/ui/uipage.h"
 #include "client/game.h"
+#include "client/socket.h"
 
 class ServerList : public UIPage
 {

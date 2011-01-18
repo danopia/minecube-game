@@ -44,17 +44,10 @@ void LazyWorld::HandleRequests(Vector3 Pos) {
 }
 
 void LazyWorld::RequestChunk(Vector3 ChunkIndex) {
-    // Send it to the server
+    // Send request to the server
     sf::Packet Packet;
     Packet << "Terrain pl0z" << ChunkIndex;
     Socket->Send(Packet);
     
-    // Extract the terrain and save it
-    Socket->Receive(Packet);
-    std::string command;
-    Packet >> command;
-    if (command == "Take this chunk. It will be useful in times of need.") {
-        LoadChunk(Packet);
-        LoadedChunks.push_back(ChunkIndex);
-    }
+    LoadedChunks.push_back(ChunkIndex);
 }

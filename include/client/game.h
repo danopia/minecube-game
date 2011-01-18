@@ -9,6 +9,7 @@
 
 #include "client/renderer.h"
 #include "client/input.h"
+#include "client/socket.h"
 #include "common/octree.h"
 #include "common/player.h"
 #include "common/terrain.h"
@@ -22,11 +23,11 @@
 class Game
 {
     public:
-        Game(sf::RenderWindow *app, sf::SocketTCP *socket);
+        Game(sf::RenderWindow *app, Socket *socket);
         void Loop();
 
         sf::RenderWindow *app;
-        sf::SocketTCP *socket;
+        Socket *socket;
         Player player;
         LazyWorld world;
         Renderer renderer;

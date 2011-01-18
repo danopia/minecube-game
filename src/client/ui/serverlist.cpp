@@ -51,10 +51,10 @@ void multiplayer(sf::RenderWindow* App, std::string hostname, int port) {
     std::cin.ignore(10000, '\n');*/
 
     // Create a socket for exchanging data with the server
-    sf::SocketTCP Socket;
+    sf::SocketTCP socket;
 
     // Connect to the server
-    if (Socket.Connect(port, hostname) != sf::Socket::Done)
+    if (socket.Connect(port, hostname) != sf::Socket::Done)
         return;
 
     /* Send messages until we are disconnected
@@ -72,22 +72,16 @@ void multiplayer(sf::RenderWindow* App, std::string hostname, int port) {
         Connected = (Socket.Send(Packet) == sf::Socket::Done);
     }*/
     
-    // Load up a game
-    Game game(App, &Socket);
+    Socket connection(&socket);
     
-    // Grab the secret (the chunk size)
-    sf::Packet Packet;
-    Socket.Receive(Packet);
-    std::string command;
-    Packet >> command;
-    if (command == "First, I have to let you in on this secret.")
-        Packet >> game.world.ChunkSize;
+    // Load up a game
+    Game game(App, &connection);
     
     // Run the game
     game.Loop();
 
     // Close the socket
-    Socket.Close();
+    socket.Close();
 }
 
 void ServerList::ItemSelected(std::string Label) {
