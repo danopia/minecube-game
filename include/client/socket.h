@@ -24,6 +24,8 @@ class Socket
         sf::SocketTCP *socket;
         
         sf::Clock updateTimer;
+        
+        int Number;
 };
 
 #endif

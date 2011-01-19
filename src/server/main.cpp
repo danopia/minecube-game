@@ -156,7 +156,7 @@ int main() {
                         Out << &player;
                         
                         for (std::map<sf::SocketTCP, Client>::iterator others = clients.begin(); others != clients.end(); others++)
-                            if (others->second.Number != client.Number)
+                            //if (others->second.Number != client.Number)
                                 others->second.Socket->Send(Out);
                     } else
                         std::cout << "A client says: \"" << Message << "\"" << std::endl;

@@ -10,7 +10,7 @@ class Client
 {
     public:
         Client() : Socket(NULL), Number(0) {};
-        Client(sf::SocketTCP *Socket, int Number) : Socket(Socket), Number(Number) {};
+        Client(sf::SocketTCP *Socket, int Number);
         
         sf::SocketTCP *Socket;
         int Number;
