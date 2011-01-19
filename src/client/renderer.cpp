@@ -194,6 +194,14 @@ void Renderer::render() {
     // Loop through blocks and render them
     for (int i = 0; i < context->world->Blocks.size(); i++)
         renderBlock(context->world->Blocks[i]);
+    
+    Block *block = new GrassBlock();
+    for (std::map<int, Player>::iterator player = context->socket->Players.begin(); player != context->socket->Players.end(); player++) {
+        if (player->first != context->socket->Number) {
+            player->second.GravitySpeed = 0.f;
+            drawCube(block, player->second.Pos.X, player->second.Pos.Y, player->second.Pos.Z, 2.f);
+        }
+    }
 
     glDisableClientState(GL_VERTEX_ARRAY);
     //glDisableClientState(GL_NORMAL_ARRAY);

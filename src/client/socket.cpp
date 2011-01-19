@@ -30,8 +30,8 @@ void Socket::DoStep() {
         } else if (command == "Player wants to move") {
             int who;
             In >> who;
-            Player player = Players[who];
-            In >> &player; // TODO: yea I had no idea what I was doing there...
+            Player *player = &Players[who];
+            In >> player; // TODO: yea I had no idea what I was doing there...
         } else
             printf("Got strange packet: %s\n", command.c_str());
     }
@@ -45,6 +45,9 @@ void Socket::DoStep() {
         context->player->Dirty = false;
         updateTimer.Reset();
     }
+    
+    for (std::map<int, Player>::iterator player = Players.begin(); player != Players.end(); player++)
+        player->second.DoStep(0.01f);
 }
 
 void Socket::Close() {
