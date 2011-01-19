@@ -107,10 +107,7 @@ void handlePacket(Client &client, const std::string &Message, sf::Packet &Packet
         sf::Packet Out;
         Out << "Player wants to move" << client.Number;
         Out << &player;
-        
-        for (std::map<sf::SocketTCP, Client>::iterator others = clients.begin(); others != clients.end(); others++)
-            //if (others->second.Number != client.Number)
-                others->second.Socket->Send(Out);
+        broadcast(Out);
 
     } else
         std::cout << "A client says: \"" << Message << "\"" << std::endl;
