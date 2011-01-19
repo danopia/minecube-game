@@ -3,6 +3,8 @@
 #define HUD_H
 
 #include <SFML/Graphics.hpp>
+#include <deque>
+#include <string>
 
 #include "client/socket.h"
 #include "client/context.h"
@@ -19,10 +21,14 @@ class HUD
         HUD(Context *context);
         
         void Draw();
+        void Output(std::string Line);
 
         Context *context;
-        sf::String Text;
+        sf::String DebugText, BacklogText;
         sf::Shape Hair1, Hair2;
+        
+        std::deque<std::string> Backlog;
+        std::deque<sf::Clock> BacklogClocks;
 };
 
 #endif

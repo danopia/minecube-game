@@ -22,9 +22,10 @@ void Socket::DoStep() {
         
         if (command == "First, I have to let you in on this secret.")
             In >> context->world->ChunkSize;
-        else if (command == "Take this chunk. It will be useful in times of need.")
+        else if (command == "Take this chunk. It will be useful in times of need.") {
+            context->hud->Output("Got a chunk");
             context->world->LoadChunk(In);
-        else if (command == "Take a number") {
+        } else if (command == "Take a number") {
             In >> Number;
             Players[Number] = *context->player;
         } else if (command == "Player wants to move") {
