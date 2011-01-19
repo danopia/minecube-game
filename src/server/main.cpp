@@ -1,6 +1,7 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include "common/terrain.h"
 #include "common/vector3.h"
@@ -8,6 +9,7 @@
 #include "common/player.h"
 #include "common/packets.h"
 #include "server/heartbeat.h"
+#include "server/client.h"
 
 // Choose a random port for opening sockets (ports < 1024 are reserved)
 const unsigned short Port = 28997;
@@ -60,8 +62,6 @@ void sendTerrain(sf::SocketTCP Client, Vector3 ChunkIndex) {
     Client.Send(Packet);
 }
 
-std::map<sf::SocketTCP, Player> players();
-
 sf::Clock BeatTimer;
 void beat() {
     if (beater.Beat())
@@ -71,6 +71,9 @@ void beat() {
     
     BeatTimer.Reset();
 }
+
+int NextNumber = 1;
+std::map<sf::SocketTCP, Client> clients;
 
 // Launch a server and receive incoming messages
 int main() {
@@ -110,20 +113,28 @@ int main() {
             {
                 // If the listening socket is ready, it means that we can accept a new connection
                 sf::IPAddress Address;
-                sf::SocketTCP Client;
-                Listener.Accept(Client, &Address);
+                sf::SocketTCP Newcomer;
+                Listener.Accept(Newcomer, &Address);
                 std::cout << "Client connected: " << Address << std::endl;
                 
                 sf::Packet Packet;
                 Packet << "First, I have to let you in on this secret.";
                 Packet << terrain->chunkSize;
-                Client.Send(Packet);
+                Newcomer.Send(Packet);
 
                 // Add it to the selector
-                Selector.Add(Client);
+                Selector.Add(Newcomer);
+                
+                clients[Newcomer] = Client(&Newcomer, NextNumber++);
             }
             else
             {
+                Client client;
+                
+                for (std::map<sf::SocketTCP, Client>::iterator it = clients.begin(); it != clients.end(); it++)
+                    if (it->first == Socket)
+                        client = it->second;
+                
                 // Else, it is a client socket so we can read the data he sent
                 sf::Packet Packet;
                 if (Socket.Receive(Packet) == sf::Socket::Done)
@@ -137,9 +148,16 @@ int main() {
                         Packet >> ChunkIndex;
                         sendTerrain(Socket, ChunkIndex);
                     } else if (Message == "Move me or ELSE!") {
-                        /*Vector3 ChunkIndex;
-                        Packet >> ChunkIndex;
-                        sendTerrain(Socket, ChunkIndex);*/
+                        Player player;
+                        Packet >> &player;
+                        
+                        sf::Packet Out;
+                        Out << "Player wants to move" << client.Number;
+                        Out << &player;
+                        
+                        for (std::map<sf::SocketTCP, Client>::iterator others = clients.begin(); others != clients.end(); others++)
+                            if (others->second.Number != client.Number)
+                                others->second.Socket->Send(Out);
                     } else
                         std::cout << "A client says: \"" << Message << "\"" << std::endl;
                 }
@@ -148,6 +166,7 @@ int main() {
                     // Error: we'd better remove the socket from the selector
                     std::cout << "Client disconnected" << std::endl;
                     Selector.Remove(Socket);
+                    clients.erase(*client.Socket);
                 }
             }
         }
