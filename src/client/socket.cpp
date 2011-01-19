@@ -39,6 +39,10 @@ void Socket::DoStep() {
             In >> who;
             Player *player = &Players[who];
             In >> player; // TODO: yea I had no idea what I was doing there...
+        } else if (command == "Print something for me, plz") {
+            std::string Line;
+            In >> Line;
+            context->hud->Output(Line);
         } else
             printf("Got strange packet: %s\n", command.c_str());
     }

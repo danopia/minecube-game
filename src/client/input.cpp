@@ -6,6 +6,8 @@ InputHandler::InputHandler(Context *context) : context(context), InChat(false) {
     context->window->ShowMouseCursor(false);
 }
 
+bool inputWaiting;
+
 bool fullscreen = false;
 void InputHandler::handleEvent(sf::Event Event) {
     float time;
@@ -16,6 +18,13 @@ void InputHandler::handleEvent(sf::Event Event) {
     
     // Handle text input for chat
     if (InChat && Event.Type == sf::Event::TextEntered) {
+
+        // Ignore the first char (which is t)
+        if (inputWaiting) {
+            inputWaiting = false;
+            return;
+        }
+        
         // Handle ASCII characters only
         if (Event.Text.Unicode < 128) {
             context->hud->chatEntry += static_cast<char>(Event.Text.Unicode);
@@ -45,6 +54,7 @@ void InputHandler::handleEvent(sf::Event Event) {
             case sf::Key::T:
                 context->hud->chatEntry = ""; // TODO: needed?
                 InChat = true;
+                inputWaiting = true;
                 break;
                 
             // W : forward
