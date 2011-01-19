@@ -13,6 +13,12 @@ Socket::Socket(Context *context, sf::SocketTCP socket) : context(context), socke
     socket.SetBlocking(false);
 }
 
+void Socket::SendChat(const std::string Line) {
+    sf::Packet Packet;
+    Packet << "May I speak?" << Line;
+    socket.Send(Packet);
+}
+
 void Socket::DoStep() {
     sf::Packet In;
     

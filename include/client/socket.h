@@ -24,6 +24,7 @@ class Socket
         
         void DoStep();
         void Close();
+        void SendChat(const std::string Line);
         
         Context *context;
         sf::SocketTCP socket;

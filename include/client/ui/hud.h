@@ -29,6 +29,8 @@ class HUD
         
         std::deque<std::string> Backlog;
         std::deque<sf::Clock> BacklogClocks;
+        
+        std::string chatEntry;
 };
 
 #endif

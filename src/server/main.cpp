@@ -109,6 +109,11 @@ void handlePacket(Client &client, const std::string &Message, sf::Packet &Packet
         Out << &player;
         broadcast(Out);
 
+    } else if (Message == "May I speak?") {
+        std::string Line;
+        Packet >> Line;
+        broadcastLog("<" + client.Address.ToString() + "> " + Line);
+
     } else
         std::cout << "A client says: \"" << Message << "\"" << std::endl;
 }

@@ -2,7 +2,7 @@
 
 #include "client/input.h"
 
-InputHandler::InputHandler(Context *context) : context(context) {
+InputHandler::InputHandler(Context *context) : context(context), InChat(false) {
     context->window->ShowMouseCursor(false);
 }
 
@@ -13,8 +13,24 @@ void InputHandler::handleEvent(sf::Event Event) {
     // Close window : exit
     if (Event.Type == sf::Event::Closed)
         context->window->Close();
+    
+    // Handle text input for chat
+    if (InChat && Event.Type == sf::Event::TextEntered) {
+        // Handle ASCII characters only
+        if (Event.Text.Unicode < 128) {
+            context->hud->chatEntry += static_cast<char>(Event.Text.Unicode);
+        }
+    }
+    
+    // Handle enter to send message
+    if (InChat && Event.Type == sf::Event::KeyPressed && Event.Key.Code == sf::Key::Return) {
+        context->socket->SendChat(context->hud->chatEntry);
+        context->hud->chatEntry = "";
+        InChat = false;
+    }
 
-    if (Event.Type == sf::Event::KeyPressed) {
+    // Otherwise....
+    if (!InChat && Event.Type == sf::Event::KeyPressed) {
         switch(Event.Key.Code) {
             // Escape key : exit
             case sf::Key::Escape:
@@ -23,6 +39,12 @@ void InputHandler::handleEvent(sf::Event Event) {
             // F11 : toggle fullscreen
             case sf::Key::F11:
                 toggleFullscreen();
+                break;
+                
+            // T : chat
+            case sf::Key::T:
+                context->hud->chatEntry = ""; // TODO: needed?
+                InChat = true;
                 break;
                 
             // W : forward

@@ -31,6 +31,7 @@ void HUD::Draw() {
     DebugText.SetText(buf);
     context->window->Draw(DebugText);
     
+    // Draw backlog
     BacklogText.SetPosition(0, 10);
     for (std::deque<std::string>::iterator line = Backlog.begin(); line != Backlog.end(); line++) {
         BacklogText.Move(0, 20);
@@ -38,6 +39,7 @@ void HUD::Draw() {
         context->window->Draw(BacklogText);
     }
     
+    // Expire old backlog
     int expired = 0;
     for (std::deque<sf::Clock>::iterator clock = BacklogClocks.begin(); clock != BacklogClocks.end(); clock++)
         if (clock->GetElapsedTime() > 5.f)
@@ -46,6 +48,13 @@ void HUD::Draw() {
     for (int i = 0; i < expired; i++) {
         Backlog.pop_front();
         BacklogClocks.pop_front();
+    }
+    
+    // Display chat input as you type (dumb textbox)
+    if (context->inputHandler->InChat) {
+        BacklogText.Move(0, 30);
+        BacklogText.SetText(chatEntry);
+        context->window->Draw(BacklogText);
     }
     
     // Draw crosshair

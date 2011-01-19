@@ -23,6 +23,8 @@ class InputHandler {
         Context *context;
         sf::Clock Clock; // Track elapsed time for player movement
         sf::Clock MovementTimer; // Track elapsed time for crouching, crawling, running
+        
+        bool InChat;
 };
 
 #endif
