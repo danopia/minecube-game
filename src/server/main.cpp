@@ -166,7 +166,7 @@ int main() {
                     // Error: we'd better remove the socket from the selector
                     std::cout << "Client disconnected" << std::endl;
                     Selector.Remove(Socket);
-                    clients.erase(*client.Socket);
+                    clients.erase(Socket);
                 }
             }
         }
