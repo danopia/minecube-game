@@ -7,6 +7,7 @@
 #include "client/renderer.h"
 #include "client/input.h"
 #include "client/socket.h"
+#include "client/ui/hud.h"
 #include "common/player.h"
 #include "common/lazyworld.h"
 
@@ -15,6 +16,7 @@ class Player;
 class LazyWorld;
 class Renderer;
 class InputHandler;
+class HUD;
 
 class Context
 {
@@ -28,6 +30,7 @@ class Context
         LazyWorld *world;
         Renderer *renderer;
         InputHandler *inputHandler;
+        HUD *hud;
         
         bool inGame;
 };
