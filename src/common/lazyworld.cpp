@@ -23,10 +23,10 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
         Packet >> Pos;
         Packet >> SideLength;
         
-        if (type == 3)
+        //if (type == 3)
             Block = new GrassBlock();
-        else
-            Block = new AirBlock();
+        //else
+        //    Block = new AirBlock();
         
         Blocks.push_back(PositionedBlock(Block, Pos, SideLength));
     }

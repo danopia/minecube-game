@@ -78,7 +78,7 @@ std::map<sf::SocketTCP, Client> clients;
 // Launch a server and receive incoming messages
 int main() {
     std::cout << "Setting up terrain..." << std::endl;
-    terrain = new Terrain(3, 0, 10,10,10, 25);
+    terrain = new Terrain(3, 0, 1,1,1, 25);
     terrain->Regenerate();
     terrain->SaveToFile("server.mcube");
     

@@ -2,7 +2,7 @@
 
 Game::Game(Context *context) : context(context) {
     context->world = new LazyWorld(context->socket->socket);
-    context->player = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(5.f, 25.f, 49.f), "Foo");
+    context->player = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(12.5f, 12.5f, 25.f), "Foo");
     context->renderer = new Renderer(context);
     context->inputHandler = new InputHandler(context);
 }

@@ -81,6 +81,46 @@ GLdouble texcoords[64] = {
     0.125, 0.125,
 };
 
+
+// For stone
+GLdouble texcoords2[64] = {
+    // Bottom
+    0.125, 0.5,
+    0.0,   0.5,
+    0.0,   0.375,
+    0.125, 0.375,
+
+    // Back
+    0.125, 0.375,
+    0.0,   0.375,
+    0.0,   0.5,
+    0.125, 0.5,
+
+    // Right
+    0.125, 0.375,
+    0.0,   0.375,
+    0.0,   0.5,
+    0.125, 0.5,
+
+    // Top
+    0.0,   0.375,
+    0.125, 0.375,
+    0.125, 0.5,
+    0.0,   0.5,
+
+    // Front
+    0.125, 0.375,
+    0.125, 0.5,
+    0.0,   0.5,
+    0.0,   0.375,
+
+    // Left
+    0.125, 0.5,
+    0.0,   0.5,
+    0.0,   0.375,
+    0.125, 0.375,
+};
+
 Renderer::Renderer(Context *context): context(context) {
     InitGraphics();
 }
@@ -137,6 +177,13 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     glLoadIdentity();
     glTranslatef(x + subsize, y + subsize, z + subsize);
     glScalef(subsize, subsize, subsize);
+    
+    if (block->Type == 1) // Stone
+        glTexCoordPointer(2, GL_DOUBLE, 0, &texcoords2[0]);
+    else if (block->Type == 3) // Grass
+        glTexCoordPointer(2, GL_DOUBLE, 0, &texcoords[0]);
+    else
+        printf("Type %i\n", block->Type);
 
     /*
     if (block->faces & 0x01 > 0 && player->Pos.Z < z) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[0] );
@@ -187,7 +234,7 @@ void Renderer::render() {
 
     glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
     //glNormalPointer( GL_DOUBLE, 0, &vertices[0] );
-    glTexCoordPointer( 2, GL_DOUBLE, 0, &texcoords[0] );
+    glTexCoordPointer(2, GL_DOUBLE, 0, &texcoords[0]);
     
     context->player->StandingOn = NULL;
     
@@ -195,7 +242,7 @@ void Renderer::render() {
     for (int i = 0; i < context->world->Blocks.size(); i++)
         renderBlock(context->world->Blocks[i]);
     
-    Block *block = new GrassBlock();
+    Block *block = new StoneBlock();
     for (std::map<int, Player>::iterator player = context->socket->Players.begin(); player != context->socket->Players.end(); player++) {
         if (player->first != context->socket->Number) {
             player->second.GravitySpeed = 0.f;
