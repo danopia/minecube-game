@@ -75,21 +75,65 @@ void beat() {
 int NextNumber = 1;
 std::map<sf::SocketTCP, Client> clients;
 
+void broadcast(sf::Packet &Packet) {
+    for (std::map<sf::SocketTCP, Client>::iterator client = clients.begin(); client != clients.end(); client++)
+        client->second.Socket->Send(Packet);
+}
+
+void broadcastExcept(const Client &Except, sf::Packet &Packet) {
+    for (std::map<sf::SocketTCP, Client>::iterator client = clients.begin(); client != clients.end(); client++)
+        if (client->second.Number != Except.Number)
+            client->second.Socket->Send(Packet);
+}
+
+void broadcastLog(const std::string &Line) {
+    sf::Packet Packet;
+    Packet << "Print something for me, plz" << Line;
+    broadcast(Packet);
+    
+    std::cout << "[LOG] " << Line << std::endl;
+}
+
+void handlePacket(Client &client, const std::string &Message, sf::Packet &Packet) {
+    if (Message == "Terrain pl0z") {
+        Vector3 ChunkIndex;
+        Packet >> ChunkIndex;
+        sendTerrain(*client.Socket, ChunkIndex);
+
+    } else if (Message == "Move me or ELSE!") {
+        Player player;
+        Packet >> &player;
+        
+        sf::Packet Out;
+        Out << "Player wants to move" << client.Number;
+        Out << &player;
+        
+        for (std::map<sf::SocketTCP, Client>::iterator others = clients.begin(); others != clients.end(); others++)
+            //if (others->second.Number != client.Number)
+                others->second.Socket->Send(Out);
+
+    } else
+        std::cout << "A client says: \"" << Message << "\"" << std::endl;
+}
+
 // Launch a server and receive incoming messages
 int main() {
-    std::cout << "Setting up terrain..." << std::endl;
+    std::cout << "Setting up terrain... ";
     terrain = new Terrain(3, 0, 1,1,1, 25);
     terrain->Regenerate();
     terrain->SaveToFile("server.mcube");
+    std::cout << "done" << std::endl;
     
     // Create a socket for listening to incoming connections
     sf::SocketTCP Listener;
     if (!Listener.Listen(Port))
         return EXIT_FAILURE;
-    std::cout << "Listening to port " << Port << ", waiting for connections..." << std::endl;
+    std::cout << "Listening to port " << Port << std::endl;
     
     // Send heartbeat now that server is up
     beat();
+    
+    std::cout << "Ready." << std::endl;
 
     // Create a selector for handling several sockets (the listener + the socket associated to each client)
     sf::SelectorTCP Selector;
@@ -98,24 +142,23 @@ int main() {
     Selector.Add(Listener);
 
     // Loop while... we close the program :)
-    while (true)
-    {
+    while (true) {
+    
         // Get the sockets ready for reading
         unsigned int NbSockets = Selector.Wait(60.f);
 
         // We can read from each returned socket
-        for (unsigned int i = 0; i < NbSockets; ++i)
-        {
+        for (unsigned int i = 0; i < NbSockets; ++i) {
             // Get the current socket
             sf::SocketTCP Socket = Selector.GetSocketReady(i);
 
-            if (Socket == Listener)
-            {
+            if (Socket == Listener) {
                 // If the listening socket is ready, it means that we can accept a new connection
                 sf::IPAddress Address;
                 sf::SocketTCP Newcomer;
                 Listener.Accept(Newcomer, &Address);
-                std::cout << "Client connected: " << Address << std::endl;
+                
+                broadcastLog("Client connected: " + Address.ToString());
                 
                 sf::Packet Packet;
                 Packet << "First, I have to let you in on this secret.";
@@ -126,47 +169,27 @@ int main() {
                 Selector.Add(Newcomer);
                 
                 clients[Newcomer] = Client(&Newcomer, NextNumber++);
-            }
-            else
-            {
-                Client client;
-                
-                for (std::map<sf::SocketTCP, Client>::iterator it = clients.begin(); it != clients.end(); it++)
-                    if (it->first == Socket)
-                        client = it->second;
-                
+            } else {
                 // Else, it is a client socket so we can read the data he sent
                 sf::Packet Packet;
-                if (Socket.Receive(Packet) == sf::Socket::Done)
-                {
+                if (Socket.Receive(Packet) == sf::Socket::Done) {
+                    Client client;
+                    
+                    for (std::map<sf::SocketTCP, Client>::iterator it = clients.begin(); it != clients.end(); it++)
+                        if (it->first == Socket)
+                            client = it->second;
+
                     // Extract the message and display it
                     std::string Message;
                     Packet >> Message;
+                    handlePacket(client, Message, Packet);
                     
-                    if (Message == "Terrain pl0z") {
-                        Vector3 ChunkIndex;
-                        Packet >> ChunkIndex;
-                        sendTerrain(Socket, ChunkIndex);
-                    } else if (Message == "Move me or ELSE!") {
-                        Player player;
-                        Packet >> &player;
-                        
-                        sf::Packet Out;
-                        Out << "Player wants to move" << client.Number;
-                        Out << &player;
-                        
-                        for (std::map<sf::SocketTCP, Client>::iterator others = clients.begin(); others != clients.end(); others++)
-                            //if (others->second.Number != client.Number)
-                                others->second.Socket->Send(Out);
-                    } else
-                        std::cout << "A client says: \"" << Message << "\"" << std::endl;
-                }
-                else
-                {
+                } else {
                     // Error: we'd better remove the socket from the selector
-                    std::cout << "Client disconnected" << std::endl;
                     Selector.Remove(Socket);
                     clients.erase(Socket);
+                    
+                    broadcastLog("Client disconnected");
                 }
             }
         }
