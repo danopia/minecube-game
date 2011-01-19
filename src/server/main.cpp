@@ -165,17 +165,17 @@ int main() {
                 // Add it to the selector
                 Selector.Add(Newcomer);
                 
-                clients[Newcomer] = Client(&Newcomer, NextNumber++);
+                clients[Newcomer] = Client(&Newcomer, Address, NextNumber++);
             } else {
                 // Else, it is a client socket so we can read the data he sent
+        
+                Client client;
+                for (std::map<sf::SocketTCP, Client>::iterator it = clients.begin(); it != clients.end(); it++)
+                    if (it->first == Socket)
+                        client = it->second;
+
                 sf::Packet Packet;
                 if (Socket.Receive(Packet) == sf::Socket::Done) {
-                    Client client;
-                    
-                    for (std::map<sf::SocketTCP, Client>::iterator it = clients.begin(); it != clients.end(); it++)
-                        if (it->first == Socket)
-                            client = it->second;
-
                     // Extract the message and display it
                     std::string Message;
                     Packet >> Message;
@@ -186,7 +186,7 @@ int main() {
                     Selector.Remove(Socket);
                     clients.erase(Socket);
                     
-                    broadcastLog("Client disconnected");
+                    broadcastLog("Client disconnected: " + client.Address.ToString());
                 }
             }
         }
