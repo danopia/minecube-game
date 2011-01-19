@@ -13,11 +13,12 @@
 #include "client/ui/uipage.h"
 #include "client/game.h"
 #include "client/socket.h"
+#include "client/context.h"
 
 class ServerList : public UIPage
 {
     public:
-        ServerList(sf::RenderWindow *app);
+        ServerList(Context *context);
         void ItemSelected(std::string Label);
 };
 

@@ -81,7 +81,7 @@ GLdouble texcoords[64] = {
     0.125, 0.125,
 };
 
-Renderer::Renderer(LazyWorld *world, Player *player): world(world), player(player) {
+Renderer::Renderer(Context *context): context(context) {
     InitGraphics();
 }
 
@@ -146,20 +146,20 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     if (block->faces & 0x10 > 0 && player->Pos.X < x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[16] );
     if (block->faces & 0x20 > 0 && player->Pos.Y > y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[20] );
     */
-    if (player->Pos.Z + 1.5f < z) glDrawArrays(GL_QUADS, 0, 4);
-    if (player->Pos.X + 0.5f > x) glDrawArrays(GL_QUADS, 4, 4);
-    if (player->Pos.Y - 0.5f < y) glDrawArrays(GL_QUADS, 8, 4);
-    if (player->Pos.Z + 1.5f > z) glDrawArrays(GL_QUADS, 12, 4);
-    if (player->Pos.X - 0.5f < x) glDrawArrays(GL_QUADS, 16, 4);
-    if (player->Pos.Y + 0.5f > y) glDrawArrays(GL_QUADS, 20, 4);
+    if (context->player->Pos.Z + 1.5f < z) glDrawArrays(GL_QUADS, 0, 4);
+    if (context->player->Pos.X + 0.5f > x) glDrawArrays(GL_QUADS, 4, 4);
+    if (context->player->Pos.Y - 0.5f < y) glDrawArrays(GL_QUADS, 8, 4);
+    if (context->player->Pos.Z + 1.5f > z) glDrawArrays(GL_QUADS, 12, 4);
+    if (context->player->Pos.X - 0.5f < x) glDrawArrays(GL_QUADS, 16, 4);
+    if (context->player->Pos.Y + 0.5f > y) glDrawArrays(GL_QUADS, 20, 4);
 }
 
 void Renderer::renderBlock(PositionedBlock block) {
     // Collision check against player
-    if (player->Pos.X + player->Hitbox.X >= block.pos.X && player->Pos.X <= block.pos.X + block.sideLength
-     && player->Pos.Y + player->Hitbox.Y >= block.pos.Y && player->Pos.Y <= block.pos.Y + block.sideLength
-     && player->Pos.Z + player->Hitbox.Z >= block.pos.Z && player->Pos.Z <= block.pos.Z + block.sideLength) {
-        player->StandingOn = &block;
+    if (context->player->Pos.X + context->player->Hitbox.X >= block.pos.X && context->player->Pos.X <= block.pos.X + block.sideLength
+     && context->player->Pos.Y + context->player->Hitbox.Y >= block.pos.Y && context->player->Pos.Y <= block.pos.Y + block.sideLength
+     && context->player->Pos.Z + context->player->Hitbox.Z >= block.pos.Z && context->player->Pos.Z <= block.pos.Z + block.sideLength) {
+        context->player->StandingOn = &block;
     }
     
     drawCube(block.block, block.pos.X, block.pos.Y, block.pos.Z, block.sideLength);
@@ -173,9 +173,9 @@ void Renderer::render() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(90.f, 1.f, 1.f, 500.f);
-    glRotatef(-90 + player->Rotation.Y, 1.f, 0.f, 0.f);
-    glRotatef(player->Rotation.Z, 0.f, 0.f, 1.f);
-    glTranslatef(-player->Pos.X - 0.5f, -player->Pos.Y - 0.5f, -player->Pos.Z - 1.5f);    // Translate The Scene Based On Player Position
+    glRotatef(-90 + context->player->Rotation.Y, 1.f, 0.f, 0.f);
+    glRotatef(context->player->Rotation.Z, 0.f, 0.f, 1.f);
+    glTranslatef(-context->player->Pos.X - 0.5f, -context->player->Pos.Y - 0.5f, -context->player->Pos.Z - 1.5f);    // Translate The Scene Based On Player Position
 
     glMatrixMode(GL_MODELVIEW);
     
@@ -189,11 +189,11 @@ void Renderer::render() {
     //glNormalPointer( GL_DOUBLE, 0, &vertices[0] );
     glTexCoordPointer( 2, GL_DOUBLE, 0, &texcoords[0] );
     
-    player->StandingOn = NULL;
+    context->player->StandingOn = NULL;
     
     // Loop through blocks and render them
-    for (int i = 0; i < world->Blocks.size(); i++)
-        renderBlock(world->Blocks[i]);
+    for (int i = 0; i < context->world->Blocks.size(); i++)
+        renderBlock(context->world->Blocks[i]);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     //glDisableClientState(GL_NORMAL_ARRAY);

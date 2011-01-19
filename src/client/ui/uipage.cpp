@@ -2,14 +2,14 @@
 
 sf::Clock UIPage::Clock;
 
-UIPage::UIPage(sf::RenderWindow* App, std::string Subtitle, bool Background) : App(App), Subtitle(Subtitle), Background(Background), BG(64, 64), Sprite(BG), Current(0) {
+UIPage::UIPage(Context *context, std::string Subtitle, bool Background) : context(context), Subtitle(Subtitle), Background(Background), BG(64, 64), Sprite(BG), Current(0) {
     InitGraphics();
 }
 
 void UIPage::InitGraphics() {
-    App->PreserveOpenGLStates(false);
-    App->UseVerticalSync(true);
-    App->ShowMouseCursor(true);
+    context->window->PreserveOpenGLStates(false);
+    context->window->UseVerticalSync(true);
+    context->window->ShowMouseCursor(true);
     
     // Load tiles texture
     if (!Tiles.LoadFromFile("data/tiles.png"))
@@ -24,7 +24,7 @@ void UIPage::InitGraphics() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     
     // Mainly done here for when you hit F11 or change window size
-    Sprite.SetSubRect(sf::IntRect(0, 0, App->GetWidth(), App->GetHeight()));
+    Sprite.SetSubRect(sf::IntRect(0, 0, context->window->GetWidth(), context->window->GetHeight()));
     Sprite.SetColor(sf::Color(128, 128, 128));
     
     // Load fonts
@@ -34,11 +34,11 @@ void UIPage::InitGraphics() {
 
 void UIPage::Loop() {
     sf::String Title("MineCube", TitleFnt, 90);
-    Title.SetPosition((App->GetWidth() / 2) - (Title.GetRect().GetWidth() / 2), 20);
+    Title.SetPosition((context->window->GetWidth() / 2) - (Title.GetRect().GetWidth() / 2), 20);
 
     
     sf::String STitle(Subtitle, ButtonFnt, 30);
-    STitle.SetPosition((App->GetWidth() / 2) - (STitle.GetRect().GetWidth() / 2), 130);
+    STitle.SetPosition((context->window->GetWidth() / 2) - (STitle.GetRect().GetWidth() / 2), 130);
     
     sf::String Label("Button", ButtonFnt, 30);
     sf::Shape Button = sf::Shape::Rectangle(-200, -20, 200, 20, sf::Color(127.f, 127.f, 127.f), 2, sf::Color::Black);
@@ -48,18 +48,18 @@ void UIPage::Loop() {
     sf::Event Event;
     
     // Start menu loop
-    while (App->IsOpened())
+    while (context->window->IsOpened())
     {
-        mouseX = App->GetInput().GetMouseX();
-        mouseY = App->GetInput().GetMouseY();
+        mouseX = context->window->GetInput().GetMouseX();
+        mouseY = context->window->GetInput().GetMouseY();
         clicked = false;
         
         // Handle mouse and keyboard stuff
-        while (App->GetEvent(Event))
+        while (context->window->GetEvent(Event))
         {
             // Close window: exit
             if (Event.Type == sf::Event::Closed)
-                App->Close();
+                context->window->Close();
 
             // Escape key: close menu
             if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Escape))
@@ -92,10 +92,10 @@ void UIPage::Loop() {
         if (Background)
             DrawBackground();
         
-        App->Draw(Title);
-        App->Draw(STitle);
+        context->window->Draw(Title);
+        context->window->Draw(STitle);
         
-        Button.SetPosition(App->GetWidth() / 2, 150);
+        Button.SetPosition(context->window->GetWidth() / 2, 150);
         
         mightBeOver = (mouseX > Button.GetPosition().x - 200) && (mouseX < Button.GetPosition().x + 200);
         
@@ -117,19 +117,19 @@ void UIPage::Loop() {
             Label.SetText(Buttons[i]);
             Label.SetPosition(Button.GetPosition().x - (Label.GetRect().GetWidth() / 2), Button.GetPosition().y - 20);
             
-            App->Draw(Button);
-            App->Draw(Label);
+            context->window->Draw(Button);
+            context->window->Draw(Label);
         }
 
         // Finally, display rendered frame on screen
-        App->Display();
+        context->window->Display();
     }
 }
 
 //void UIPage::ItemSelected(std::string Label) {}
 
 void UIPage::DrawBackground() {
-    App->Draw(Sprite);
+    context->window->Draw(Sprite);
     
     // Enable Z-buffer read and write
     glEnable(GL_DEPTH_TEST);

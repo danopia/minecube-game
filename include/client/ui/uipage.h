@@ -6,10 +6,12 @@
 #include <iostream>
 #include <cstdio>
 
+#include "client/context.h"
+
 class UIPage
 {
     public:
-        UIPage(sf::RenderWindow *App, std::string Subtitle = "", bool Background = true);
+        UIPage(Context *context, std::string Subtitle = "", bool Background = true);
         void InitGraphics();
         void Loop();
         virtual void ItemSelected(std::string Label) {};
@@ -23,7 +25,7 @@ class UIPage
     protected:
         void DrawBackground();
         
-        sf::RenderWindow *App;
+        Context *context;
         
         sf::Image Tiles;
         sf::Image BG;

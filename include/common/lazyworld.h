@@ -15,9 +15,9 @@
 class LazyWorld
 {
     public:
-        LazyWorld(sf::SocketTCP *Socket) : Socket(Socket) {};
+        LazyWorld(sf::SocketTCP& Socket) : Socket(Socket) {};
         
-        sf::SocketTCP *Socket;
+        sf::SocketTCP& Socket;
         std::vector<PositionedBlock> Blocks;
         std::vector<Entity> Entities;
         

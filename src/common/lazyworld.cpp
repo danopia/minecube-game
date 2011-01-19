@@ -47,7 +47,7 @@ void LazyWorld::RequestChunk(Vector3 ChunkIndex) {
     // Send request to the server
     sf::Packet Packet;
     Packet << "Terrain pl0z" << ChunkIndex;
-    Socket->Send(Packet);
+    Socket.Send(Packet);
     
     LoadedChunks.push_back(ChunkIndex);
 }

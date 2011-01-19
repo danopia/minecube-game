@@ -2,35 +2,47 @@
 
 #include <stdio.h>
 
-Socket::Socket(sf::SocketTCP *socket) : socket(socket), Number(0) {
-    socket->SetBlocking(false);
+Socket::Socket(Context *context, int port, std::string hostname) : context(context), Number(0) {
+    // Connect to the server
+    Connected = (socket.Connect(port, hostname) == sf::Socket::Done);
+    
+    socket.SetBlocking(false);
+}
+
+Socket::Socket(Context *context, sf::SocketTCP socket) : context(context), socket(socket), Number(0) {
+    socket.SetBlocking(false);
 }
 
 void Socket::DoStep() {
     sf::Packet In;
     
-    if (socket->Receive(In) == sf::Socket::Done) {
+    while (socket.Receive(In) == sf::Socket::Done) {
         std::string command;
         In >> command;
         
         if (command == "First, I have to let you in on this secret.")
-            In >> world->ChunkSize;
+            In >> context->world->ChunkSize;
         else if (command == "Take this chunk. It will be useful in times of need.")
-            world->LoadChunk(In);
+            context->world->LoadChunk(In);
         else if (command == "Take a number")
             In >> Number;
-        else
+        else if (command == "Player wants to move") {
+            
+        } else
             printf("Got strange packet: %s\n", command.c_str());
     }
 
-    if ((player->Dirty && (updateTimer.GetElapsedTime() > 0.5f))
+    if ((context->player->Dirty && (updateTimer.GetElapsedTime() > 0.5f))
      || (updateTimer.GetElapsedTime() > 5.f)) {
         sf::Packet Out;
-        Out << "Move me or ELSE!" << player;
-        socket->Send(Out);
+        Out << "Move me or ELSE!" << context->player;
+        socket.Send(Out);
         
-        player->Dirty = false;
+        context->player->Dirty = false;
         updateTimer.Reset();
     }
 }
 
+void Socket::Close() {
+    socket.Close();
+}

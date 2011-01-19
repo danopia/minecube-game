@@ -34,54 +34,20 @@ std::vector<std::string> FetchServers() {
     return combos;
 }
 
-ServerList::ServerList(sf::RenderWindow* App) : UIPage(App, "Server List", true) {
+ServerList::ServerList(Context *context) : UIPage(context, "Server List", true) {
     Buttons = FetchServers();
     Buttons.push_back("localhost:28997");
 }
 
-void multiplayer(sf::RenderWindow* App, std::string hostname, int port) {
-    /* Ask for server address
-    sf::IPAddress ServerAddress;
-    do
-    {
-        std::cout << "Type the address or name of the server to connect to : ";
-        std::cin  >> ServerAddress;
-    }
-    while (!ServerAddress.IsValid());
-    std::cin.ignore(10000, '\n');*/
-
-    // Create a socket for exchanging data with the server
-    sf::SocketTCP socket;
-
-    // Connect to the server
-    if (socket.Connect(port, hostname) != sf::Socket::Done)
-        return;
-
-    /* Send messages until we are disconnected
-    bool Connected = true;
-    while (Connected)
-    {
-        // Let the user write a message
-        std::string Message;
-        std::cout << "Say something to the server : ";
-        std::getline(std::cin, Message);
-
-        // Send it to the server
-        sf::Packet Packet;
-        Packet << Message;
-        Connected = (Socket.Send(Packet) == sf::Socket::Done);
-    }*/
+void multiplayer(Context *context, std::string hostname, int port) {
+    context->socket = new Socket(context, port, hostname);
     
-    Socket connection(&socket);
-    
-    // Load up a game
-    Game game(App, &connection);
-    
-    // Run the game
+    // Load up a game and run it
+    Game game(context);
     game.Loop();
 
     // Close the socket
-    socket.Close();
+    context->socket->Close();
 }
 
 void ServerList::ItemSelected(std::string Label) {
@@ -95,7 +61,7 @@ void ServerList::ItemSelected(std::string Label) {
     
     int iPort = atoi(port.c_str());
     
-    multiplayer(App, ip, iPort);
+    multiplayer(context, ip, iPort);
     
     InitGraphics();
 }

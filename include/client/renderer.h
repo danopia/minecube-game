@@ -3,21 +3,24 @@
 #define RENDERER_H
 
 #include <SFML/Graphics.hpp>
+
+#include "client/context.h"
 #include "common/player.h"
 #include "common/terrain.h"
 #include "common/block.h"
 #include "common/lazyworld.h"
 
+class Context;
+
 class Renderer {
     public:
-        Renderer(LazyWorld *world, Player *player);
+        Renderer(Context *context);
         void InitGraphics();
         void render();
         void renderBlock(PositionedBlock block);
         void drawCube(Block *block, float x, float y, float z, float length);
         
-        LazyWorld *world;
-        Player *player;
+        Context *context;
         
         sf::Font Font;
 };

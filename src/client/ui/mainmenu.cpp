@@ -1,6 +1,6 @@
 #include "client/ui/mainmenu.h"
 
-MainMenu::MainMenu(sf::RenderWindow* App) : UIPage(App, "Choose your adventure", true) {
+MainMenu::MainMenu(Context *context) : UIPage(context, "Choose your adventure", true) {
     Buttons.push_back("Start server");
     Buttons.push_back("Connect");
     Buttons.push_back("Options");
@@ -8,16 +8,16 @@ MainMenu::MainMenu(sf::RenderWindow* App) : UIPage(App, "Choose your adventure",
 }
 
 // Create server list screen and show it
-void startServerList(sf::RenderWindow* App) {
-    ServerList submenu(App);
+void startServerList(Context *context) {
+    ServerList submenu(context);
     submenu.Loop();
 }
 
 void MainMenu::ItemSelected(std::string Label) {
     if (Label == "Connect")
-        startServerList(App);
+        startServerList(context);
     else if (Label == "Exit")
-        App->Close();
+        context->window->Close();
     
     InitGraphics();
 }

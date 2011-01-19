@@ -4,24 +4,25 @@
 
 #include <SFML/Window.hpp>
 
-#include "common/player.h"
+#include "client/context.h"
 #include "client/renderer.h"
+#include "common/player.h"
+
+class Context;
 
 class InputHandler {
     public:
-        InputHandler(sf::Window* Window, Player* Player, Renderer* Renderer);
+        InputHandler(Context *context);
         void handleEvent(sf::Event Event);
-        bool handleEvents();
+        void handleEvents();
         void toggleFullscreen();
         
         // Booleans for pre-keypress movement
         bool WasRunning, WasCrouching, WasCrawling;
         
-        sf::Window *app;
+        Context *context;
         sf::Clock Clock; // Track elapsed time for player movement
         sf::Clock MovementTimer; // Track elapsed time for crouching, crawling, running
-        Player *player;
-        Renderer *renderer;
 };
 
 #endif

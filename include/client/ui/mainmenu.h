@@ -3,7 +3,6 @@
 #define MAINMENU_H
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
 #include <cmath>
 #include <iostream>
 #include <cstdio>
@@ -11,6 +10,7 @@
 #include "client/ui/uipage.h"
 #include "client/ui/serverlist.h"
 #include "client/game.h"
+#include "client/context.h"
 
 #ifdef _WIN32
 #define snprintf sprintf_s
@@ -19,7 +19,7 @@
 class MainMenu : public UIPage
 {
     public:
-        MainMenu(sf::RenderWindow *app);
+        MainMenu(Context *context);
         void ItemSelected(std::string Label);
 };
 
