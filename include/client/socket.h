@@ -4,6 +4,7 @@
 
 #include <SFML/Network.hpp>
 #include <string>
+#include <map>
 
 #include "client/context.h"
 #include "common/lazyworld.h"
@@ -31,6 +32,7 @@ class Socket
         
         int Number;
         bool Connected;
+        std::map<int, Player> Players;
 };
 
 #endif

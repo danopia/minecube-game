@@ -24,10 +24,14 @@ void Socket::DoStep() {
             In >> context->world->ChunkSize;
         else if (command == "Take this chunk. It will be useful in times of need.")
             context->world->LoadChunk(In);
-        else if (command == "Take a number")
+        else if (command == "Take a number") {
             In >> Number;
-        else if (command == "Player wants to move") {
-            
+            Players[Number] = *context->player;
+        } else if (command == "Player wants to move") {
+            int who;
+            In >> who;
+            Player player = Players[who];
+            In >> &player; // TODO: yea I had no idea what I was doing there...
         } else
             printf("Got strange packet: %s\n", command.c_str());
     }
