@@ -26,7 +26,10 @@ void InputHandler::handleEvent(sf::Event Event) {
         }
         
         // Handle ASCII characters only
-        if (Event.Text.Unicode < 128) {
+        if (Event.Text.Unicode == 8) { // TODO: use KeyPressed?
+            if (context->hud->chatEntry.size() > 0)
+                context->hud->chatEntry.erase(context->hud->chatEntry.size() - 1, 1);
+        } else if (Event.Text.Unicode < 128) {
             context->hud->chatEntry += static_cast<char>(Event.Text.Unicode);
         }
     }
