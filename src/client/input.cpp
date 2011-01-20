@@ -32,10 +32,27 @@ void InputHandler::handleEvent(sf::Event Event) {
     }
     
     // Handle enter to send message
-    if (InChat && Event.Type == sf::Event::KeyPressed && Event.Key.Code == sf::Key::Return) {
-        context->socket->SendChat(context->hud->chatEntry);
-        context->hud->chatEntry = "";
-        InChat = false;
+    if (InChat && Event.Type == sf::Event::KeyPressed) {
+        switch(Event.Key.Code) {
+            // F11 : toggle fullscreen
+            case sf::Key::F11:
+                toggleFullscreen();
+                break;
+                
+            // Escape key : cancel message
+            case sf::Key::Escape:
+                context->hud->chatEntry = "";
+                InChat = false;
+                return; // don't run the handlers from down there
+                
+            // Enter : send message
+            case sf::Key::Return:
+                context->socket->SendChat(context->hud->chatEntry);
+                context->hud->chatEntry = "";
+                InChat = false;
+                return; // don't run the handlers from down there
+                
+        } 
     }
 
     // Otherwise....
