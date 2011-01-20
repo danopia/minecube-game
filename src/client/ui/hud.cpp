@@ -52,9 +52,13 @@ void HUD::Draw() {
     
     // Display chat input as you type (dumb textbox)
     if (context->inputHandler->InChat) {
+        BacklogText.SetColor(sf::Color::Blue);
         BacklogText.Move(0, 30);
-        BacklogText.SetText(chatEntry);
+        BacklogText.SetText("> " + chatEntry);
+        
         context->window->Draw(BacklogText);
+        
+        BacklogText.SetColor(sf::Color::White);
     }
     
     // Draw crosshair
