@@ -201,29 +201,40 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     if (context->player->Pos.Y + 0.5f > y) glDrawArrays(GL_QUADS, 20, 4);
 }
 
+void handleCollision(Player *player, PositionedBlock& block) {
+    if (!(player->LastPos.Z + player->Hitbox.Z > block.pos.Z && player->LastPos.Z < block.pos.Z + block.sideLength)) {
+        if (player->Pos.Z + (player->Hitbox.Z / 2) < block.pos.Z + (block.sideLength / 2))
+            player->Pos.Z = block.pos.Z - player->Hitbox.Z;
+        else {
+            player->StandingOn = &block;
+            player->Pos.Z = block.pos.Z + block.sideLength;
+            return; // or else you can't step between blocks
+        }
+    }
+    
+    if (!(player->LastPos.X + player->Hitbox.X > block.pos.X && player->LastPos.X < block.pos.X + block.sideLength)) {
+        if (player->Pos.X + (player->Hitbox.X / 2) < block.pos.X + (block.sideLength / 2))
+            player->Pos.X = block.pos.X - player->Hitbox.X;
+        else
+            player->Pos.X = block.pos.X + block.sideLength;
+    }
+    
+    if (!(player->LastPos.Y + player->Hitbox.Y > block.pos.Y && player->LastPos.Y < block.pos.Y + block.sideLength)) {
+        if (player->Pos.Y + (player->Hitbox.Y / 2) < block.pos.Y + (block.sideLength / 2))
+            player->Pos.Y = block.pos.Y - player->Hitbox.Y;
+        else
+            player->Pos.Y = block.pos.Y + block.sideLength;
+    }
+}
+
 Player *player;
 
 void Renderer::renderBlock(PositionedBlock block) {
     // Collision check against player
     if (player->Pos.X + player->Hitbox.X >= block.pos.X && player->Pos.X <= block.pos.X + block.sideLength
      && player->Pos.Y + player->Hitbox.Y >= block.pos.Y && player->Pos.Y <= block.pos.Y + block.sideLength
-     && player->Pos.Z + player->Hitbox.Z >= block.pos.Z && player->Pos.Z <= block.pos.Z + block.sideLength) {
-        if (player->Pos.Z + 0.1f >= block.pos.Z + block.sideLength) {
-            player->StandingOn = &block;
-            player->Pos.Z = block.pos.Z + block.sideLength;
-        } else {
-            player->Pos = player->LastPos;
-            
-            if (player->Pos.X + player->Hitbox.X >= block.pos.X && player->Pos.X <= block.pos.X + block.sideLength
-             && player->Pos.Y + player->Hitbox.Y >= block.pos.Y && player->Pos.Y <= block.pos.Y + block.sideLength
-             && player->Pos.Z + player->Hitbox.Z >= block.pos.Z) {
-
-                player->StandingOn = &block;
-                player->Pos.Z = block.pos.Z + block.sideLength;
-                player->LastPos.Z = block.pos.Z + block.sideLength;
-            }
-        }
-    }
+     && player->Pos.Z + player->Hitbox.Z >= block.pos.Z && player->Pos.Z <= block.pos.Z + block.sideLength)
+        handleCollision(player, block);
     
     drawCube(block.block, block.pos.X, block.pos.Y, block.pos.Z, block.sideLength);
 }
