@@ -156,21 +156,22 @@ int main() {
 
             if (Socket == Listener) {
                 // If the listening socket is ready, it means that we can accept a new connection
-                sf::IPAddress Address;
-                sf::SocketTCP Newcomer;
-                Listener.Accept(Newcomer, &Address);
+                // Using pointers until this is in it's own function
+                sf::IPAddress *Address = new sf::IPAddress;
+                sf::SocketTCP *Newcomer = new sf::SocketTCP;
+                Listener.Accept(*Newcomer, Address);
                 
-                broadcastLog("Client connected: " + Address.ToString());
+                broadcastLog("Client connected: " + (*Address).ToString());
                 
                 sf::Packet Packet;
                 Packet << "First, I have to let you in on this secret.";
                 Packet << terrain->chunkSize;
-                Newcomer.Send(Packet);
+                Newcomer->Send(Packet);
 
                 // Add it to the selector
-                Selector.Add(Newcomer);
+                Selector.Add(*Newcomer);
                 
-                clients[Newcomer] = Client(&Newcomer, Address, NextNumber++);
+                clients[*Newcomer] = Client(Newcomer, *Address, NextNumber++);
             } else {
                 // Else, it is a client socket so we can read the data he sent
         
