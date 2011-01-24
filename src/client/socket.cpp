@@ -37,8 +37,13 @@ void Socket::DoStep() {
         } else if (command == "Player wants to move") {
             int who;
             In >> who;
+            
             Player *player = Players[who];
-            if (!player) player = new Player;
+            if (!player) {
+                player = new Player;
+                Players[who] = player;
+            }
+            
             if (who != Number) In >> player; // TODO: yea I had no idea what I was doing there...
         } else if (command == "Print something for me, plz") {
             std::string Line;
