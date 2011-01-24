@@ -24,8 +24,6 @@ public:
     bool Running;
     bool Jumping;
     std::string Name;
-    PositionedBlock *StandingOn;
-    float GravitySpeed;
     
     bool Dirty;
     
@@ -52,10 +50,10 @@ public:
     
     void Crawl();         // Begin crawling
     bool toggleCrawl();   // Begin or end crawling
-    
-    void DoStep(float amount); // Gets called every frame
 
     void Render(); //Render!
+    
+    void DoStep(float amount);
 };
 
 #endif

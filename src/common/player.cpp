@@ -10,9 +10,9 @@ const double WALK_SPEED    = 5.0;
 const double CROUCH_SPEED  = 3.0;
 const double CRAWL_SPEED   = 2.0;
 
-Player::Player() : Speed(0), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name("Untitled"), StandingOn(NULL), GravitySpeed(0.f), Entity(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 2)) {};
+Player::Player() : Speed(0), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name("Untitled"), Entity(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 2)) {};
 
-Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name(Name), StandingOn(NULL), GravitySpeed(0.f), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
+Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name(Name), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
 
 void Player::ChangeRotation(float deltaYRotation, float deltaZRotation)
 {
@@ -34,9 +34,9 @@ void Player::ChangeRotation(float deltaYRotation, float deltaZRotation)
 
 bool Player::Jump()
 {
-    if (StandingOn) {
+    if (LocatedOn) {
         GravitySpeed = 10.f;
-        StandingOn = NULL;
+        LocatedOn = NULL;
         Dirty = true;
         return true;
     }
@@ -139,22 +139,8 @@ void Player::DoStep(float amount)
     } else { // TODO: if still standingon, then should go back to prev spot
     */
     
-    if (StandingOn) {
-        GravitySpeed = 0;
-    } else {
-        GravitySpeed -= 20.f * amount;
-        if (GravitySpeed > 25.f) GravitySpeed = 25.f;
-        
-        if (Pos.Z < 0) GravitySpeed = -GravitySpeed;
-        Pos.Z += GravitySpeed * amount;
-    }
+    Entity::DoStep(amount);
     
     if (Forward || Backward || Left || Right) Dirty = true;
-}
-
-void Player::Render()
-{
-    //TODO: Write me
-    //DONTDO: This goes in Renderer, because Player is also server-side
 }
 

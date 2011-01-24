@@ -29,11 +29,12 @@ class Socket
         Context *context;
         sf::SocketTCP socket;
         
+        sf::Clock Clock; // Track elapsed time for player movement
         sf::Clock updateTimer;
         
         int Number;
         bool Connected;
-        std::map<int, Player> Players;
+        std::map<int, Player*> Players;
 };
 
 #endif

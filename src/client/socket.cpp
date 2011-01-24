@@ -33,12 +33,13 @@ void Socket::DoStep() {
             context->world->LoadChunk(In);
         } else if (command == "Take a number") {
             In >> Number;
-            Players[Number] = *context->player;
+            Players[Number] = context->player;
         } else if (command == "Player wants to move") {
             int who;
             In >> who;
-            Player *player = &Players[who];
-            In >> player; // TODO: yea I had no idea what I was doing there...
+            Player *player = Players[who];
+            if (!player) player = new Player;
+            if (who != Number) In >> player; // TODO: yea I had no idea what I was doing there...
         } else if (command == "Print something for me, plz") {
             std::string Line;
             In >> Line;
@@ -57,8 +58,14 @@ void Socket::DoStep() {
         updateTimer.Reset();
     }
     
-    for (std::map<int, Player>::iterator player = Players.begin(); player != Players.end(); player++)
-        player->second.DoStep(0.01f);
+    float ElapsedTime = Clock.GetElapsedTime();
+    Clock.Reset();
+    
+    for (std::map<int, Player*>::iterator player = Players.begin(); player != Players.end(); player++) {
+        player->second->LocatedOn = NULL;
+        context->world->CheckCollision(player->second);
+        player->second->DoStep(ElapsedTime);
+    }
 }
 
 void Socket::Close() {

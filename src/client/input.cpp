@@ -180,16 +180,11 @@ void InputHandler::handleEvent(sf::Event Event) {
         glViewport(0, 0, Event.Size.Width, Event.Size.Height);
 }
 
-float ElapsedTime;
 float mouseDeltaX, mouseDeltaY;
 
 void InputHandler::handleEvents() {
     const sf::Input& Input = context->window->GetInput();
     
-    // Constant movement speed
-    ElapsedTime = Clock.GetElapsedTime();
-    Clock.Reset();
-        
     // Handle other events
     sf::Event Event;
     while (context->window->GetEvent(Event))
@@ -204,8 +199,6 @@ void InputHandler::handleEvents() {
     
     if (!(mouseDeltaX == -100 && mouseDeltaY == -100) && !(mouseDeltaX == 0 && mouseDeltaY == 0)) 
         context->player->ChangeRotation((mouseDeltaY/10), (mouseDeltaX/10));
-        
-    context->player->DoStep(ElapsedTime);
 }
 
 void InputHandler::toggleFullscreen() {

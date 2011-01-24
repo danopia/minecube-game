@@ -21,8 +21,9 @@ void Game::Loop() {
     // Start game loop
     while (context->window->IsOpened() && context->inGame)
     {
-        // Handle input and networking
+        // Handle input, logic, and networking
         context->inputHandler->handleEvents();
+        context->world->DoStep();
         context->socket->DoStep();
         
         // Render/display view and HUD

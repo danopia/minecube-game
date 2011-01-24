@@ -1,6 +1,22 @@
 #include "common/lazyworld.h"
 #include <cmath>
 
+void LazyWorld::DoStep() {
+    // Collision check against player
+}
+
+void LazyWorld::CheckCollision(Entity *entity) {
+    PositionedBlock *block;
+    
+    for (int i = 0; i < Blocks.size(); i++) {
+        block = &Blocks[i];
+        if (entity->Pos.X + entity->Hitbox.X >= block->pos.X && entity->Pos.X <= block->pos.X + block->sideLength
+         && entity->Pos.Y + entity->Hitbox.Y >= block->pos.Y && entity->Pos.Y <= block->pos.Y + block->sideLength
+         && entity->Pos.Z + entity->Hitbox.Z >= block->pos.Z && entity->Pos.Z <= block->pos.Z + block->sideLength)
+            entity->Collide(*block);
+    }
+}
+
 bool contains(std::vector<Vector3> vector, Vector3 value) {
     for (int i = 0; i < vector.size(); i++)
         if ((vector[i].X == value.X) && (vector[i].Y == value.Y) && (vector[i].Z == value.Z))

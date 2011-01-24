@@ -21,6 +21,9 @@ class LazyWorld
         std::vector<PositionedBlock> Blocks;
         std::vector<Entity> Entities;
         
+        void DoStep();
+        void CheckCollision(Entity *entity);
+        
         int ChunkSize;
         std::vector<Vector3> LoadedChunks;
         
