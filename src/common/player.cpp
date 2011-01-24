@@ -35,7 +35,7 @@ void Player::ChangeRotation(float deltaYRotation, float deltaZRotation)
 bool Player::Jump()
 {
     if (StandingOn) {
-        GravitySpeed = 5.f;
+        GravitySpeed = 10.f;
         StandingOn = NULL;
         Dirty = true;
         return true;
@@ -142,7 +142,9 @@ void Player::DoStep(float amount)
     if (StandingOn) {
         GravitySpeed = 0;
     } else {
-        GravitySpeed -= 9.8f * amount;
+        GravitySpeed -= 20.f * amount;
+        if (GravitySpeed > 25.f) GravitySpeed = 25.f;
+        
         if (Pos.Z < 0) GravitySpeed = -GravitySpeed;
         Pos.Z += GravitySpeed * amount;
     }
