@@ -38,11 +38,8 @@ void Socket::DoStep() {
             int who;
             In >> who;
             
-            Player *player = Players[who];
-            if (!player) {
-                player = new Player;
-                Players[who] = player;
-            }
+            // RAH RAH RAH STL
+            Player *player = (*((Players.insert(std::make_pair(who, new Player))).first)).second;
             
             if (who != Number) In >> player; // TODO: yea I had no idea what I was doing there...
         } else if (command == "Print something for me, plz") {
