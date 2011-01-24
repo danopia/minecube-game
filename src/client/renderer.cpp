@@ -201,12 +201,28 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     if (context->player->Pos.Y + 0.5f > y) glDrawArrays(GL_QUADS, 20, 4);
 }
 
+Player *player;
+
 void Renderer::renderBlock(PositionedBlock block) {
     // Collision check against player
-    if (context->player->Pos.X + context->player->Hitbox.X >= block.pos.X && context->player->Pos.X <= block.pos.X + block.sideLength
-     && context->player->Pos.Y + context->player->Hitbox.Y >= block.pos.Y && context->player->Pos.Y <= block.pos.Y + block.sideLength
-     && context->player->Pos.Z + context->player->Hitbox.Z >= block.pos.Z && context->player->Pos.Z <= block.pos.Z + block.sideLength) {
-        context->player->StandingOn = &block;
+    if (player->Pos.X + player->Hitbox.X >= block.pos.X && player->Pos.X <= block.pos.X + block.sideLength
+     && player->Pos.Y + player->Hitbox.Y >= block.pos.Y && player->Pos.Y <= block.pos.Y + block.sideLength
+     && player->Pos.Z + player->Hitbox.Z >= block.pos.Z && player->Pos.Z <= block.pos.Z + block.sideLength) {
+        if (player->Pos.Z + 0.1f >= block.pos.Z + block.sideLength) {
+            player->StandingOn = &block;
+            player->Pos.Z = block.pos.Z + block.sideLength;
+        } else {
+            player->Pos = player->LastPos;
+            
+            if (player->Pos.X + player->Hitbox.X >= block.pos.X && player->Pos.X <= block.pos.X + block.sideLength
+             && player->Pos.Y + player->Hitbox.Y >= block.pos.Y && player->Pos.Y <= block.pos.Y + block.sideLength
+             && player->Pos.Z + player->Hitbox.Z >= block.pos.Z) {
+
+                player->StandingOn = &block;
+                player->Pos.Z = block.pos.Z + block.sideLength;
+                player->LastPos.Z = block.pos.Z + block.sideLength;
+            }
+        }
     }
     
     drawCube(block.block, block.pos.X, block.pos.Y, block.pos.Z, block.sideLength);
@@ -237,6 +253,8 @@ void Renderer::render() {
     glTexCoordPointer(2, GL_DOUBLE, 0, &texcoords[0]);
     
     context->player->StandingOn = NULL;
+    
+    player = context->player;
     
     // Loop through blocks and render them
     for (int i = 0; i < context->world->Blocks.size(); i++)

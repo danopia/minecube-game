@@ -16,6 +16,7 @@ void Game::Loop() {
     context->window->UseVerticalSync(false);
     
     sf::Clock LoaderTimer;
+    context->world->HandleRequests(context->player->Pos);
 
     // Start game loop
     while (context->window->IsOpened() && context->inGame)

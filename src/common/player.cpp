@@ -73,6 +73,7 @@ void Player::DoStep(float amount)
           SinStep_Neg, CosStep_Neg;
     
     Speed = 0;
+    LastPos = Pos;
     
     if (Crouching && !WasCrouching) {
         Pos.Z    -= CROUCH_OFFSET;
@@ -138,7 +139,9 @@ void Player::DoStep(float amount)
     } else { // TODO: if still standingon, then should go back to prev spot
     */
     
-    if (!StandingOn) {
+    if (StandingOn) {
+        GravitySpeed = 0;
+    } else {
         GravitySpeed -= 9.8f * amount;
         if (Pos.Z < 0) GravitySpeed = -GravitySpeed;
         Pos.Z += GravitySpeed * amount;

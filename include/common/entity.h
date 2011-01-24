@@ -7,11 +7,11 @@
 class Entity
 {
 public:
-    Vector3 Pos; 
+    Vector3 LastPos, Pos;
     Vector3 Rotation;
     Vector3 Hitbox;
     virtual void Render();
-    Entity(Vector3 initpos, Vector3 initrotation, Vector3 inithitbox) : Pos(initpos), Rotation(initrotation), Hitbox(inithitbox) {};
+    Entity(Vector3 initpos, Vector3 initrotation, Vector3 inithitbox) : LastPos(initpos), Pos(initpos), Rotation(initrotation), Hitbox(inithitbox) {};
 };
 #endif
 
