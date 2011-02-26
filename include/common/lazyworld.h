@@ -25,7 +25,7 @@ class LazyWorld
         void CheckCollision(Entity *entity);
         
         int ChunkSize;
-        std::vector<Vector3> LoadedChunks;
+        std::vector<Vector3> RequestedChunks;
         
         void LoadChunk(sf::Packet Packet);
         void HandleRequests(Vector3 Pos);
