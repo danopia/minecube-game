@@ -11,6 +11,7 @@
 #include "common/vector3.h"
 #include "common/packets.h"
 #include "common/block.h"
+#include "common/ray.h"
 
 class LazyWorld
 {
