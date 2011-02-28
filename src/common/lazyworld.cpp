@@ -19,15 +19,22 @@ void LazyWorld::CheckCollision(Entity *entity) {
 void LazyWorld::CheckAim(Player *player) {
     PositionedBlock *block;
     Ray ray = Ray(player);
-    float dist;
+    
+    PositionedBlock *target;
+    float dist, best = 5.f;
     
     for (int i = 0; i < Blocks.size(); i++) {
         block = Blocks[i];
         
         dist = ray.CheckCollision(block);
-        if (0.f < dist && dist < 5.f)
-            block->marked = true;
+        if (0.f < dist && dist < best) {
+            best = dist;
+            target = block;
+        }
     }
+    
+    if (target)
+        target->marked = true;
 }
 
 bool contains(std::vector<Vector3> vector, Vector3 value) {
