@@ -26,7 +26,7 @@ class LazyWorld
         void CheckAim(Player *player);
         
         int ChunkSize;
-        std::vector<Vector3> LoadedChunks;
+        std::vector<Vector3> RequestedChunks;
         
         void LoadChunk(sf::Packet Packet);
         void HandleRequests(Vector3 Pos);

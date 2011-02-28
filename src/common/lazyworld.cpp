@@ -129,7 +129,7 @@ void LazyWorld::HandleRequests(Vector3 Pos) {
     CurrentChunk.Y = floor(Pos.Y / ChunkSize);
     CurrentChunk.Z = floor(Pos.Z / ChunkSize);
     
-    if (!contains(LoadedChunks, CurrentChunk))
+    if (!contains(RequestedChunks, CurrentChunk))
         RequestChunk(CurrentChunk);
 }
 
@@ -139,5 +139,5 @@ void LazyWorld::RequestChunk(Vector3 ChunkIndex) {
     Packet << "Terrain pl0z" << ChunkIndex;
     Socket.Send(Packet);
     
-    LoadedChunks.push_back(ChunkIndex);
+    RequestedChunks.push_back(ChunkIndex);
 }
