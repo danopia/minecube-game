@@ -15,7 +15,7 @@ class Ray
         Ray(Entity *entity);
         Ray(Vector3 origin, Vector3 direction) : Origin(origin), Direction(direction) {};
         
-        bool CheckCollision(PositionedBlock *block);
+        float CheckCollision(PositionedBlock *block);
         
         Vector3 Origin, Direction;
         

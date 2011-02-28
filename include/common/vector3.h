@@ -13,6 +13,12 @@ class Vector3
         float X, Y, Z;
 
 
+        float distance(const Vector3& x) const
+        {
+            return sqrtf(powf(X - x.X,2) + powf(Y - x.Y,2) + powf(Z - x.Z,2));
+        }
+
+
         bool operator <(const Vector3& x) const
         {
             return sqrtf(powf(X,2) + powf(Y,2) + powf(Z,2)) < sqrtf(powf(x.X,2) + powf(x.Y, 2) + powf(x.Z, 2));

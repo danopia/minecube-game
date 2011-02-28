@@ -1,7 +1,7 @@
 #include "common/ray.h"
 
 Ray::Ray(Entity *entity) {
-    Origin = entity->Pos + Vector3(0.5, 0.5, 1.5);
+    Origin = entity->Pos + Vector3(0.5f, 0.5f, 1.5f);
     
     Direction = Vector3(
         sin((PI * entity->Rotation.Z) / 180),
@@ -13,56 +13,61 @@ Ray::Ray(Entity *entity) {
     if (Direction.Z == 0.f) Direction.Z = 0.0001f;
 }
 
-bool Ray::CheckCollision(PositionedBlock *block) {
-    static float x, y, z;
+bool CheckBlockContact(PositionedBlock *block, Vector3 &collision) {
+    return (collision.X >= block->pos.X && collision.X <= block->pos.X + block->sideLength
+         && collision.Y >= block->pos.Y && collision.Y <= block->pos.Y + block->sideLength
+         && collision.Z >= block->pos.Z && collision.Z <= block->pos.Z + block->sideLength);
+}
+
+float Ray::CheckCollision(PositionedBlock *block) {
+    float x = 0.f, y = 0.f, z = 0.f;
     
-    Vector3 planes;
-    planes = (block->pos - Origin) / Direction;
+    Vector3 planes1, planes2, collision;
+    planes1 = (block->pos - Origin) / Direction;
+    planes2 = (block->pos + block->sideLength - Origin) / Direction;
     
-    // x is fixed at block.x
-    y = Origin.Y + Direction.Y * planes.X;
-    z = Origin.Z + Direction.Z * planes.X;
-    if (y >= block->pos.Y && y <= block->pos.Y + block->sideLength
-     && z >= block->pos.Z && z <= block->pos.Z + block->sideLength)
-        return true;
+    if (planes1.X != 0.f && Origin.X < block->pos.X)
+        collision = (Direction * planes1.X) + Origin;
+    else if (planes2.X != 0.f)
+        collision = (Direction * planes2.X) + Origin;
+    else
+        collision = Vector3();
+        
+    if (CheckBlockContact(block, collision))
+        x = Origin.distance(collision);
+    else
+        x = 0;
+        
     
-    // y is fixed at block.y
-    x = Origin.X + Direction.X * planes.Y;
-    z = Origin.Z + Direction.Z * planes.Y;
-    if (x >= block->pos.X && x <= block->pos.X + block->sideLength
-     && z >= block->pos.Z && z <= block->pos.Z + block->sideLength)
-        return true;
+    if (planes1.Y != 0.f && Origin.Y < block->pos.Y)
+        collision = (Direction * planes1.Y) + Origin;
+    else if (planes2.Y != 0.f)
+        collision = (Direction * planes2.Y) + Origin;
+    else
+        collision = Vector3();
+        
+    if (CheckBlockContact(block, collision))
+        y = Origin.distance(collision);
+    else
+        y = 0;
+        
     
-    // z is fixed at block.z
-    x = Origin.X + Direction.X * planes.Z;
-    y = Origin.Y + Direction.Y * planes.Z;
-    if (x >= block->pos.X && x <= block->pos.X + block->sideLength
-     && y >= block->pos.Y && y <= block->pos.Y + block->sideLength)
-        return true;
+    if (planes1.Z != 0.f && Origin.Z < block->pos.Z)
+        collision = (Direction * planes1.Z) + Origin;
+    else if (planes2.Z != 0.f)
+        collision = (Direction * planes2.Z) + Origin;
+    else
+        collision = Vector3();
+        
+    if (CheckBlockContact(block, collision))
+        z = Origin.distance(collision);
+    else
+        z = 0;
     
     
-    planes = (block->pos + block->sideLength - Origin) / Direction;
+    float dist = x;
+    if ((dist == 0.f || y < dist) && y > 0.f) dist = y;
+    if ((dist == 0.f || z < dist) && z > 0.f) dist = z;
     
-    // x is fixed at block.x + block.size
-    y = Origin.Y + Direction.Y * planes.X;
-    z = Origin.Z + Direction.Z * planes.X;
-    if (y >= block->pos.Y && y <= block->pos.Y + block->sideLength
-     && z >= block->pos.Z && z <= block->pos.Z + block->sideLength)
-        return true;
-    
-    // y is fixed at block.y + block.size
-    x = Origin.X + Direction.X * planes.Y;
-    z = Origin.Z + Direction.Z * planes.Y;
-    if (x >= block->pos.X && x <= block->pos.X + block->sideLength
-     && z >= block->pos.Z && z <= block->pos.Z + block->sideLength)
-        return true;
-    
-    // z is fixed at block.z + block.size
-    x = Origin.X + Direction.X * planes.Z;
-    y = Origin.Y + Direction.Y * planes.Z;
-    if (x >= block->pos.X && x <= block->pos.X + block->sideLength
-     && y >= block->pos.Y && y <= block->pos.Y + block->sideLength)
-        return true;
-    
-    return false;
+    return dist;
 }
