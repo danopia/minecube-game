@@ -247,8 +247,10 @@ void Renderer::render() {
     glTexCoordPointer(2, GL_DOUBLE, 0, &texcoords[0]);
     
     // Loop through blocks and render them
-    for (int i = 0; i < context->world->Blocks.size(); i++)
-        renderBlock(context->world->Blocks[i]);
+    //for (int i = 0; i < context->world->Blocks.size(); i++)
+    //    renderBlock(context->world->Blocks[i]);
+    for (std::list<PositionedBlock*>::iterator it = context->world->Blocks.begin(); it != context->world->Blocks.end(); ++it)
+        renderBlock(*it);
     
     Block *block = new StoneBlock();
     for (std::map<int, Player*>::iterator player = context->socket->Players.begin(); player != context->socket->Players.end(); player++) {

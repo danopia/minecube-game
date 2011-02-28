@@ -4,6 +4,7 @@
 
 #include <SFML/Network.hpp>
 #include <vector>
+#include <list>
 #include <algorithm>
 
 #include "common/positionedblock.h"
@@ -19,12 +20,13 @@ class LazyWorld
         LazyWorld(sf::SocketTCP& Socket) : Socket(Socket) {};
         
         sf::SocketTCP& Socket;
-        std::vector<PositionedBlock*> Blocks;
-        std::vector<Entity> Entities;
+        std::list<PositionedBlock*> Blocks;
+        std::list<Entity> Entities;
         
         void DoStep();
         void CheckCollision(Entity *entity);
-        void CheckAim(Player *player);
+        PositionedBlock *CheckAim(Player *player);
+        void DestroyTarget(Player *player);
         
         int ChunkSize;
         std::vector<Vector3> RequestedChunks;

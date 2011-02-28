@@ -7,8 +7,9 @@ void LazyWorld::DoStep() {
 void LazyWorld::CheckCollision(Entity *entity) {
     PositionedBlock *block;
     
-    for (int i = 0; i < Blocks.size(); i++) {
-        block = Blocks[i];
+    //for (int i = 0; i < Blocks.size(); i++) {
+    for (std::list<PositionedBlock*>::iterator it = Blocks.begin(); it != Blocks.end(); ++it) {
+        block = *it; // Blocks[i];
         if (entity->Pos.X + entity->Hitbox.X >= block->pos.X && entity->Pos.X <= block->pos.X + block->sideLength
          && entity->Pos.Y + entity->Hitbox.Y >= block->pos.Y && entity->Pos.Y <= block->pos.Y + block->sideLength
          && entity->Pos.Z + entity->Hitbox.Z >= block->pos.Z && entity->Pos.Z <= block->pos.Z + block->sideLength)
@@ -16,15 +17,16 @@ void LazyWorld::CheckCollision(Entity *entity) {
     }
 }
 
-void LazyWorld::CheckAim(Player *player) {
+PositionedBlock *LazyWorld::CheckAim(Player *player) {
     PositionedBlock *block;
     Ray ray = Ray(player);
     
     PositionedBlock *target;
     float dist, best = 5.f;
     
-    for (int i = 0; i < Blocks.size(); i++) {
-        block = Blocks[i];
+    //for (int i = 0; i < Blocks.size(); i++) {
+    for (std::list<PositionedBlock*>::iterator it = Blocks.begin(); it != Blocks.end(); ++it) {
+        block = *it; // Blocks[i];
         
         dist = ray.CheckCollision(block);
         if (0.f < dist && dist < best) {
@@ -35,6 +37,15 @@ void LazyWorld::CheckAim(Player *player) {
     
     if (target)
         target->marked = true;
+    
+    return target;
+}
+
+void LazyWorld::DestroyTarget(Player *player) {
+    PositionedBlock *block = CheckAim(player);
+    if (!block) return;
+    
+    Blocks.remove(block);
 }
 
 bool contains(std::vector<Vector3> vector, Vector3 value) {
