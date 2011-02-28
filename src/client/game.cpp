@@ -24,6 +24,7 @@ void Game::Loop() {
         // Handle input, logic, and networking
         context->inputHandler->handleEvents();
         context->world->DoStep();
+        context->world->CheckAim(context->player);
         context->socket->DoStep();
         
         // Render/display view and HUD

@@ -150,6 +150,11 @@ void Renderer::InitGraphics() {
     //glEnable(GL_COLOR_MATERIAL); // Enable lighting colors
     //glEnable(GL_LIGHTING); // Enable lighting
     glEnable(GL_TEXTURE_2D); // Enable textures
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); // Color textures
+    
+    // Uncomment for freaky graphics
+    //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+    //glEnable(GL_BLEND);
     
     glShadeModel(GL_SMOOTH); // Enable Smooth Shading
     
@@ -202,8 +207,19 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     if (context->player->Pos.Y + 0.5f > y) glDrawArrays(GL_QUADS, 20, 4);
 }
 
-void Renderer::renderBlock(PositionedBlock block) {
-    drawCube(block.block, block.pos.X, block.pos.Y, block.pos.Z, block.sideLength);
+void Renderer::renderBlock(PositionedBlock *block) {
+    drawCube(block->block, block->pos.X, block->pos.Y, block->pos.Z, block->sideLength);
+    
+    if (block->marked) {
+      glColor3f(0, 0, 0);
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      
+      drawCube(block->block, block->pos.X, block->pos.Y, block->pos.Z, block->sideLength);
+      
+      glColor3f(255, 255, 255);
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      block->marked = false;
+    }
 }
 
 void Renderer::render() {

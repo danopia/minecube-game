@@ -18,11 +18,12 @@ class LazyWorld
         LazyWorld(sf::SocketTCP& Socket) : Socket(Socket) {};
         
         sf::SocketTCP& Socket;
-        std::vector<PositionedBlock> Blocks;
+        std::vector<PositionedBlock*> Blocks;
         std::vector<Entity> Entities;
         
         void DoStep();
         void CheckCollision(Entity *entity);
+        void CheckAim(Player *player);
         
         int ChunkSize;
         std::vector<Vector3> LoadedChunks;

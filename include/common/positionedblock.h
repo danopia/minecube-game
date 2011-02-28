@@ -8,11 +8,12 @@
 class PositionedBlock
 {
     public:
-        PositionedBlock(Block *block, Vector3 pos, float sideLength) : block(block), pos(pos), sideLength(sideLength) {};
+        PositionedBlock(Block *block, Vector3 pos, float sideLength) : block(block), pos(pos), sideLength(sideLength), marked(false) {};
         
         Block *block;
         Vector3 pos;
         float sideLength;
+        bool marked;
 };
 
 #endif

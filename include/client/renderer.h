@@ -17,7 +17,7 @@ class Renderer {
         Renderer(Context *context);
         void InitGraphics();
         void render();
-        void renderBlock(PositionedBlock block);
+        void renderBlock(PositionedBlock *block);
         void drawCube(Block *block, float x, float y, float z, float length);
         
         Context *context;
