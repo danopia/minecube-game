@@ -1,6 +1,6 @@
 #include "client/ui/mainmenu.h"
 
-MainMenu::MainMenu(Context *context) : UIPage(context, "Choose your adventure", true) {
+MainMenu::MainMenu(Context *context) : ButtonPage(context, "Choose your adventure", true) {
     Buttons.push_back("Start server");
     Buttons.push_back("Connect");
     Buttons.push_back("Options");

@@ -7,7 +7,7 @@
 #include <iostream>
 #include <cstdio>
 
-#include "client/ui/uipage.h"
+#include "client/ui/buttonpage.h"
 #include "client/ui/serverlist.h"
 #include "client/game.h"
 #include "client/context.h"
@@ -16,7 +16,7 @@
 #define snprintf sprintf_s
 #endif
 
-class MainMenu : public UIPage
+class MainMenu : public ButtonPage
 {
     public:
         MainMenu(Context *context);

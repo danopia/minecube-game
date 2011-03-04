@@ -2,7 +2,7 @@
 
 sf::Clock UIPage::Clock;
 
-UIPage::UIPage(Context *context, std::string Subtitle, bool Background) : context(context), Subtitle(Subtitle), Background(Background), BG(64, 64), Sprite(BG), Current(0) {
+UIPage::UIPage(Context *context, std::string Subtitle, bool Background) : context(context), Subtitle(Subtitle), Background(Background), BG(64, 64), Sprite(BG) {
     InitGraphics();
 }
 
@@ -29,104 +29,62 @@ void UIPage::InitGraphics() {
     
     // Load fonts
     TitleFnt.LoadFromFile("data/Inconsolata.ttf", 90);
-    ButtonFnt.LoadFromFile("data/Inconsolata.ttf", 30);
+    ContentFnt.LoadFromFile("data/Inconsolata.ttf", 30);
 }
 
 void UIPage::Loop() {
-    sf::String Title("MineCube", TitleFnt, 90);
-    Title.SetPosition((context->window->GetWidth() / 2) - (Title.GetRect().GetWidth() / 2), 20);
-
+    Running = true;
     
-    sf::String STitle(Subtitle, ButtonFnt, 30);
-    STitle.SetPosition((context->window->GetWidth() / 2) - (STitle.GetRect().GetWidth() / 2), 130);
-    
-    sf::String Label("Button", ButtonFnt, 30);
-    sf::Shape Button = sf::Shape::Rectangle(-200, -20, 200, 20, sf::Color(127.f, 127.f, 127.f), 2, sf::Color::Black);
-
-    float mouseX, mouseY;
-    bool clicked, mightBeOver;
     sf::Event Event;
     
     // Start menu loop
-    while (context->window->IsOpened())
+    while (Running && context->window->IsOpened())
     {
-        mouseX = context->window->GetInput().GetMouseX();
-        mouseY = context->window->GetInput().GetMouseY();
-        clicked = false;
-        
         // Handle mouse and keyboard stuff
         while (context->window->GetEvent(Event))
         {
-            // Close window: exit
-            if (Event.Type == sf::Event::Closed)
-                context->window->Close();
-
-            // Escape key: close menu
-            if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Escape))
-                return;
-
-            // Arrow keys...
-            if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Up)) {
-                if (Current <= 0) Current = Buttons.size();
-                
-                Current--;
-            }
-
-            if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Down)) {
-                Current++;
-                
-                if (Current >= Buttons.size())
-                    Current = 0;
-            }
-            
-            // Handle click
-            if ((Event.Type == sf::Event::MouseButtonReleased) && (Event.MouseButton.Button == sf::Mouse::Left))
-                clicked = true;
-
-            // Handle enter
-            if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Return))
-                ItemSelected(Buttons[Current]);
+            HandleEvent(Event);
         }
         
-        // Set up the stage
-        if (Background)
-            DrawBackground();
-        
-        context->window->Draw(Title);
-        context->window->Draw(STitle);
-        
-        Button.SetPosition(context->window->GetWidth() / 2, 150);
-        
-        mightBeOver = (mouseX > Button.GetPosition().x - 200) && (mouseX < Button.GetPosition().x + 200);
-        
-        for (int i = 0; i < Buttons.size(); i++) {
-            Button.Move(0, 60);
-            
-            if (mightBeOver && (mouseY > Button.GetPosition().y - 20) && (mouseY < Button.GetPosition().y + 20)) {
-                Current = i;
-                
-                if (clicked)
-                    ItemSelected(Buttons[Current]);
-            }
-            
-            if (i == Current)
-                Button.SetColor(sf::Color(220.f, 220.f, 220.f, 180.f));
-            else
-                Button.SetColor(sf::Color(127.f, 127.f, 127.f, 180.f));
-        
-            Label.SetText(Buttons[i]);
-            Label.SetPosition(Button.GetPosition().x - (Label.GetRect().GetWidth() / 2), Button.GetPosition().y - 20);
-            
-            context->window->Draw(Button);
-            context->window->Draw(Label);
-        }
+        // Render menu
+        Render();
 
-        // Finally, display rendered frame on screen
+        // Display rendered frame on screen
         context->window->Display();
+    }
+    
+    Running = false;
+}
+
+void UIPage::HandleEvent(sf::Event &Event) {
+    // Close window: exit
+    if (Event.Type == sf::Event::Closed) {
+        context->window->Close();
+        Running = false;
+        return;
+    }
+
+    // Escape key: close menu
+    if ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Escape)) {
+        Running = false;
+        return;
     }
 }
 
-//void UIPage::ItemSelected(std::string Label) {}
+void UIPage::Render() {
+    sf::String Title("MineCube", TitleFnt, 90);
+    Title.SetPosition((context->window->GetWidth() / 2) - (Title.GetRect().GetWidth() / 2), 20);
+
+    sf::String STitle(Subtitle, ContentFnt, 30);
+    STitle.SetPosition((context->window->GetWidth() / 2) - (STitle.GetRect().GetWidth() / 2), 130);
+
+    // Set up the stage
+    if (Background)
+        DrawBackground();
+    
+    context->window->Draw(Title);
+    context->window->Draw(STitle);
+}
 
 void UIPage::DrawBackground() {
     context->window->Draw(Sprite);

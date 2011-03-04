@@ -10,12 +10,12 @@
 #include <algorithm>
 #include <iterator>
 
-#include "client/ui/uipage.h"
+#include "client/ui/buttonpage.h"
 #include "client/game.h"
 #include "client/socket.h"
 #include "client/context.h"
 
-class ServerList : public UIPage
+class ServerList : public ButtonPage
 {
     public:
         ServerList(Context *context);

@@ -34,7 +34,7 @@ std::vector<std::string> FetchServers() {
     return combos;
 }
 
-ServerList::ServerList(Context *context) : UIPage(context, "Server List", true) {
+ServerList::ServerList(Context *context) : ButtonPage(context, "Server List", true) {
     Buttons = FetchServers();
     Buttons.push_back("localhost:28997");
 }
