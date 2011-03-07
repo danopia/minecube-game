@@ -40,14 +40,18 @@ ServerList::ServerList(Context *context) : ButtonPage(context, "Server List", tr
 }
 
 void multiplayer(Context *context, std::string hostname, int port) {
-    context->socket = new Socket(context, port, hostname);
+    Context *con = new Context(context->window);
+    con->socket = new Socket(con, port, hostname);
     
     // Load up a game and run it
-    Game game(context);
+    Game game(con);
     game.Loop();
 
     // Close the socket
-    context->socket->Close();
+    con->socket->Close();
+    
+    // Pull back window (TODO: why does context get messed up if it's sent to the game?)
+    //context->window = con->window;
 }
 
 void ServerList::ItemSelected(std::string Label) {

@@ -14,7 +14,7 @@ void InputHandler::handleEvent(sf::Event Event) {
 
     // Close window : exit
     if (Event.Type == sf::Event::Closed)
-        context->window->Close();
+        context->inGame = false;
     
     // Handle text input for chat
     if (InChat && Event.Type == sf::Event::TextEntered) {

@@ -42,14 +42,10 @@ void UIPage::Loop() {
     {
         // Handle mouse and keyboard stuff
         while (context->window->GetEvent(Event))
-        {
             HandleEvent(Event);
-        }
         
-        // Render menu
+        // Render and display menu
         Render();
-
-        // Display rendered frame on screen
         context->window->Display();
     }
     
@@ -59,7 +55,7 @@ void UIPage::Loop() {
 void UIPage::HandleEvent(sf::Event &Event) {
     // Close window: exit
     if (Event.Type == sf::Event::Closed) {
-        context->window->Close();
+        //context->window->Close(); TODO: goes elsewhere
         Running = false;
         return;
     }

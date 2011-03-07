@@ -2,7 +2,7 @@
 
 Client::Client(sf::SocketTCP *Socket, sf::IPAddress Address, int Number) : Socket(Socket), Address(Address), Number(Number) {
     sf::Packet Packet;
-    Packet << "Take a number" << Number;
+    Packet << (sf::Uint8) 2 << Number;
     Socket->Send(Packet);
 }
 

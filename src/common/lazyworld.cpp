@@ -35,7 +35,7 @@ PositionedBlock *LazyWorld::CheckAim(Player *player) {
         }
     }
     
-    if (target)
+    if (target != NULL)
         target->marked = true;
     
     return target;
@@ -93,7 +93,7 @@ void LazyWorld::HandleRequests(Vector3 Pos) {
 void LazyWorld::RequestChunk(Vector3 ChunkIndex) {
     // Send request to the server
     sf::Packet Packet;
-    Packet << "Terrain pl0z" << ChunkIndex;
+    Packet << (sf::Uint8) 4 << ChunkIndex;
     Socket.Send(Packet);
     
     RequestedChunks.push_back(ChunkIndex);

@@ -8,11 +8,13 @@ MainMenu::MainMenu(Context *context) : ButtonPage(context, "Choose your adventur
 }
 
 void MainMenu::ItemSelected(std::string Label) {
-    if (Label == "Connect")
-        RunSubpage(new ServerList(context));
-    else if (Label == "Options")
-        RunSubpage(new OptionsMenu(context));
-    else if (Label == "Exit")
+    if (Label == "Connect") {
+        ServerList page = ServerList(context);
+        RunSubpage(&page);
+    } else if (Label == "Options") {
+        OptionsMenu page = OptionsMenu(context);
+        RunSubpage(&page);
+    } else if (Label == "Exit")
         Running = false;
 }
 

@@ -38,8 +38,7 @@ void sendTerrain(sf::SocketTCP Client, Vector3 ChunkIndex) {
     
     if (!Chunk.hasChildren) { // TODO: This is a stupid check to see if the chunk was just created by the stupid map thing.
         sf::Packet Packet;
-        Packet << "Take this chunk. It will be useful in times of need.";
-        Packet << (int) 0;
+        Packet << (sf::Uint8) 7 << (int) 0;
         Client.Send(Packet);
         
         return;
@@ -53,8 +52,7 @@ void sendTerrain(sf::SocketTCP Client, Vector3 ChunkIndex) {
                               terrain->chunkSize);
     
     sf::Packet Packet;
-    Packet << "Take this chunk. It will be useful in times of need.";
-    Packet << (int) Blocks.size();
+    Packet << (sf::Uint8) 7 << (int) Blocks.size();
     
     for (int i = 0; i < Blocks.size(); i++) // << (char)Blocks[i].block->Type 
         Packet << Blocks[i].pos << Blocks[i].sideLength;
@@ -88,34 +86,36 @@ void broadcastExcept(const Client &Except, sf::Packet &Packet) {
 
 void broadcastLog(const std::string &Line) {
     sf::Packet Packet;
-    Packet << "Print something for me, plz" << Line;
+    Packet << (sf::Uint8) 3 << Line;
     broadcast(Packet);
     
     std::cout << "[LOG] " << Line << std::endl;
 }
 
-void handlePacket(Client &client, const std::string &Message, sf::Packet &Packet) {
-    if (Message == "Terrain pl0z") {
+void handlePacket(Client &client, const sf::Uint8 Message, sf::Packet &Packet) {
+    printf("Got packet: %i\n", Message);
+    if (Message == 4) {
         Vector3 ChunkIndex;
         Packet >> ChunkIndex;
         sendTerrain(*client.Socket, ChunkIndex);
 
-    } else if (Message == "Move me or ELSE!") {
+    } else if (Message == 5) {
         Player player;
         Packet >> &player;
         
         sf::Packet Out;
-        Out << "Player wants to move" << client.Number;
+        Out << (sf::Uint8) 6 << client.Number;
         Out << &player;
         broadcast(Out);
 
-    } else if (Message == "May I speak?") {
+    } else if (Message == 8) {
         std::string Line;
         Packet >> Line;
         broadcastLog("<" + client.Address.ToString() + "> " + Line);
 
     } else
-        std::cout << "A client says: \"" << Message << "\"" << std::endl;
+        printf("Got strange packet: %i\n", Message);
+        //std::cout << "A client says: \"" << Message << "\"" << std::endl;
 }
 
 // Launch a server and receive incoming messages
@@ -164,7 +164,7 @@ int main() {
                 broadcastLog("Client connected: " + (*Address).ToString());
                 
                 sf::Packet Packet;
-                Packet << "First, I have to let you in on this secret.";
+                Packet << (sf::Uint8) 1;
                 Packet << terrain->chunkSize;
                 Newcomer->Send(Packet);
 
@@ -183,7 +183,7 @@ int main() {
                 sf::Packet Packet;
                 if (Socket.Receive(Packet) == sf::Socket::Done) {
                     // Extract the message and display it
-                    std::string Message;
+                    sf::Uint8 Message;
                     Packet >> Message;
                     handlePacket(client, Message, Packet);
                     
