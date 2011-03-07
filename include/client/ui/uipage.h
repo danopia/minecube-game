@@ -17,6 +17,8 @@ class UIPage
         virtual void Render();
         virtual void HandleEvent(sf::Event &Event);
         
+        void RunSubpage(UIPage *page);
+        
         std::string Subtitle;
         bool Background;
         

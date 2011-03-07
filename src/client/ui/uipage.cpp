@@ -86,6 +86,11 @@ void UIPage::Render() {
     context->window->Draw(STitle);
 }
 
+void UIPage::RunSubpage(UIPage *page) {
+    page->Loop();
+    InitGraphics();
+}
+
 void UIPage::DrawBackground() {
     context->window->Draw(Sprite);
     

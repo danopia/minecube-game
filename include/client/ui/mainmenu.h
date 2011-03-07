@@ -9,6 +9,7 @@
 
 #include "client/ui/buttonpage.h"
 #include "client/ui/serverlist.h"
+#include "client/ui/optionsmenu.h"
 #include "client/game.h"
 #include "client/context.h"
 
