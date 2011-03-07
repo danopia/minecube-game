@@ -8,6 +8,7 @@
 
 #include "client/context.h"
 #include "client/ui/uipage.h"
+#include "common/option.h"
 
 class OptionsMenu : public UIPage
 {
@@ -15,9 +16,9 @@ class OptionsMenu : public UIPage
         OptionsMenu(Context *context, std::string Subtitle = "", bool Background = true);
         void Render();
         void HandleEvent(sf::Event &Event);
-        void ItemChanged(std::string Label);
+        void ItemChanged(Option &option);
         
-        std::vector<std::string> Options;
+        std::vector<Option> Options;
 
     protected:
         // index of highlighted button
