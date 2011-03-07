@@ -16,12 +16,12 @@ void Terrain::Regenerate()
         {
             for(k = 0; k < sizeZ; k++)
             {
-                GeneratedTerrain[Vector3(i,j,k)] = makeTerrainFrom(0);
+                GeneratedTerrain[Vector3(i,j,k)] = makeTerrainFrom(0, 0);
             }
         }
     }
 }
-Octree<Block*> Terrain::makeTerrainFrom(int level)
+Octree<Block*> Terrain::makeTerrainFrom(int level, int type)
 {
     std::vector<Octree<Block*> >blocks;
     for(int i = 0; i < 8; i++)
@@ -33,23 +33,32 @@ Octree<Block*> Terrain::makeTerrainFrom(int level)
             if(leaf && level > Minlevel)
             {
                 // TODO: Change to make a random block type, not only dirt or air
-                bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-                if (type)
+                //bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
+                if (type == 0)
+                    type = (i < 4) ? 1 : 2;
+                
+                if (type == 1)
                     blocks.push_back(Octree<Block*>(new GrassBlock()));
                 else
                     blocks.push_back(Octree<Block*>(new AirBlock()));
             } 
             else
             {
-                blocks.push_back(makeTerrainFrom(level + 1));
+                if (type == 0)
+                    blocks.push_back(makeTerrainFrom(level + 1, (i < 4) ? 1 : 2));
+                else
+                    blocks.push_back(makeTerrainFrom(level + 1, type));
             }
         }
         else if(level == Maxlevel)
         {
             // TODO: Same as above
-            bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-            if (type)
-                    blocks.push_back(Octree<Block*>(new GrassBlock()));
+            //bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
+            if (type == 0)
+                type = (i < 4) ? 1 : 2;
+            
+            if (type == 1)
+                blocks.push_back(Octree<Block*>(new GrassBlock()));
             else
                 blocks.push_back(Octree<Block*>(new AirBlock()));
         }

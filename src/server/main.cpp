@@ -121,7 +121,7 @@ void handlePacket(Client &client, const std::string &Message, sf::Packet &Packet
 // Launch a server and receive incoming messages
 int main() {
     std::cout << "Setting up terrain... ";
-    terrain = new Terrain(3, 0, 1,1,1, 25);
+    terrain = new Terrain(3, 3, 5,5,1, 25);
     terrain->Regenerate();
     terrain->SaveToFile("server.mcube");
     std::cout << "done" << std::endl;

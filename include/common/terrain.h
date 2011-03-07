@@ -28,7 +28,7 @@ class Terrain
         void LoadFromFile(std::string filename);
 
     private:
-        Octree<Block*> makeTerrainFrom(int level); //Generates the terrain from the specified level downwards. Almost always 0.
+        Octree<Block*> makeTerrainFrom(int level, int type); //Generates the terrain from the specified level downwards. Almost always 0.
 };
 
 #endif
