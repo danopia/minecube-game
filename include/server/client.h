@@ -5,15 +5,23 @@
 #include <SFML/Network.hpp>
 
 #include "common/player.h"
+#include "common/vector3.h"
+#include "server/server.h"
+
+class Server;
 
 class Client
 {
     public:
-        Client() : Socket(NULL), Number(0) {};
-        Client(sf::SocketTCP *Socket, sf::IPAddress Address, int Number);
+        Client(sf::SocketTCP *Socket, sf::IPAddress Address, Server *Host, int Number);
+        
+        bool handlePacket(sf::Packet &Packet);
+        void sendTerrain(const Vector3 ChunkIndex);
         
         sf::SocketTCP *Socket;
         sf::IPAddress Address;
+        Server *Host;
+        Player *Avatar;
         int Number;
 };
 
