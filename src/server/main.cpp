@@ -93,7 +93,7 @@ void broadcastLog(const std::string &Line) {
 }
 
 void handlePacket(Client &client, const sf::Uint8 Message, sf::Packet &Packet) {
-    printf("Got packet: %i\n", Message);
+    //printf("Got packet: %i\n", Message);
     if (Message == 4) {
         Vector3 ChunkIndex;
         Packet >> ChunkIndex;
