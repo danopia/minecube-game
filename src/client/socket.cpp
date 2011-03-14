@@ -15,7 +15,7 @@ Socket::Socket(Context *context, sf::SocketTCP socket) : context(context), socke
 
 void Socket::SendChat(const std::string Line) {
     sf::Packet Packet;
-    Packet << (sf::Uint8) 8 << Line;
+    Packet << (sf::Uint8) 3 << Line;
     socket.Send(Packet);
 }
 

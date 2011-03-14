@@ -8,7 +8,7 @@ Client *Client::Accept(sf::SocketTCP &Listener, Server *Host) {
     client->Avatar = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(12.5f, 12.5f, 25.f), "");
     client->Avatar->Name = client->Address.ToString();
     
-    Host->broadcastLog("Client connected: " + client->Address.ToString());
+    std::cout << "Client connected: " << client->Address.ToString() << std::endl;
     
     sf::Packet Packet;
     Packet << (sf::Uint8) 7 << client->Number << client->Avatar->Name << client->Avatar;

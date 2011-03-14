@@ -108,7 +108,7 @@ void Server::Loop() {
                     OutPacket << (sf::Uint8) 8 << client->Number;
                     broadcast(OutPacket);
                     
-                    broadcastLog("Client disconnected: " + client->Address.ToString());
+                    std::cout << "Client disconnected: " << client->Address.ToString() << std::endl;
                 }
             }
         }
