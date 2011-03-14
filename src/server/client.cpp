@@ -1,17 +1,42 @@
 #include "server/client.h"
 
-Client::Client(sf::SocketTCP *Socket, sf::IPAddress Address, Server *Host, int Number) : Socket(Socket), Address(Address), Host(Host), Number(Number) {
-    sf::Packet Packet;
-    Packet << (sf::Uint8) 1;
-    Packet << Host->terrain->chunkSize;
-    Socket->Send(Packet);
+Client *Client::Accept(sf::SocketTCP &Listener, Server *Host) {
+    Client *client = new Client(Host);
     
-    sf::Packet Packet2;
-    Packet2 << (sf::Uint8) 2 << Number;
-    Socket->Send(Packet2);
+    Listener.Accept(client->Socket, &client->Address);
+    Host->clients[client->Socket] = client;
+    Host->Selector.Add(client->Socket);
+    
+    Host->broadcastLog("Client connected: " + client->Address.ToString());
+    
+    client->SendWelcome();
+    
+    client->Avatar = new Player();
+    client->Avatar->Name = client->Address.ToString();
+    
+    return client;
+}
+
+Client::Client(Server *Host) : Host(Host) {
+    Number = Host->NextNumber++;
+}
+
+Client::Client(sf::SocketTCP Socket, sf::IPAddress Address, Server *Host, int Number) : Socket(Socket), Address(Address), Host(Host), Number(Number) {
+    SendWelcome();
     
     Avatar = new Player();
     Avatar->Name = Address.ToString();
+}
+
+void Client::SendWelcome() {
+    sf::Packet Packet;
+    Packet << (sf::Uint8) 1;
+    Packet << Host->terrain->chunkSize;
+    Socket.Send(Packet);
+    
+    sf::Packet Packet2;
+    Packet2 << (sf::Uint8) 2 << Number;
+    Socket.Send(Packet2);
 }
 
 bool Client::handlePacket(sf::Packet &Packet) {
@@ -50,7 +75,7 @@ void Client::sendTerrain(const Vector3 ChunkIndex) {
     if (!Chunk.hasChildren) { // TODO: This is a stupid check to see if the chunk was just created by the stupid map thing.
         sf::Packet Packet;
         Packet << (sf::Uint8) 7 << (int) 0;
-        Socket->Send(Packet);
+        Socket.Send(Packet);
         
         return;
     }
@@ -68,7 +93,7 @@ void Client::sendTerrain(const Vector3 ChunkIndex) {
     for (int i = 0; i < Blocks.size(); i++) // << (char)Blocks[i].block->Type 
         Packet << Blocks[i].pos << Blocks[i].sideLength;
 
-    Socket->Send(Packet);
+    Socket.Send(Packet);
 }
 
 

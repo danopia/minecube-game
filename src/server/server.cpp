@@ -41,13 +41,13 @@ void Server::beat() {
 
 void Server::broadcast(sf::Packet &Packet) {
     for (std::map<sf::SocketTCP, Client*>::iterator client = clients.begin(); client != clients.end(); client++)
-        client->second->Socket->Send(Packet);
+        client->second->Socket.Send(Packet);
 }
 
 void Server::broadcastExcept(const Client *Except, sf::Packet &Packet) {
     for (std::map<sf::SocketTCP, Client*>::iterator client = clients.begin(); client != clients.end(); client++)
         if (client->second->Number != Except->Number)
-            client->second->Socket->Send(Packet);
+            client->second->Socket.Send(Packet);
 }
 
 void Server::broadcastLog(const std::string &Line) {
@@ -85,17 +85,7 @@ void Server::Loop() {
 
             if (Socket == Listener) {
                 // If the listening socket is ready, it means that we can accept a new connection
-                // Using pointers until this is in it's own function
-                sf::IPAddress *Address = new sf::IPAddress;
-                sf::SocketTCP *Newcomer = new sf::SocketTCP;
-                Listener.Accept(*Newcomer, Address);
-                
-                broadcastLog("Client connected: " + (*Address).ToString());
-
-                // Add it to the selector
-                Selector.Add(*Newcomer);
-                
-                clients[*Newcomer] = new Client(Newcomer, *Address, this, NextNumber++);
+                Client *client = Client::Accept(Socket, this);
             } else {
                 // Else, it is a client socket so we can read the data he sent
         
