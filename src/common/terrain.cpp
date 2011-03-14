@@ -9,12 +9,12 @@ Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int i
 void Terrain::Regenerate()
 {
     GeneratedTerrain = std::map<Vector3, Octree<Block*> >();
-    int i, j, k;
-    for(i = 0; i < sizeX; i++)
+    
+    for(int i = 0; i < sizeX; i++)
     {
-        for(j = 0; j < sizeY; j++)
+        for(int j = 0; j < sizeY; j++)
         {
-            for(k = 0; k < sizeZ; k++)
+            for(int k = 0; k < sizeZ; k++)
             {
                 GeneratedTerrain[Vector3(i,j,k)] = makeTerrainFrom(0, 0);
             }

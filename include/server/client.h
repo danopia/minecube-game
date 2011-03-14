@@ -19,6 +19,7 @@ class Client
         Client(sf::SocketTCP Socket, sf::IPAddress Address, Server *Host, int Number);
         
         void SendWelcome();
+        void SendPlayerList();
         bool handlePacket(sf::Packet &Packet);
         void sendTerrain(const Vector3 ChunkIndex);
         

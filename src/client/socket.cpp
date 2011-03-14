@@ -27,15 +27,22 @@ void Socket::DoStep() {
         In >> command;
         //printf("Got packet: %i\n", command);
         
-        if (command == 1)
+        if (command == 1) {
             In >> context->world->ChunkSize;
-        else if (command == 7) {
-            context->hud->Output("Got a chunk");
-            context->world->LoadChunk(In);
         } else if (command == 2) {
-            In >> Number;
+            In >> Number >> context->player->Name >> context->player;
             Players[Number] = context->player;
-        } else if (command == 6) {
+            
+            context->world->HandleRequests(context->player->Pos); // Request new chunks immediately when connecting
+        } else if (command == 3) {
+            std::string Line;
+            In >> Line;
+            context->hud->Output(Line);
+        } else if (command == 4) {
+            context->world->LoadChunk(In);
+            
+            context->inGame = true; // Ready to play TEH GAME! ;D
+        } else if (command == 5) {
             int who;
             In >> who;
             
@@ -43,10 +50,44 @@ void Socket::DoStep() {
             Player *player = (*((Players.insert(std::make_pair(who, new Player))).first)).second;
             
             if (who != Number) In >> player; // TODO: yea I had no idea what I was doing there...
-        } else if (command == 3) {
-            std::string Line;
-            In >> Line;
-            context->hud->Output(Line);
+        } else if (command == 6) {
+            int PlayerCount;
+            In >> PlayerCount;
+            
+            int who;
+            std::string username;
+            Player *player;
+            
+            Players.clear();
+            for (int i = 0; i < PlayerCount; i++) {
+                player = new Player();
+                In >> who >> username >> player;
+                player->Name = username;
+                
+                Players[who] = player;
+            }
+            
+            Players[Number] = context->player;
+        } else if (command == 7) {
+            int who;
+            std::string username;
+            In >> who >> username;
+            
+            Player *player = new Player;
+            In >> player;
+            player->Name = username;
+            Players[who] = player;
+            
+            context->hud->Output(username + " joined");
+        } else if (command == 8) {
+            int who;
+            In >> who;
+            
+            // RAH RAH RAH STL
+            Player *player = (*((Players.insert(std::make_pair(who, new Player))).first)).second;
+            
+            context->hud->Output(player->Name + " left");
+            Players.erase(who);
         } else
             printf("Got strange packet: %i\n", command);
     }

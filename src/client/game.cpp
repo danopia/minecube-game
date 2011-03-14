@@ -4,7 +4,6 @@ Game::Game(Context *context) : context(context) {
     context->world = new LazyWorld(context->socket->socket);
     context->player = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(12.5f, 12.5f, 25.f), "Foo");
     context->renderer = new Renderer(context);
-    context->inputHandler = new InputHandler(context);
     context->hud = new HUD(context);
 }
 
@@ -14,6 +13,9 @@ void Game::Loop() {
     // Set some stuff
     context->window->PreserveOpenGLStates(true);
     context->window->UseVerticalSync(false);
+    context->renderer->InitGraphics();
+    
+    context->inputHandler = new InputHandler(context);
     
     sf::Clock LoaderTimer;
     context->world->HandleRequests(context->player->Pos);

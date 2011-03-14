@@ -11,6 +11,7 @@
 #include <iterator>
 
 #include "client/ui/buttonpage.h"
+#include "client/ui/waitpage.h"
 #include "client/game.h"
 #include "client/socket.h"
 #include "client/context.h"
@@ -20,6 +21,7 @@ class ServerList : public ButtonPage
     public:
         ServerList(Context *context);
         void ItemSelected(std::string Label);
+        void Connect(std::string hostname, int port);
 };
 
 #endif

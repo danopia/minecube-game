@@ -58,7 +58,8 @@ bool contains(std::vector<Vector3> vector, Vector3 value) {
   
 void LazyWorld::LoadChunk(sf::Packet Packet) {
     int BlockCount;
-    Packet >> BlockCount;
+    Vector3 Chunk; // TODO: remove from request list, add to loaded list
+    Packet >> Chunk >> BlockCount;
     
     char type;
     Block *Block;

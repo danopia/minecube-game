@@ -19,9 +19,23 @@ class Vector3
         }
 
 
-        bool operator <(const Vector3& x) const
+        /*bool operator <(const Vector3& x) const
         {
             return sqrtf(powf(X,2) + powf(Y,2) + powf(Z,2)) < sqrtf(powf(x.X,2) + powf(x.Y, 2) + powf(x.Z, 2));
+        }*/
+
+
+        bool operator <(const Vector3& x) const
+        {
+            if (X != x.X) return X < x.X;
+            if (Y != x.Y) return Y < x.Y;
+            return Z < x.Z;
+        }
+
+
+        bool operator ==(const Vector3& x) const
+        {
+            return X == x.X && Y == x.Y && Z == x.Z;
         }
 
 

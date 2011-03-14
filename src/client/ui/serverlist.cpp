@@ -39,12 +39,16 @@ ServerList::ServerList(Context *context) : ButtonPage(context, "Server List", tr
     Buttons.push_back("localhost:28997");
 }
 
-void multiplayer(Context *context, std::string hostname, int port) {
+void ServerList::Connect(std::string hostname, int port) {
     Context *con = new Context(context->window);
     con->socket = new Socket(con, port, hostname);
     
-    // Load up a game and run it
+    // Set up a game and make sure it's ready
     Game game(con);
+    WaitPage wait = WaitPage(con);
+    RunSubpage(&wait);
+    
+    // Run the game
     game.Loop();
 
     // Close the socket
@@ -65,7 +69,7 @@ void ServerList::ItemSelected(std::string Label) {
     
     int iPort = atoi(port.c_str());
     
-    multiplayer(context, ip, iPort);
+    Connect(ip, iPort);
     
     InitGraphics();
 }

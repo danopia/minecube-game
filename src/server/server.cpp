@@ -104,6 +104,10 @@ void Server::Loop() {
                     Selector.Remove(Socket);
                     clients.erase(Socket);
                     
+                    sf::Packet OutPacket;
+                    OutPacket << (sf::Uint8) 8 << client->Number;
+                    broadcast(OutPacket);
+                    
                     broadcastLog("Client disconnected: " + client->Address.ToString());
                 }
             }
