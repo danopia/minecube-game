@@ -81,6 +81,11 @@ void InputHandler::handleEvent(sf::Event Event) {
                 inputWaiting = true;
                 break;
                 
+            // tab: userlist
+            case sf::Key::Tab:
+                context->hud->ShowUsers = true;
+                break;
+                
             // W : forward
             case sf::Key::W:
                 context->player->Forward = true;
@@ -131,6 +136,11 @@ void InputHandler::handleEvent(sf::Event Event) {
         time = MovementTimer.GetElapsedTime();
 
         switch(Event.Key.Code) {
+            // tab: userlist
+            case sf::Key::Tab:
+                context->hud->ShowUsers = false;
+                break;
+                
             // W : forward
             case sf::Key::W:
                 context->player->Forward = false;

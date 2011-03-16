@@ -22,6 +22,10 @@ class HUD
         
         void Draw();
         void Output(std::string Line);
+        
+        void DrawUsers();
+        bool ShowUsers;
+        sf::Font ContentFnt;
 
         Context *context;
         sf::String DebugText, BacklogText;

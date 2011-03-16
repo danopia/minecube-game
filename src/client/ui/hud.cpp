@@ -3,7 +3,7 @@
 char buf[10];
 float Framerate;
 
-HUD::HUD(Context *context) : context(context) {
+HUD::HUD(Context *context) : context(context), ShowUsers(false) {
     DebugText.SetFont(context->renderer->Font);
     DebugText.SetSize(context->renderer->Font.GetCharacterSize());
     
@@ -15,6 +15,8 @@ HUD::HUD(Context *context) : context(context) {
     
     Hair1.SetPosition(context->window->GetWidth() / 2, context->window->GetHeight() / 2);
     Hair2.SetPosition(Hair1.GetPosition());
+    
+    ContentFnt.LoadFromFile("data/Inconsolata.ttf", 30);
 };
 
 void HUD::Output(std::string Line) {
@@ -61,8 +63,39 @@ void HUD::Draw() {
         BacklogText.SetColor(sf::Color::White);
     }
     
-    // Draw crosshair
-    context->window->Draw(Hair1);
-    context->window->Draw(Hair2);
+    if (ShowUsers) {
+        DrawUsers();
+    } else {
+        // Draw crosshair
+        context->window->Draw(Hair1);
+        context->window->Draw(Hair2);
+    }
+}
+
+void HUD::DrawUsers() {
+    sf::Shape Dimmer = sf::Shape::Rectangle(0, 0, context->window->GetWidth(), context->window->GetHeight(), sf::Color(0, 0, 0, 128));
+    context->window->Draw(Dimmer);
+    
+    sf::Shape Button = sf::Shape::Rectangle(-200, -20, 200, 20, sf::Color(127.f, 127.f, 127.f), 2, sf::Color::Black);
+    Button.SetPosition(context->window->GetWidth() / 2, 150);
+    
+    sf::String Label("User List", ContentFnt, 30);
+    Label.SetPosition(Button.GetPosition().x - (Label.GetRect().GetWidth() / 2), Button.GetPosition().y - 20);
+    context->window->Draw(Label);
+    
+    for (std::map<int, Player*>::iterator player = context->socket->Players.begin(); player != context->socket->Players.end(); player++) {
+        Button.Move(0, 60);
+        
+        if (player->first == context->socket->Number)
+            Button.SetColor(sf::Color(220.f, 220.f, 220.f, 180.f));
+        else
+            Button.SetColor(sf::Color(127.f, 127.f, 127.f, 180.f));
+        
+        Label.SetText(player->second->Name);
+        Label.SetPosition(Button.GetPosition().x - (Label.GetRect().GetWidth() / 2), Button.GetPosition().y - 20);
+        
+        context->window->Draw(Button);
+        context->window->Draw(Label);
+    }
 }
 
