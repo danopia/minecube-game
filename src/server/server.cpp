@@ -9,7 +9,7 @@ Server::Server(unsigned short Port) : Port(Port), NextNumber(1) {
 
 void Server::Regenerate() {
     std::cout << "Generating terrain... ";
-    terrain = new Terrain(3, 3, 5,5,1, 25);
+    terrain = new Terrain(3, 3, 5,5,1, 16);
     terrain->Regenerate();
     std::cout << "done" << std::endl;
 }
@@ -25,7 +25,7 @@ void Server::listBlocks(std::vector<PositionedBlock> *Blocks, const Octree<Block
         listBlocks(Blocks, octree.children[5], x+subsize, y,         z+subsize, subsize);
         listBlocks(Blocks, octree.children[6], x,         y+subsize, z+subsize, subsize);
         listBlocks(Blocks, octree.children[7], x+subsize, y+subsize, z+subsize, subsize);
-    } else if (octree.value->Type > 0) {
+    } else {
         Blocks->push_back(PositionedBlock(octree.value, Vector3(x, y, z), size));
     }
 }

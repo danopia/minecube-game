@@ -5,7 +5,7 @@ Client *Client::Accept(sf::SocketTCP &Listener, Server *Host) {
     
     Listener.Accept(client->Socket, &client->Address);
     
-    client->Avatar = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(12.5f, 12.5f, 25.f), "");
+    client->Avatar = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(8.f, 8.f, 16.f), "");
     client->Avatar->Name = client->Address.ToString();
     
     std::cout << "Client connected: " << client->Address.ToString() << std::endl;
@@ -95,17 +95,14 @@ void Client::sendTerrain(const Vector3 ChunkIndex) {
     Octree<Block*> Chunk = it->second;
     
     std::vector<PositionedBlock> Blocks;
-    Host->listBlocks(&Blocks, Chunk,
-               ChunkIndex.X * Host->terrain->chunkSize,
-               ChunkIndex.Y * Host->terrain->chunkSize,
-               ChunkIndex.Z * Host->terrain->chunkSize,
-                              Host->terrain->chunkSize);
+    Host->listBlocks(&Blocks, Chunk, 0, 0, 0, Host->terrain->chunkSize);
     
     sf::Packet Packet;
     Packet << (sf::Uint8) 4 << ChunkIndex << (int) Blocks.size();
     
-    for (int i = 0; i < Blocks.size(); i++) // << (char)Blocks[i].block->Type 
-        Packet << Blocks[i].pos << Blocks[i].sideLength;
+    for (int i = 0; i < Blocks.size(); i++) {
+        Packet << (sf::Uint8) Blocks[i].block->Type << Blocks[i].pos;
+    }
 
     Socket.Send(Packet);
 }

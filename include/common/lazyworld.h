@@ -5,8 +5,10 @@
 #include <SFML/Network.hpp>
 #include <vector>
 #include <list>
+#include <map>
 #include <algorithm>
 
+#include "common/block.h"
 #include "common/positionedblock.h"
 #include "common/entity.h"
 #include "common/vector3.h"
@@ -20,8 +22,7 @@ class LazyWorld
         LazyWorld(sf::SocketTCP& Socket) : Socket(Socket) {};
         
         sf::SocketTCP& Socket;
-        std::list<PositionedBlock*> Blocks;
-        std::list<PositionedBlock*> Blocks2;
+        std::list<PositionedBlock*> VisibleBlocks;
         std::list<Entity> Entities;
         
         void DoStep();
@@ -31,6 +32,7 @@ class LazyWorld
         
         int ChunkSize;
         std::vector<Vector3> RequestedChunks;
+        std::map<Vector3, std::map<Vector3, Block*> > LoadedChunks;
         
         void LoadChunk(sf::Packet Packet);
         void HandleRequests(Vector3 Pos);
