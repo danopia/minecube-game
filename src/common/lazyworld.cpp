@@ -51,8 +51,7 @@ void LazyWorld::DestroyTarget(Player *player) {
 
 bool contains(std::vector<Vector3> vector, Vector3 value) {
     for (int i = 0; i < vector.size(); i++)
-        if ((vector[i].X == value.X) && (vector[i].Y == value.Y) && (vector[i].Z == value.Z))
-            return true;
+        if (vector[i] == value) return true;
     
     return false;
 }
@@ -108,6 +107,8 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
         if (Pos.Z < 15 && chunk[Pos + Vector3(0, 0, 1)]->Type > 0)
             sides &= (0xDF); // 0b00100000
         
+        it->second->faces = sides;
+        
         if (sides > 0)
             VisibleBlocks.push_back(new PositionedBlock(it->second, (ChunkIndex * 16) + Pos, 1));
     }
@@ -122,11 +123,20 @@ void LazyWorld::HandleRequests(Vector3 Pos) {
     CurrentChunk.Y = floor(Pos.Y / ChunkSize);
     CurrentChunk.Z = floor(Pos.Z / ChunkSize);
     
-    if (!contains(RequestedChunks, CurrentChunk))
-        RequestChunk(CurrentChunk);
+    RequestChunk(CurrentChunk);
+    RequestChunk(CurrentChunk + Vector3(-1, 0,  0));
+    RequestChunk(CurrentChunk + Vector3(-1, -1, 0));
+    RequestChunk(CurrentChunk + Vector3(0,  -1, 0));
+    RequestChunk(CurrentChunk + Vector3(1,  -1, 0));
+    RequestChunk(CurrentChunk + Vector3(1,  0,  0));
+    RequestChunk(CurrentChunk + Vector3(1,  1,  0));
+    RequestChunk(CurrentChunk + Vector3(0,  1,  0));
+    RequestChunk(CurrentChunk + Vector3(-1, 1,  0));
 }
 
 void LazyWorld::RequestChunk(Vector3 ChunkIndex) {
+    if (contains(RequestedChunks, ChunkIndex)) return;
+    
     // Send request to the server
     sf::Packet Packet;
     Packet << (sf::Uint8) 4 << ChunkIndex;

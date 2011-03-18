@@ -199,12 +199,12 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     if (block->faces & 0x10 > 0 && player->Pos.X < x) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[16] );
     if (block->faces & 0x20 > 0 && player->Pos.Y > y) glDrawElements( GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[20] );
     */
-    if (context->player->Pos.Z + 1.5f < z) glDrawArrays(GL_QUADS, 0, 4);
-    if (context->player->Pos.X + 0.5f > x) glDrawArrays(GL_QUADS, 4, 4);
-    if (context->player->Pos.Y - 0.5f < y) glDrawArrays(GL_QUADS, 8, 4);
-    if (context->player->Pos.Z + 1.5f > z) glDrawArrays(GL_QUADS, 12, 4);
-    if (context->player->Pos.X - 0.5f < x) glDrawArrays(GL_QUADS, 16, 4);
-    if (context->player->Pos.Y + 0.5f > y) glDrawArrays(GL_QUADS, 20, 4);
+    if ((block->faces & 0x04) > 0 && context->player->Pos.Z + 1.5f < z) glDrawArrays(GL_QUADS, 0, 4);
+    if ((block->faces & 0x08) > 0 && context->player->Pos.X + 0.5f > x) glDrawArrays(GL_QUADS, 4, 4);
+    if ((block->faces & 0x02) > 0 && context->player->Pos.Y - 0.5f < y) glDrawArrays(GL_QUADS, 8, 4);
+    if ((block->faces & 0x20) > 0 && context->player->Pos.Z + 1.5f > z) glDrawArrays(GL_QUADS, 12, 4);
+    if ((block->faces & 0x01) > 0 && context->player->Pos.X - 0.5f < x) glDrawArrays(GL_QUADS, 16, 4);
+    if ((block->faces & 0x10) > 0 && context->player->Pos.Y + 0.5f > y) glDrawArrays(GL_QUADS, 20, 4);
 }
 
 void Renderer::renderBlock(PositionedBlock *block) {
