@@ -249,7 +249,7 @@ void Renderer::render() {
     // Loop through blocks and render them
     //for (int i = 0; i < context->world->Blocks.size(); i++)
     //    renderBlock(context->world->Blocks[i]);
-    for (std::list<PositionedBlock*>::iterator it = context->world->Blocks.begin(); it != context->world->Blocks.end(); ++it)
+    for (std::list<PositionedBlock*>::iterator it = context->world->Blocks2.begin(); it != context->world->Blocks2.end(); ++it)
         renderBlock(*it);
     
     Block *block = new StoneBlock();

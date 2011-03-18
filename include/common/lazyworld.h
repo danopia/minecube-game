@@ -21,6 +21,7 @@ class LazyWorld
         
         sf::SocketTCP& Socket;
         std::list<PositionedBlock*> Blocks;
+        std::list<PositionedBlock*> Blocks2;
         std::list<Entity> Entities;
         
         void DoStep();

@@ -78,6 +78,45 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
         
         Blocks.push_back(new PositionedBlock(Block, Pos, SideLength));
     }
+    
+    Blocks2.clear();
+    PositionedBlock *pblock, *ppblock;
+    for (std::list<PositionedBlock*>::iterator it = Blocks.begin(); it != Blocks.end(); ++it) {
+        pblock = *it;
+        char sides = 0x3F;
+        
+        for (std::list<PositionedBlock*>::iterator it2 = Blocks.begin(); it2 != Blocks.end(); ++it2) {
+            ppblock = *it2;
+            
+            if (ppblock->pos.X + ppblock->sideLength == pblock->pos.X
+             && ppblock->pos.Y == pblock->pos.Y && ppblock->pos.Z == pblock->pos.Z)
+                sides &= (0xFE); // 0b00000001
+            
+            else if (ppblock->pos.Y + ppblock->sideLength == pblock->pos.Y
+             && ppblock->pos.X == pblock->pos.X && ppblock->pos.Z == pblock->pos.Z)
+                sides &= (0xFD); // 0b00000010
+            
+            else if (ppblock->pos.Z + ppblock->sideLength == pblock->pos.Z
+             && ppblock->pos.Y == pblock->pos.Y && ppblock->pos.Y == pblock->pos.Y)
+                sides &= (0xFB); // 0b00000100
+            
+            
+            else if (ppblock->pos.X == pblock->pos.X + pblock->sideLength
+             && ppblock->pos.Y == pblock->pos.Y && ppblock->pos.Z == pblock->pos.Z)
+                sides &= (0xF7); // 0b00001000
+            
+            else if (ppblock->pos.Y == pblock->pos.Y + pblock->sideLength
+             && ppblock->pos.X == pblock->pos.X && ppblock->pos.Z == pblock->pos.Z)
+                sides &= (0xEF); // 0b00010000
+            
+            else if (ppblock->pos.Z == pblock->pos.Z + pblock->sideLength
+             && ppblock->pos.Y == pblock->pos.Y && ppblock->pos.Y == pblock->pos.Y)
+                sides &= (0xDF); // 0b00100000
+        }
+        
+        if (sides > 0)
+            Blocks2.push_back(pblock);
+    }
 }
 
 void LazyWorld::HandleRequests(Vector3 Pos) {
