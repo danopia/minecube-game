@@ -23,7 +23,7 @@ PositionedBlock *LazyWorld::CheckAim(Player *player) {
     PositionedBlock *block;
     Ray ray = Ray(player);
     
-    PositionedBlock *target;
+    PositionedBlock *target = NULL;
     float dist, best = 5.f;
     
     for (std::list<PositionedBlock*>::iterator it = VisibleBlocks.begin(); it != VisibleBlocks.end(); ++it) {
@@ -53,6 +53,10 @@ void LazyWorld::DestroyTarget(Player *player) {
     chunkindex.Y = floor(block->pos.Y / ChunkSize);
     chunkindex.Z = floor(block->pos.Z / ChunkSize);
     pos = block->pos - (chunkindex * 16);
+    
+    printf("3 (%f, %f, %f)\n", block->pos.X, block->pos.Y, block->pos.Z);
+    printf("4 (%f, %f, %f)\n", chunkindex.X, chunkindex.Y, chunkindex.Z);
+    printf("5 (%f, %f, %f)\n", pos.X, pos.Y, pos.Z);
     
     std::map<Vector3, Block*> chunk = LoadedChunks[chunkindex];
     
@@ -112,6 +116,9 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
     sf::Uint8 type;
     Block *block;
     Vector3 Pos;
+    float SideLength;
+    
+    printf("0 (%f, %f, %f)\n", ChunkIndex.X, ChunkIndex.Y, ChunkIndex.Z);
     
     for (int i = 0; i < BlockCount; i++) {
         Packet >> type >> Pos;
