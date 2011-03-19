@@ -1,7 +1,7 @@
 #include "common/ray.h"
 
 Ray::Ray(Entity *entity) {
-    Origin = entity->Pos + Vector3(0.5f, 0.5f, 1.5f);
+    Origin = entity->Pos + Vector3(0.25f, 0.25f, 1.6f);
     
     Direction = Vector3(
         sin((PI * entity->Rotation.Z) / 180),
