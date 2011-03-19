@@ -10,9 +10,9 @@ const double WALK_SPEED    = 5.0;
 const double CROUCH_SPEED  = 3.0;
 const double CRAWL_SPEED   = 2.0;
 
-Player::Player() : Speed(0), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name("Untitled"), Entity(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 2)) {};
+Player::Player() : Speed(0), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name("Untitled"), Entity(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0.5f, 0.5f, 1.f)) {};
 
-Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name(Name), Entity(initpos, initrot, Vector3(1, 1, 2)) {};
+Player::Player(float initspeed, Vector3 initrot, Vector3 initpos, std::string Name) : Speed(initspeed), WasRunning(false), WasCrouching(false), WasCrawling(false), Forward(false), Backward(false), Left(false), Right(false), Jumping(false), Running(false), Walking(false), Crouching(false), Crawling(false), Dirty(true), Name(Name), Entity(initpos, initrot, Vector3(0.5f, 0.5f, 1.f)) {};
 
 void Player::ChangeRotation(float deltaYRotation, float deltaZRotation)
 {
