@@ -114,8 +114,6 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
     Vector3 Pos;
     float SideLength;
     
-    printf("0 (%f, %f, %f)\n", ChunkIndex.X, ChunkIndex.Y, ChunkIndex.Z);
-    
     for (int i = 0; i < BlockCount; i++) {
         Packet >> type >> Pos;
         
