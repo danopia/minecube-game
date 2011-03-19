@@ -45,8 +45,54 @@ PositionedBlock *LazyWorld::CheckAim(Player *player) {
 void LazyWorld::DestroyTarget(Player *player) {
     PositionedBlock *block = CheckAim(player);
     if (!block) return;
-    
     VisibleBlocks.remove(block);
+    
+    Vector3 chunkindex, pos;
+    
+    chunkindex.X = floor(block->pos.X / ChunkSize);
+    chunkindex.Y = floor(block->pos.Y / ChunkSize);
+    chunkindex.Z = floor(block->pos.Z / ChunkSize);
+    pos = block->pos - (chunkindex * 16);
+    
+    std::map<Vector3, Block*> chunk = LoadedChunks[chunkindex];
+    
+    Block *blk;
+    
+    if (pos.X > 0 && chunk[pos - Vector3(1, 0, 0)]->Type > 0) {
+        blk = chunk[pos - Vector3(1, 0, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos - Vector3(1, 0, 0), 1));
+        blk->faces |= 0x08;
+    }
+    
+    if (pos.Y > 0 && chunk[pos - Vector3(0, 1, 0)]->Type > 0) {
+        blk = chunk[pos - Vector3(0, 1, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos - Vector3(0, 1, 0), 1));
+        blk->faces |= 0x10;
+    }
+    
+    if (pos.Z > 0 && chunk[pos - Vector3(0, 0, 1)]->Type > 0) {
+        blk = chunk[pos - Vector3(0, 0, 1)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos - Vector3(0, 0, 1), 1));
+        blk->faces |= 0x20;
+    }
+    
+    if (pos.X < 15 && chunk[pos + Vector3(1, 0, 0)]->Type > 0) {
+        blk = chunk[pos + Vector3(1, 0, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos + Vector3(1, 0, 0), 1));
+        blk->faces |= 0x01;
+    }
+    
+    if (pos.Y < 15 && chunk[pos + Vector3(0, 1, 0)]->Type > 0) {
+        blk = chunk[pos + Vector3(0, 1, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos + Vector3(0, 1, 0), 1));
+        blk->faces |= 0x02;
+    }
+    
+    if (pos.Z < 15 && chunk[pos + Vector3(0, 0, 1)]->Type > 0) {
+        blk = chunk[pos + Vector3(0, 0, 1)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos + Vector3(0, 0, 1), 1));
+        blk->faces |= 0x04;
+    }
 }
 
 bool contains(std::vector<Vector3> vector, Vector3 value) {
@@ -66,9 +112,6 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
     sf::Uint8 type;
     Block *block;
     Vector3 Pos;
-    float SideLength;
-    
-    printf("0 (%f, %f, %f)\n", ChunkIndex.X, ChunkIndex.Y, ChunkIndex.Z);
     
     for (int i = 0; i < BlockCount; i++) {
         Packet >> type >> Pos;
