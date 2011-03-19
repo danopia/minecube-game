@@ -54,10 +54,6 @@ void LazyWorld::DestroyTarget(Player *player) {
     chunkindex.Z = floor(block->pos.Z / ChunkSize);
     pos = block->pos - (chunkindex * 16);
     
-    printf("3 (%f, %f, %f)\n", block->pos.X, block->pos.Y, block->pos.Z);
-    printf("4 (%f, %f, %f)\n", chunkindex.X, chunkindex.Y, chunkindex.Z);
-    printf("5 (%f, %f, %f)\n", pos.X, pos.Y, pos.Z);
-    
     std::map<Vector3, Block*> chunk = LoadedChunks[chunkindex];
     
     Block *blk;
@@ -129,7 +125,6 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
             block = new AirBlock();
         
         chunk[Vector3(Pos)] = block;
-        //printf("1 (%f, %f, %f): %i\n", Pos.X, Pos.Y, Pos.Z, type);
     }
     
     for (std::map<Vector3, Block*>::iterator it = chunk.begin(); it != chunk.end(); ++it) {
