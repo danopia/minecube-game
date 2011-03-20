@@ -19,6 +19,12 @@ void Socket::SendChat(const std::string Line) {
     socket.Send(Packet);
 }
 
+void Socket::SendBlock(sf::Uint8 type, Vector3 chunkIndex, Vector3 blockIndex) {
+    sf::Packet Packet;
+    Packet << type << chunkIndex << blockIndex;
+    socket.Send(Packet);
+}
+
 void Socket::DoStep() {
     sf::Packet In;
     
@@ -27,6 +33,7 @@ void Socket::DoStep() {
         In >> command;
         //printf("Got packet: %i\n", command);
         
+        // TODO: switch to a switch
         if (command == 1) {
             In >> context->world->ChunkSize;
         } else if (command == 2) {
@@ -88,6 +95,12 @@ void Socket::DoStep() {
             
             context->hud->Output(player->Name + " left");
             Players.erase(who);
+        } else if (command == 9) {
+            Vector3 chunk, block;
+            sf::Uint8 type;
+            In >> type >> chunk >> block;
+            
+            context->world->PlaceBlock(type, chunk, block);
         } else
             printf("Got strange packet: %i\n", command);
     }

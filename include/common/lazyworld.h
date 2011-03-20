@@ -30,6 +30,9 @@ class LazyWorld
         PositionedBlock *CheckAim(Player *player);
         void DestroyTarget(Player *player);
         
+        void DestroyBlock(PositionedBlock *block);
+        void PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex);
+              
         int ChunkSize;
         std::vector<Vector3> RequestedChunks;
         std::map<Vector3, std::map<Vector3, Block*> > LoadedChunks;

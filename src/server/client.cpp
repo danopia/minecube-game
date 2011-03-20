@@ -71,6 +71,15 @@ bool Client::handlePacket(sf::Packet &Packet) {
 
     } else if (Message == 6) {
         SendPlayerList();
+
+    } else if (Message == 9) {
+        Vector3 chunk, block;
+        sf::Uint8 type;
+        Packet >> type >> chunk >> block;
+        
+        sf::Packet Out;
+        Out << (sf::Uint8) 9 << type << chunk << block;
+        Host->broadcast(Out);
         
     } else
         printf("Got strange packet: %i\n", Message);

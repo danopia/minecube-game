@@ -25,6 +25,7 @@ class Socket
         void DoStep();
         void Close();
         void SendChat(const std::string Line);
+        void SendBlock(sf::Uint8 type, Vector3 chunkIndex, Vector3 blockIndex);
         
         Context *context;
         sf::SocketTCP socket;

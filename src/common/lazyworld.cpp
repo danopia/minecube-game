@@ -45,52 +45,88 @@ PositionedBlock *LazyWorld::CheckAim(Player *player) {
 void LazyWorld::DestroyTarget(Player *player) {
     PositionedBlock *block = CheckAim(player);
     if (!block) return;
-    VisibleBlocks.remove(block);
     
-    Vector3 chunkindex, pos;
+    DestroyBlock(block);
+}
+
+void LazyWorld::DestroyBlock(PositionedBlock *block) {
+    Vector3 chunk, pos;
     
-    chunkindex.X = floor(block->pos.X / ChunkSize);
-    chunkindex.Y = floor(block->pos.Y / ChunkSize);
-    chunkindex.Z = floor(block->pos.Z / ChunkSize);
-    pos = block->pos - (chunkindex * 16);
+    chunk.X = floor(block->pos.X / ChunkSize);
+    chunk.Y = floor(block->pos.Y / ChunkSize);
+    chunk.Z = floor(block->pos.Z / ChunkSize);
     
-    std::map<Vector3, Block*> chunk = LoadedChunks[chunkindex];
+    // TODO: handle variable chunk sizes
+    PlaceBlock(0, chunk, block->pos - (chunk * 16));
     
-    Block *blk;
+    // TODO
+    //context->socket->SendBlock(0, chunkIndex, blockIndex);
+    sf::Packet Packet;
+    Packet << (sf::Uint8) 0 << chunk << pos;
+    Socket.Send(Packet);
+}
+
+Block *MakeBlock(char type) {
+    if (type == 3)
+        return new GrassBlock();
+    else
+        return new AirBlock();
+}
+
+void LazyWorld::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
+    // TODO: check if the block is visible before doing this loop
+    // TODO: handle variable chunk sizes
+    Vector3 absolute = (chunkIndex * 16) + blockIndex;
+    for (std::list<PositionedBlock*>::iterator it = VisibleBlocks.begin(); it != VisibleBlocks.end(); ++it) {
+        if ((*it)->pos == absolute) {
+            VisibleBlocks.remove(*it);
+            break;
+        }
+    }
     
-    if (pos.X > 0 && chunk[pos - Vector3(1, 0, 0)]->Type > 0) {
-        blk = chunk[pos - Vector3(1, 0, 0)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos - Vector3(1, 0, 0), 1));
+    std::map<Vector3, Block*> chunk = LoadedChunks[chunkIndex];
+    if (chunk.size() == 0) return; // chunk isn't loaded, don't bother
+    
+    Block *blk = MakeBlock(type);
+    chunk[blockIndex] = blk;
+    if (type != 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex, 1));
+    
+    // TODO: handle placing blocks without just counting on a [reliable] glitch!
+    
+    if (blockIndex.X > 0 && chunk[blockIndex - Vector3(1, 0, 0)]->Type > 0) {
+        blk = chunk[blockIndex - Vector3(1, 0, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex - Vector3(1, 0, 0), 1));
         blk->faces |= 0x08;
     }
     
-    if (pos.Y > 0 && chunk[pos - Vector3(0, 1, 0)]->Type > 0) {
-        blk = chunk[pos - Vector3(0, 1, 0)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos - Vector3(0, 1, 0), 1));
+    if (blockIndex.Y > 0 && chunk[blockIndex - Vector3(0, 1, 0)]->Type > 0) {
+        blk = chunk[blockIndex - Vector3(0, 1, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex - Vector3(0, 1, 0), 1));
         blk->faces |= 0x10;
     }
     
-    if (pos.Z > 0 && chunk[pos - Vector3(0, 0, 1)]->Type > 0) {
-        blk = chunk[pos - Vector3(0, 0, 1)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos - Vector3(0, 0, 1), 1));
+    if (blockIndex.Z > 0 && chunk[blockIndex - Vector3(0, 0, 1)]->Type > 0) {
+        blk = chunk[blockIndex - Vector3(0, 0, 1)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex - Vector3(0, 0, 1), 1));
         blk->faces |= 0x20;
     }
     
-    if (pos.X < 15 && chunk[pos + Vector3(1, 0, 0)]->Type > 0) {
-        blk = chunk[pos + Vector3(1, 0, 0)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos + Vector3(1, 0, 0), 1));
+    // TODO: handle variable chunk sizes
+    if (blockIndex.X < 15 && chunk[blockIndex + Vector3(1, 0, 0)]->Type > 0) {
+        blk = chunk[blockIndex + Vector3(1, 0, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex + Vector3(1, 0, 0), 1));
         blk->faces |= 0x01;
     }
     
-    if (pos.Y < 15 && chunk[pos + Vector3(0, 1, 0)]->Type > 0) {
-        blk = chunk[pos + Vector3(0, 1, 0)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos + Vector3(0, 1, 0), 1));
+    if (blockIndex.Y < 15 && chunk[blockIndex + Vector3(0, 1, 0)]->Type > 0) {
+        blk = chunk[blockIndex + Vector3(0, 1, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex + Vector3(0, 1, 0), 1));
         blk->faces |= 0x02;
     }
     
-    if (pos.Z < 15 && chunk[pos + Vector3(0, 0, 1)]->Type > 0) {
-        blk = chunk[pos + Vector3(0, 0, 1)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, block->pos + Vector3(0, 0, 1), 1));
+    if (blockIndex.Z < 15 && chunk[blockIndex + Vector3(0, 0, 1)]->Type > 0) {
+        blk = chunk[blockIndex + Vector3(0, 0, 1)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex + Vector3(0, 0, 1), 1));
         blk->faces |= 0x04;
     }
 }
@@ -117,12 +153,7 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
     for (int i = 0; i < BlockCount; i++) {
         Packet >> type >> Pos;
         
-        if (type == 3)
-            block = new GrassBlock();
-        else
-            block = new AirBlock();
-        
-        chunk[Vector3(Pos)] = block;
+        chunk[Vector3(Pos)] = MakeBlock(type);
     }
     
     for (std::map<Vector3, Block*>::iterator it = chunk.begin(); it != chunk.end(); ++it) {
@@ -140,6 +171,7 @@ void LazyWorld::LoadChunk(sf::Packet Packet) {
         if (Pos.Z > 0 && chunk[Pos - Vector3(0, 0, 1)]->Type > 0)
             sides &= (0xFB); // 0b00000100
         
+        // TODO: handle variable chunk sizes
         
         if (Pos.X < 15 && chunk[Pos + Vector3(1, 0, 0)]->Type > 0)
             sides &= (0xF7); // 0b00001000
@@ -166,6 +198,7 @@ void LazyWorld::HandleRequests(Vector3 Pos) {
     CurrentChunk.Y = floor(Pos.Y / ChunkSize);
     CurrentChunk.Z = floor(Pos.Z / ChunkSize);
     
+    // TODO: lol.
     RequestChunk(CurrentChunk);
     RequestChunk(CurrentChunk + Vector3(-1, 0,  0));
     RequestChunk(CurrentChunk + Vector3(-1, -1, 0));

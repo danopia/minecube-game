@@ -11,15 +11,17 @@ Client to Server
 6: void; Request for complete player list
 7: ---
 8: void; Request to peacefully disconnect from the server
+9: byte type, Vector3 chunk, Vector3 coord; Request to place a block
 
 Server to Client
 ----------------
 1: int chunkSize; Map chunk size. First packet sent during a connection.
 2: int playerID, string username, Player info; Client's info. Second packet sent during a connection.
 3: string message; String to be displayed in the HUD log.
-4: Vector3 chunk, int blockCount, [Vector3 coord, int sideLength], ...; List of blocks in a requested chunk
+4: Vector3 chunk, int blockCount, [byte type, Vector3 coord], ...; List of blocks in a requested chunk
 5: int playerID, Player info; Complete player update.
 6: int playerCount, [int playerID, string username, Player info], ...; Complete player listing. Third packet send during a connection.
 7: int playerID, string username, Player info; Player joined notification
 8: int playerID; Player left notification
+9: byte type, Vector3 chunk, Vector3 coord; Simple map update; block placed
 
