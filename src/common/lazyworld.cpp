@@ -62,7 +62,7 @@ void LazyWorld::DestroyBlock(PositionedBlock *block) {
     // TODO
     //context->socket->SendBlock(0, chunkIndex, blockIndex);
     sf::Packet Packet;
-    Packet << (sf::Uint8) 0 << chunk << pos;
+    Packet << (sf::Uint8) 9 << (sf::Uint8) 0 << chunk << pos;
     Socket.Send(Packet);
 }
 
