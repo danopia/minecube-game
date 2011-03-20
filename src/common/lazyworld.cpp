@@ -55,12 +55,12 @@ void LazyWorld::DestroyBlock(PositionedBlock *block) {
     chunk.X = floor(block->pos.X / ChunkSize);
     chunk.Y = floor(block->pos.Y / ChunkSize);
     chunk.Z = floor(block->pos.Z / ChunkSize);
+    pos = block->pos - (chunk * 16); // TODO: handle variable chunk sizes
     
-    // TODO: handle variable chunk sizes
-    PlaceBlock(0, chunk, block->pos - (chunk * 16));
+    PlaceBlock(0, chunk, pos);
     
     // TODO
-    //context->socket->SendBlock(0, chunkIndex, blockIndex);
+    //context->socket->SendBlock(0, chunk, pos);
     sf::Packet Packet;
     Packet << (sf::Uint8) 9 << (sf::Uint8) 0 << chunk << pos;
     Socket.Send(Packet);
@@ -89,44 +89,44 @@ void LazyWorld::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
     
     Block *blk = MakeBlock(type);
     chunk[blockIndex] = blk;
-    if (type != 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex, 1));
+    if (type != 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute, 1));
     
     // TODO: handle placing blocks without just counting on a [reliable] glitch!
     
     if (blockIndex.X > 0 && chunk[blockIndex - Vector3(1, 0, 0)]->Type > 0) {
         blk = chunk[blockIndex - Vector3(1, 0, 0)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex - Vector3(1, 0, 0), 1));
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute - Vector3(1, 0, 0), 1));
         blk->faces |= 0x08;
     }
     
     if (blockIndex.Y > 0 && chunk[blockIndex - Vector3(0, 1, 0)]->Type > 0) {
         blk = chunk[blockIndex - Vector3(0, 1, 0)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex - Vector3(0, 1, 0), 1));
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute - Vector3(0, 1, 0), 1));
         blk->faces |= 0x10;
     }
     
     if (blockIndex.Z > 0 && chunk[blockIndex - Vector3(0, 0, 1)]->Type > 0) {
         blk = chunk[blockIndex - Vector3(0, 0, 1)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex - Vector3(0, 0, 1), 1));
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute - Vector3(0, 0, 1), 1));
         blk->faces |= 0x20;
     }
     
     // TODO: handle variable chunk sizes
     if (blockIndex.X < 15 && chunk[blockIndex + Vector3(1, 0, 0)]->Type > 0) {
         blk = chunk[blockIndex + Vector3(1, 0, 0)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex + Vector3(1, 0, 0), 1));
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(1, 0, 0), 1));
         blk->faces |= 0x01;
     }
     
     if (blockIndex.Y < 15 && chunk[blockIndex + Vector3(0, 1, 0)]->Type > 0) {
         blk = chunk[blockIndex + Vector3(0, 1, 0)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex + Vector3(0, 1, 0), 1));
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(0, 1, 0), 1));
         blk->faces |= 0x02;
     }
     
     if (blockIndex.Z < 15 && chunk[blockIndex + Vector3(0, 0, 1)]->Type > 0) {
         blk = chunk[blockIndex + Vector3(0, 0, 1)];
-        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, blockIndex + Vector3(0, 0, 1), 1));
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(0, 0, 1), 1));
         blk->faces |= 0x04;
     }
 }
