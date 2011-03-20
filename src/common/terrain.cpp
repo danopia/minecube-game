@@ -21,6 +21,13 @@ void Terrain::Regenerate()
         }
     }
 }
+
+Octree<Block*> Terrain::GenerateChunk(Vector3 ChunkIndex) {
+    Octree<Block*> chunk = makeTerrainFrom(0, 0);
+    GeneratedTerrain[ChunkIndex] = chunk;
+    return chunk;
+}
+
 Octree<Block*> Terrain::makeTerrainFrom(int level, int type)
 {
     std::vector<Octree<Block*> >blocks;

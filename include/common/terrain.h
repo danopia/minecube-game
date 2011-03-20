@@ -23,6 +23,7 @@ class Terrain
 
         std::map<Vector3, Octree<Block*> > GeneratedTerrain;
         void Regenerate();
+        Octree<Block*> GenerateChunk(Vector3 ChunkIndex);
         
         void SaveToFile(std::string filename);
         void LoadFromFile(std::string filename);

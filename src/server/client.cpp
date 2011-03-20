@@ -5,7 +5,7 @@ Client *Client::Accept(sf::SocketTCP &Listener, Server *Host) {
     
     Listener.Accept(client->Socket, &client->Address);
     
-    client->Avatar = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(8.f, 8.f, 16.f), "");
+    client->Avatar = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(8.f, 8.f, 15.9f), "");
     client->Avatar->Name = client->Address.ToString();
     
     std::cout << "Client connected: " << client->Address.ToString() << std::endl;
@@ -92,16 +92,13 @@ void Client::sendTerrain(const Vector3 ChunkIndex) {
     std::map<Vector3, Octree<Block*> >::iterator it = Host->terrain->GeneratedTerrain.begin();
     it = Host->terrain->GeneratedTerrain.find(ChunkIndex);
 
-    // No chunk? Just say it's empty
+    Octree<Block*> Chunk;
+    // No chunk? Ask for one to be generated
     if (it == Host->terrain->GeneratedTerrain.end()) {
-        sf::Packet Packet;
-        Packet << (sf::Uint8) 4 << ChunkIndex << (int) 0;
-        Socket.Send(Packet);
-        
-        return;
+        Chunk = Host->terrain->GenerateChunk(ChunkIndex);
+    } else {
+        Chunk = it->second;
     }
-    
-    Octree<Block*> Chunk = it->second;
     
     std::vector<PositionedBlock> Blocks;
     Host->listBlocks(&Blocks, Chunk, 0, 0, 0, Host->terrain->chunkSize);

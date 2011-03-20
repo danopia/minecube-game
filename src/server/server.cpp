@@ -9,7 +9,7 @@ Server::Server(unsigned short Port) : Port(Port), NextNumber(1) {
 
 void Server::Regenerate() {
     std::cout << "Generating terrain... ";
-    terrain = new Terrain(3, 3, 5,5,1, 16);
+    terrain = new Terrain(3, 3, 1,1,1, 16);
     terrain->Regenerate();
     std::cout << "done" << std::endl;
 }
