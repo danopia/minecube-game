@@ -13,7 +13,7 @@
 #include "client/context.h"
 #include "common/octree.h"
 #include "common/player.h"
-#include "common/lazyworld.h"
+//#include "common/lazyworld.h"
 #include "common/packets.h"
 
 class Context;

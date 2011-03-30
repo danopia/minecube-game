@@ -2,34 +2,52 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
-#include "common/octree.h"
+#include "common/chunk.h"
 #include "common/vector3.h"
 #include "common/block.h"
+#include "common/player.h"
+#include "common/ray.h"
+#include "common/worldstorage.h"
+#include "common/positionedblock.h"
 
+#include <SFML/System.hpp>
+//#include <vector>
+#include <list>
+#include <algorithm>
 #include <map>
-#include <iostream>
-#include <fstream>
+//#include <iostream>
+//#include <fstream>
+
+class WorldStorage;
 
 class Terrain
 {
     public:
-        Terrain();
-        Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ, int chunkSize);
+        Terrain(WorldStorage *Storage) : Storage(Storage) {};
 
-        int Maxlevel; // Lowest level in the octree possible
-        int Minlevel; // Minimum level at which we start getting leaves instead of nodes
-        int sizeX, sizeY, sizeZ; // Size in chunks in X,Y, and Z directions
-        int chunkSize; // Chunk size in... units. >_>
+        int ChunkSize; // Side length of each chunk, in blocks
 
-        std::map<Vector3, Octree<Block*> > GeneratedTerrain;
-        void Regenerate();
-        Octree<Block*> GenerateChunk(Vector3 ChunkIndex);
+        WorldStorage *Storage;
+        std::map<Vector3, Chunk> LoadedChunks;
+        std::list<PositionedBlock*> VisibleBlocks;
+        std::list<Entity> Entities;
         
-        void SaveToFile(std::string filename);
-        void LoadFromFile(std::string filename);
+        void DoStep();
+        void CheckCollision(Entity *entity);
+        PositionedBlock *CheckAim(Player *player);
+        void DestroyTarget(Player *player);
+        
+        void DestroyBlock(PositionedBlock *block);
+        void PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex);
+        
+        std::vector<Vector3> RequestedChunks;
+        
+        Chunk GetChunk(Vector3 index);
+        void LoadChunk(Vector3 index, Chunk chunk);
+        void HandleRequests(Vector3 Pos);
+        void RequestChunk(Vector3 index);
 
     private:
-        Octree<Block*> makeTerrainFrom(int level, int type); //Generates the terrain from the specified level downwards. Almost always 0.
 };
 
 #endif

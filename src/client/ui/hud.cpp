@@ -1,4 +1,5 @@
 #include "client/ui/hud.h"
+#include <cstdio>
 
 char buf[10];
 float Framerate;

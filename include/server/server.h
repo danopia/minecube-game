@@ -9,7 +9,6 @@
 
 #include "common/terrain.h"
 #include "common/vector3.h"
-#include "common/octree.h"
 #include "common/player.h"
 #include "common/packets.h"
 #include "server/heartbeat.h"
@@ -22,9 +21,6 @@ class Server
     public:
         Server();
         Server(unsigned short Port);
-        
-        void Regenerate();
-        void listBlocks(std::vector<PositionedBlock> *Blocks, const Octree<Block*> octree, const float x, const float y, const float z, const float size);
         
         void beat();
         

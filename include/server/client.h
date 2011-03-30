@@ -4,6 +4,7 @@
 
 #include <SFML/Network.hpp>
 
+#include "common/terrain.h"
 #include "common/player.h"
 #include "common/vector3.h"
 #include "server/server.h"

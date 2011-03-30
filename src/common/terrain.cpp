@@ -1,183 +1,231 @@
 #include "common/terrain.h"
-#include <SFML/System.hpp>
-#include <iostream>
 
-Terrain::Terrain() : Maxlevel(5), Minlevel(0), sizeX(1), sizeY(1), sizeZ(1), chunkSize(50) {} /* Some sort of default values. TODO Discuss and decide whether these should be different */
+//int ChunkSize; // Side length of each chunk, in blocks
 
-Terrain::Terrain(int maxlevel, int minlevel, int initsizeX, int initsizeY, int initsizeZ, int initChunkSize) : Maxlevel(maxlevel), Minlevel(minlevel), sizeX(initsizeX), sizeY(initsizeY), sizeZ(initsizeZ), chunkSize(initChunkSize) {}
+//WorldStorage *Storage;
+//std::map<Vector3, std::map<Vector3, Block*> > LoadedChunks;
+//std::list<PositionedBlock*> VisibleBlocks;
+//std::list<Entity> Entities;
 
-void Terrain::Regenerate()
-{
-    GeneratedTerrain = std::map<Vector3, Octree<Block*> >();
+
+bool contains(std::vector<Vector3> vector, Vector3 value) {
+    for (int i = 0; i < vector.size(); i++)
+        if (vector[i] == value) return true;
     
-    for(int i = 0; i < sizeX; i++)
-    {
-        for(int j = 0; j < sizeY; j++)
-        {
-            for(int k = 0; k < sizeZ; k++)
-            {
-                GeneratedTerrain[Vector3(i,j,k)] = makeTerrainFrom(0, 0);
-            }
-        }
+    return false;
+}
+
+
+void Terrain::DoStep() {
+    // Collision check against player, or something
+}
+
+void Terrain::CheckCollision(Entity *entity) {
+    PositionedBlock *block;
+    
+    for (std::list<PositionedBlock*>::iterator it = VisibleBlocks.begin(); it != VisibleBlocks.end(); ++it) {
+        block = *it;
+        if (block->block->Type == 0) continue;
+        
+        if (entity->Pos.X + entity->Hitbox.X >= block->pos.X && entity->Pos.X <= block->pos.X + 1
+         && entity->Pos.Y + entity->Hitbox.Y >= block->pos.Y && entity->Pos.Y <= block->pos.Y + 1
+         && entity->Pos.Z + entity->Hitbox.Z >= block->pos.Z && entity->Pos.Z <= block->pos.Z + 1)
+            entity->Collide(*block);
     }
 }
 
-Octree<Block*> Terrain::GenerateChunk(Vector3 ChunkIndex) {
-    Octree<Block*> chunk = makeTerrainFrom(0, 0);
-    GeneratedTerrain[ChunkIndex] = chunk;
-    return chunk;
-}
-
-Octree<Block*> Terrain::makeTerrainFrom(int level, int type)
-{
-    std::vector<Octree<Block*> >blocks;
-    for(int i = 0; i < 8; i++)
-    {
-        if(level < Maxlevel)
-        {
-            bool leaf = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-            
-            if(leaf && level > Minlevel)
-            {
-                // TODO: Change to make a random block type, not only dirt or air
-                //bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-                if (type == 0)
-                    type = (i < 4) ? 1 : 2;
-                
-                if (type == 1)
-                    blocks.push_back(Octree<Block*>(new GrassBlock()));
-                else
-                    blocks.push_back(Octree<Block*>(new AirBlock()));
-            } 
-            else
-            {
-                if (type == 0)
-                    blocks.push_back(makeTerrainFrom(level + 1, (i < 4) ? 1 : 2));
-                else
-                    blocks.push_back(makeTerrainFrom(level + 1, type));
-            }
-        }
-        else if(level == Maxlevel)
-        {
-            // TODO: Same as above
-            //bool type = (sf::Randomizer::Random(-1.f, 1.f) <= 0.0f ? true : false);
-            if (type == 0)
-                type = (i < 4) ? 1 : 2;
-            
-            if (type == 1)
-                blocks.push_back(Octree<Block*>(new GrassBlock()));
-            else
-                blocks.push_back(Octree<Block*>(new AirBlock()));
+PositionedBlock *Terrain::CheckAim(Player *player) {
+    PositionedBlock *block;
+    Ray ray = Ray(player);
+    
+    PositionedBlock *target = NULL;
+    float dist, best = 5.f;
+    
+    for (std::list<PositionedBlock*>::iterator it = VisibleBlocks.begin(); it != VisibleBlocks.end(); ++it) {
+        block = *it; // Blocks[i];
+        
+        dist = ray.CheckCollision(block);
+        if (0.f < dist && dist < best) {
+            best = dist;
+            target = block;
         }
     }
-    Octree<Block*> terrain(blocks);
-    return terrain;
+    
+    if (target != NULL)
+        target->marked = true;
+    
+    return target;
 }
 
+void Terrain::DestroyTarget(Player *player) {
+    PositionedBlock *block = CheckAim(player);
+    if (!block) return;
+    
+    DestroyBlock(block);
+}
 
+void Terrain::DestroyBlock(PositionedBlock *block) {
+    Vector3 chunk, pos;
+    
+    chunk.X = floor(block->pos.X / ChunkSize);
+    chunk.Y = floor(block->pos.Y / ChunkSize);
+    chunk.Z = floor(block->pos.Z / ChunkSize);
+    pos = block->pos - (chunk * 16); // TODO: handle variable chunk sizes
+    
+    PlaceBlock(0, chunk, pos);
+    
+    // TODO
+    //context->socket->SendBlock(0, chunk, pos);
+    //sf::Packet Packet;
+    //Packet << (sf::Uint8) 9 << (sf::Uint8) 0 << chunk << pos;
+    //Socket.Send(Packet);
+}
 
-void SerializeOctree(std::ofstream *out, Octree<Block*> octree) {
-    if (octree.hasChildren) {
-        char bitfield = 0;
-        
-        for (int i = 0; i < 8; i++)
-            if (octree.children[i].hasChildren)
-                bitfield |= (1 << i);
-        
-        out->write(&bitfield, 1);
-        
-        for (int i = 0; i < 8; i++)
-            SerializeOctree(out, octree.children[i]);
+void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
+    // TODO: check if the block is visible before doing this loop
+    // TODO: handle variable chunk sizes
+    Vector3 absolute = (chunkIndex * 16) + blockIndex;
+    for (std::list<PositionedBlock*>::iterator it = VisibleBlocks.begin(); it != VisibleBlocks.end(); ++it) {
+        if ((*it)->pos == absolute) {
+            VisibleBlocks.remove(*it);
+            break;
+        }
+    }
+    
+    // chunk isn't loaded, don't bother
+    if (!contains(RequestedChunks, chunkIndex)) return;
+    
+    Chunk chunk = LoadedChunks[chunkIndex];
+    
+    Block *block = chunk.PlaceBlock(type, blockIndex);
+    if (type != 0) VisibleBlocks.push_back(new PositionedBlock(block, absolute, 1));
+    
+    chunk.RecalcSides();
+    
+    /*
+    // TODO: handle placing blocks without just counting on a [reliable] glitch!
+    
+    if (blockIndex.X > 0 && chunk[blockIndex - Vector3(1, 0, 0)]->Type > 0) {
+        blk = chunk[blockIndex - Vector3(1, 0, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute - Vector3(1, 0, 0), 1));
+        blk->faces |= 0x08;
+    }
+    
+    if (blockIndex.Y > 0 && chunk[blockIndex - Vector3(0, 1, 0)]->Type > 0) {
+        blk = chunk[blockIndex - Vector3(0, 1, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute - Vector3(0, 1, 0), 1));
+        blk->faces |= 0x10;
+    }
+    
+    if (blockIndex.Z > 0 && chunk[blockIndex - Vector3(0, 0, 1)]->Type > 0) {
+        blk = chunk[blockIndex - Vector3(0, 0, 1)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute - Vector3(0, 0, 1), 1));
+        blk->faces |= 0x20;
+    }
+    
+    // TODO: handle variable chunk sizes
+    if (blockIndex.X < 15 && chunk[blockIndex + Vector3(1, 0, 0)]->Type > 0) {
+        blk = chunk[blockIndex + Vector3(1, 0, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(1, 0, 0), 1));
+        blk->faces |= 0x01;
+    }
+    
+    if (blockIndex.Y < 15 && chunk[blockIndex + Vector3(0, 1, 0)]->Type > 0) {
+        blk = chunk[blockIndex + Vector3(0, 1, 0)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(0, 1, 0), 1));
+        blk->faces |= 0x02;
+    }
+    
+    if (blockIndex.Z < 15 && chunk[blockIndex + Vector3(0, 0, 1)]->Type > 0) {
+        blk = chunk[blockIndex + Vector3(0, 0, 1)];
+        if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(0, 0, 1), 1));
+        blk->faces |= 0x04;
+    }
+    */
+}
+
+//std::vector<Vector3> RequestedChunks;
+
+Chunk Terrain::GetChunk(Vector3 index) {
+    if (contains(RequestedChunks, index)) {
+        return LoadedChunks[index];
     } else {
-        out->write(&octree.value->Type, 1);
+        Chunk chunk(index, ChunkSize);
+        chunk.FillWith(3);
+        LoadedChunks[index] = chunk;
+        return chunk;
     }
 }
 
-void Terrain::SaveToFile(std::string filename) {
-    std::ofstream out(filename.c_str(), std::ios::binary);
+void Terrain::LoadChunk(Vector3 index, Chunk chunk) {
+    sf::Uint8 type;
+    Block *block;
+    Vector3 Pos;
     
-    out.write("MCworld-0\n", 10); // Magic number
-    
-    out.write((char*)&Maxlevel, sizeof(Maxlevel));
-    out.write((char*)&Minlevel, sizeof(Minlevel));
-    out.write((char*)&sizeX, sizeof(sizeX));
-    out.write((char*)&sizeY, sizeof(sizeY));
-    out.write((char*)&sizeZ, sizeof(sizeZ));
-    out.write((char*)&chunkSize, sizeof(chunkSize));
-    
-    int chunks = GeneratedTerrain.size();
-    out.write((char*)&chunks, sizeof(chunks));
-    
-    std::map<Vector3, Octree<Block*> >::iterator Iter;
-    for (Iter = GeneratedTerrain.begin(); Iter != GeneratedTerrain.end(); ++Iter) {
-        out.write((char*)&Iter->first.X, sizeof(Iter->first.X));
-        out.write((char*)&Iter->first.Y, sizeof(Iter->first.Y));
-        out.write((char*)&Iter->first.Z, sizeof(Iter->first.Z));
+    for (std::map<Vector3, Block*>::iterator it = chunk.Blocks.begin(); it != chunk.Blocks.end(); ++it) {
+        if (it->second->Type == 0) continue;
+        Pos = it->first;
         
-        out.write((char*)&Iter->second.hasChildren, sizeof(Iter->second.hasChildren));
+        char sides = 0x3F;
         
-        SerializeOctree(&out, Iter->second);
+        if (Pos.X > 0 && chunk.GetBlock(Pos - Vector3(1, 0, 0))->Type > 0)
+            sides &= (0xFE); // 0b00000001
+        
+        if (Pos.Y > 0 && chunk.GetBlock(Pos - Vector3(0, 1, 0))->Type > 0)
+            sides &= (0xFD); // 0b00000010
+        
+        if (Pos.Z > 0 && chunk.GetBlock(Pos - Vector3(0, 0, 1))->Type > 0)
+            sides &= (0xFB); // 0b00000100
+        
+        // TODO: handle variable chunk sizes
+        
+        if (Pos.X < 15 && chunk.GetBlock(Pos + Vector3(1, 0, 0))->Type > 0)
+            sides &= (0xF7); // 0b00001000
+        
+        if (Pos.Y < 15 && chunk.GetBlock(Pos + Vector3(0, 1, 0))->Type > 0)
+            sides &= (0xEF); // 0b00010000
+        
+        if (Pos.Z < 15 && chunk.GetBlock(Pos + Vector3(0, 0, 1))->Type > 0)
+            sides &= (0xDF); // 0b00100000
+        
+        it->second->faces = sides;
+        
+        if (sides > 0)
+            VisibleBlocks.push_back(new PositionedBlock(it->second, (index * 16) + Pos, 1));
     }
-
-    out.close();
+    
+    LoadedChunks[index] = chunk;
 }
 
-
-
-Octree<Block*> UnserializeOctree(std::ifstream *in, bool parent) {
-    if (parent) {
-        char bitfield = 0;
-        in->read(&bitfield, 1);
-        
-        std::vector<Octree<Block*> >blocks;
-        for (int i = 0; i < 8; i++) {
-            bool parent = (bitfield & (1 << i)) > 0;
-            blocks.push_back(UnserializeOctree(in, parent));
-        }
-        
-        return Octree<Block*>(blocks);
-        
-    } else {
-        char type = 0;
-        in->read(&type, 1);
-        
-        if (type == 3)
-            return Octree<Block*>(new GrassBlock());
-        else
-            return Octree<Block*>(new AirBlock());
-    }
+void Terrain::HandleRequests(Vector3 Pos) {
+    Vector3 CurrentChunk;
+    
+    CurrentChunk.X = floor(Pos.X / ChunkSize);
+    CurrentChunk.Y = floor(Pos.Y / ChunkSize);
+    CurrentChunk.Z = floor(Pos.Z / ChunkSize);
+    
+    // TODO: lol.
+    RequestChunk(CurrentChunk);
+    RequestChunk(CurrentChunk + Vector3(-1, 0,  0));
+    RequestChunk(CurrentChunk + Vector3(-1, -1, 0));
+    RequestChunk(CurrentChunk + Vector3(0,  -1, 0));
+    RequestChunk(CurrentChunk + Vector3(1,  -1, 0));
+    RequestChunk(CurrentChunk + Vector3(1,  0,  0));
+    RequestChunk(CurrentChunk + Vector3(1,  1,  0));
+    RequestChunk(CurrentChunk + Vector3(0,  1,  0));
+    RequestChunk(CurrentChunk + Vector3(-1, 1,  0));
 }
 
-void Terrain::LoadFromFile(std::string filename) {
-    std::ifstream in(filename.c_str(), std::ios::binary);
+void Terrain::RequestChunk(Vector3 index) {
+    if (contains(RequestedChunks, index)) return;
     
-    char buf[11];
-    in.read(buf, 10); // Magic number
-    if (buf != "MCworld-0\n") int MUAHAHAHAHAHAHAHAHA = 1/0;
+    // Send request to the server
+    //sf::Packet Packet;
+    //Packet << (sf::Uint8) 4 << index;
+    //Socket.Send(Packet);
     
-    in.read((char*)&Maxlevel, sizeof(Maxlevel));
-    in.read((char*)&Minlevel, sizeof(Minlevel));
-    in.read((char*)&sizeX, sizeof(sizeX));
-    in.read((char*)&sizeY, sizeof(sizeY));
-    in.read((char*)&sizeZ, sizeof(sizeZ));
-    in.read((char*)&chunkSize, sizeof(chunkSize));
+    //Storage->RequestChunk(index);
     
-    int chunks = 0;
-    in.read((char*)&chunks, sizeof(chunks));
-    
-    GeneratedTerrain = std::map<Vector3, Octree<Block*> >();
-    for (int i = 0; i < chunks; i++) {
-        Vector3 coord;
-        in.read((char*)&coord.X, sizeof(coord.X));
-        in.read((char*)&coord.Y, sizeof(coord.Y));
-        in.read((char*)&coord.Z, sizeof(coord.Z));
-        
-        char parent;
-        in.read(&parent, 1);
-        
-        GeneratedTerrain[coord] = UnserializeOctree(&in, parent == 1);
-    }
-
-    in.close();
+    RequestedChunks.push_back(index);
 }
 

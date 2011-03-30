@@ -36,7 +36,7 @@ Client::Client(sf::SocketTCP Socket, sf::IPAddress Address, Server *Host, int Nu
 void Client::SendWelcome() {
     sf::Packet Packet;
     Packet << (sf::Uint8) 1;
-    Packet << Host->terrain->chunkSize;
+    Packet << Host->terrain->ChunkSize;
     Socket.Send(Packet);
     
     sf::Packet Packet2;
@@ -89,25 +89,13 @@ bool Client::handlePacket(sf::Packet &Packet) {
 }
 
 void Client::sendTerrain(const Vector3 ChunkIndex) {
-    std::map<Vector3, Octree<Block*> >::iterator it = Host->terrain->GeneratedTerrain.begin();
-    it = Host->terrain->GeneratedTerrain.find(ChunkIndex);
-
-    Octree<Block*> Chunk;
-    // No chunk? Ask for one to be generated
-    if (it == Host->terrain->GeneratedTerrain.end()) {
-        Chunk = Host->terrain->GenerateChunk(ChunkIndex);
-    } else {
-        Chunk = it->second;
-    }
-    
-    std::vector<PositionedBlock> Blocks;
-    Host->listBlocks(&Blocks, Chunk, 0, 0, 0, Host->terrain->chunkSize);
+    Chunk chunk = Host->terrain->GetChunk(ChunkIndex);
     
     sf::Packet Packet;
-    Packet << (sf::Uint8) 4 << ChunkIndex << (int) Blocks.size();
+    Packet << (sf::Uint8) 4 << ChunkIndex << (int) chunk.Blocks.size();
     
-    for (int i = 0; i < Blocks.size(); i++) {
-        Packet << (sf::Uint8) Blocks[i].block->Type << Blocks[i].pos;
+    for (std::map<Vector3, Block*>::iterator it = chunk.Blocks.begin(); it != chunk.Blocks.end(); it++) {
+        Packet << (sf::Uint8) it->second->Type << it->first;
     }
 
     Socket.Send(Packet);

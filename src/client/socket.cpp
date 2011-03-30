@@ -46,7 +46,16 @@ void Socket::DoStep() {
             In >> Line;
             context->hud->Output(Line);
         } else if (command == 4) {
-            context->world->LoadChunk(In);
+            // TODO!!! TODO!!!
+            //context->world->LoadChunk(In);
+            
+            int BlockCount;
+            Vector3 ChunkIndex; // TODO: remove from request list, add to loaded list
+            In >> ChunkIndex >> BlockCount;
+            
+            Chunk chunk(ChunkIndex, 16);
+            chunk.FillWith(3);
+            context->world->LoadedChunks[ChunkIndex] = chunk;
             
             context->inGame = true; // Ready to play TEH GAME! ;D
         } else if (command == 5) {

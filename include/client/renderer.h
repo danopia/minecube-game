@@ -8,7 +8,7 @@
 #include "common/player.h"
 #include "common/terrain.h"
 #include "common/block.h"
-#include "common/lazyworld.h"
+//#include "common/lazyworld.h"
 
 class Context;
 

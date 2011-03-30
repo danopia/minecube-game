@@ -7,7 +7,7 @@
 #include <map>
 
 #include "client/context.h"
-#include "common/lazyworld.h"
+#include "common/terrain.h"
 #include "common/player.h"
 #include "common/entity.h"
 #include "common/positionedblock.h"

@@ -1,34 +1,7 @@
 #include "server/server.h"
 
-Server::Server() : Port(28997), NextNumber(1) {
-    Regenerate();
-};
-Server::Server(unsigned short Port) : Port(Port), NextNumber(1) {
-    Regenerate();
-};
-
-void Server::Regenerate() {
-    std::cout << "Generating terrain... ";
-    terrain = new Terrain(3, 3, 1,1,1, 16);
-    terrain->Regenerate();
-    std::cout << "done" << std::endl;
-}
-
-void Server::listBlocks(std::vector<PositionedBlock> *Blocks, const Octree<Block*> octree, const float x, const float y, const float z, const float size) {
-    if (octree.hasChildren) {
-        float subsize = size / 2;
-        listBlocks(Blocks, octree.children[0], x,         y,         z,         subsize);
-        listBlocks(Blocks, octree.children[1], x+subsize, y,         z,         subsize);
-        listBlocks(Blocks, octree.children[2], x,         y+subsize, z,         subsize);
-        listBlocks(Blocks, octree.children[3], x+subsize, y+subsize, z,         subsize);
-        listBlocks(Blocks, octree.children[4], x,         y,         z+subsize, subsize);
-        listBlocks(Blocks, octree.children[5], x+subsize, y,         z+subsize, subsize);
-        listBlocks(Blocks, octree.children[6], x,         y+subsize, z+subsize, subsize);
-        listBlocks(Blocks, octree.children[7], x+subsize, y+subsize, z+subsize, subsize);
-    } else {
-        Blocks->push_back(PositionedBlock(octree.value, Vector3(x, y, z), size));
-    }
-}
+Server::Server() : Port(28997), NextNumber(1) {};
+Server::Server(unsigned short Port) : Port(Port), NextNumber(1) {};
 
 void Server::beat() {
     if (beater.Beat())
