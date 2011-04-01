@@ -11,6 +11,7 @@
 #include "client/input.h"
 #include "client/socket.h"
 #include "client/context.h"
+#include "client/socketstorage.h"
 #include "common/octree.h"
 #include "common/player.h"
 //#include "common/lazyworld.h"

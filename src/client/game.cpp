@@ -1,7 +1,10 @@
 #include "client/game.h"
 
 Game::Game(Context *context) : context(context) {
-    context->world = new Terrain(NULL); // context->socket->socket
+    // TODO
+    context->world = new Terrain(NULL);
+    context->world->Storage = new SocketStorage(context->world, context);
+    
     context->player = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(12.5f, 12.5f, 25.f), "Foo");
     context->renderer = new Renderer(context);
     context->hud = new HUD(context);

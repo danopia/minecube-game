@@ -31,7 +31,7 @@ void Socket::DoStep() {
     while (socket.Receive(In) == sf::Socket::Done) {
         sf::Uint8 command;
         In >> command;
-        //printf("Got packet: %i\n", command);
+        printf("Got packet: %i\n", command);
         
         // TODO: switch to a switch
         if (command == 1) {
@@ -47,15 +47,15 @@ void Socket::DoStep() {
             context->hud->Output(Line);
         } else if (command == 4) {
             // TODO!!! TODO!!!
-            //context->world->LoadChunk(In);
+            ((SocketStorage*) context->world->Storage)->ReadChunk(In);
             
-            int BlockCount;
-            Vector3 ChunkIndex; // TODO: remove from request list, add to loaded list
-            In >> ChunkIndex >> BlockCount;
+            //int BlockCount;
+            //Vector3 ChunkIndex; // TODO: remove from request list, add to loaded list
+            //In >> ChunkIndex >> BlockCount;
             
-            Chunk chunk(ChunkIndex, 16);
-            chunk.FillWith(3);
-            context->world->LoadedChunks[ChunkIndex] = chunk;
+            //Chunk chunk(ChunkIndex, 16);
+            //chunk.FillWith(3);
+            //context->world->LoadedChunks[ChunkIndex] = chunk;
             
             context->inGame = true; // Ready to play TEH GAME! ;D
         } else if (command == 5) {

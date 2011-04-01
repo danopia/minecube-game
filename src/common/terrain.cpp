@@ -147,17 +147,17 @@ void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
 //std::vector<Vector3> RequestedChunks;
 
 Chunk Terrain::GetChunk(Vector3 index) {
-    if (contains(RequestedChunks, index)) {
+    /*if (contains(RequestedChunks, index)) {
         return LoadedChunks[index];
-    } else {
+    } else {*/
         Chunk chunk(index, ChunkSize);
         chunk.FillWith(3);
         LoadedChunks[index] = chunk;
         return chunk;
-    }
+    //}
 }
 
-void Terrain::LoadChunk(Vector3 index, Chunk chunk) {
+void Terrain::LoadChunk(Chunk chunk) {
     sf::Uint8 type;
     Block *block;
     Vector3 Pos;
@@ -191,10 +191,10 @@ void Terrain::LoadChunk(Vector3 index, Chunk chunk) {
         it->second->faces = sides;
         
         if (sides > 0)
-            VisibleBlocks.push_back(new PositionedBlock(it->second, (index * 16) + Pos, 1));
+            VisibleBlocks.push_back(new PositionedBlock(it->second, (chunk.Offset * 16) + Pos, 1)); // TODO: use helper
     }
     
-    LoadedChunks[index] = chunk;
+    LoadedChunks[chunk.Offset] = chunk;
 }
 
 void Terrain::HandleRequests(Vector3 Pos) {
@@ -224,7 +224,7 @@ void Terrain::RequestChunk(Vector3 index) {
     //Packet << (sf::Uint8) 4 << index;
     //Socket.Send(Packet);
     
-    //Storage->RequestChunk(index);
+    Storage->RequestChunk(index);
     
     RequestedChunks.push_back(index);
 }

@@ -14,13 +14,13 @@ class Terrain;
 class WorldStorage
 {
     public:
-        WorldStorage(Terrain &Callback) : Callback(Callback) {};
+        WorldStorage(Terrain *Callback) : Callback(Callback) {};
 
         virtual void RequestChunk(Vector3 Index);
 
-        Terrain &Callback;
+        Terrain *Callback;
         
-    private:
+    protected:
         std::map<Vector3, Chunk*> Loaded;
 };
 

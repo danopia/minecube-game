@@ -23,7 +23,7 @@ class WorldStorage;
 class Terrain
 {
     public:
-        Terrain(WorldStorage *Storage) : Storage(Storage) {};
+        Terrain(WorldStorage *Storage) : Storage(Storage), ChunkSize(16) {};
 
         int ChunkSize; // Side length of each chunk, in blocks
 
@@ -43,7 +43,7 @@ class Terrain
         std::vector<Vector3> RequestedChunks;
         
         Chunk GetChunk(Vector3 index);
-        void LoadChunk(Vector3 index, Chunk chunk);
+        void LoadChunk(Chunk chunk);
         void HandleRequests(Vector3 Pos);
         void RequestChunk(Vector3 index);
 

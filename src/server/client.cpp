@@ -49,7 +49,7 @@ void Client::SendWelcome() {
 bool Client::handlePacket(sf::Packet &Packet) {
     sf::Uint8 Message;
     Packet >> Message;
-    //printf("Got packet: %i\n", Message);
+    printf("Got packet: %i\n", Message);
     
     if (Message == 3) {
         std::string Line;

@@ -7,6 +7,7 @@
 #include <map>
 
 #include "client/context.h"
+#include "client/socketstorage.h"
 #include "common/terrain.h"
 #include "common/player.h"
 #include "common/entity.h"
