@@ -7,16 +7,18 @@
 #include <iostream>
 #include <fstream>
 
-class FileStorage
+class FileStorage : public WorldStorage
 {
     public:
-        FileStorage(Terrain &Callback) : WorldStorage(Callback) {};
+        FileStorage(Terrain *Callback) : WorldStorage(Callback) {};
+        
+        Chunk *RequestChunk(Vector3 Index);
         
         void SaveToFile(std::string filename);
         void LoadFromFile(std::string filename);
         
     private:
-        Chunk GenerateChunk(Vector3 Index);
+        Chunk *GenerateChunk(Vector3 Index);
 };
 
 #endif

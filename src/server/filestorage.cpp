@@ -1,3 +1,53 @@
+#include "server/filestorage.h"
+
+// Terrain &Callback;
+// std::map<Vector3, Chunk*> Loaded;
+
+Chunk *FileStorage::RequestChunk(Vector3 Index) {
+    return GenerateChunk(Index); // TODO: use cache for persistance
+}
+
+// TODO: goes elsewhere!
+Block *MakeBlock3(char type) {
+    if (type == 3)
+        return new GrassBlock();
+    else
+        return new AirBlock();
+}
+
+Chunk *FileStorage::GenerateChunk(Vector3 Index) {
+    Chunk *chunk = new Chunk(Index, Callback->ChunkSize);
+    printf("size: %i\n", Callback->ChunkSize);
+    chunk->FillWith(3);
+    return chunk;
+}
+
+/*
+Chunk FileStorage::ReadChunk(sf::Packet &Packet) {
+    int BlockCount;
+    Vector3 ChunkIndex;
+    Packet >> ChunkIndex >> BlockCount;
+    
+    Chunk chunk(ChunkIndex, 16);
+    
+    sf::Uint8 type;
+    Block *block;
+    Vector3 Pos;
+    float brb;
+    
+    for (int i = 0; i < BlockCount; i++) {
+        Packet >> type >> Pos;
+        
+        chunk.Blocks[Vector3(Pos)] = MakeBlock2(type);
+    }
+    
+    Loaded[ChunkIndex] = &chunk;
+    Callback->LoadChunk(chunk);
+    
+    return chunk;
+}
+*/
+
 /*#include "common/terrain.h"
 #include <SFML/System.hpp>
 #include <iostream>

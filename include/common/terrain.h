@@ -28,7 +28,7 @@ class Terrain
         int ChunkSize; // Side length of each chunk, in blocks
 
         WorldStorage *Storage;
-        std::map<Vector3, Chunk> LoadedChunks;
+        std::map<Vector3, Chunk*> LoadedChunks;
         std::list<PositionedBlock*> VisibleBlocks;
         std::list<Entity> Entities;
         
@@ -42,7 +42,7 @@ class Terrain
         
         std::vector<Vector3> RequestedChunks;
         
-        Chunk GetChunk(Vector3 index);
+        Chunk *GetChunk(Vector3 index);
         void LoadChunk(Chunk chunk);
         void HandleRequests(Vector3 Pos);
         void RequestChunk(Vector3 index);

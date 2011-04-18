@@ -95,12 +95,13 @@ void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
     // chunk isn't loaded, don't bother
     if (!contains(RequestedChunks, chunkIndex)) return;
     
-    Chunk chunk = LoadedChunks[chunkIndex];
+    // TODO: check though
+    Chunk *chunk = LoadedChunks[chunkIndex];
     
-    Block *block = chunk.PlaceBlock(type, blockIndex);
+    Block *block = chunk->PlaceBlock(type, blockIndex);
     if (type != 0) VisibleBlocks.push_back(new PositionedBlock(block, absolute, 1));
     
-    chunk.RecalcSides();
+    chunk->RecalcSides();
     
     /*
     // TODO: handle placing blocks without just counting on a [reliable] glitch!
@@ -146,13 +147,16 @@ void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
 
 //std::vector<Vector3> RequestedChunks;
 
-Chunk Terrain::GetChunk(Vector3 index) {
+Chunk *Terrain::GetChunk(Vector3 index) {
     /*if (contains(RequestedChunks, index)) {
         return LoadedChunks[index];
     } else {*/
-        Chunk chunk(index, ChunkSize);
-        chunk.FillWith(3);
-        LoadedChunks[index] = chunk;
+        Chunk *chunk = Storage->RequestChunk(index);
+        
+        if (chunk != NULL) {
+            LoadedChunks[index] = chunk;
+        }
+        
         return chunk;
     //}
 }
@@ -194,7 +198,7 @@ void Terrain::LoadChunk(Chunk chunk) {
             VisibleBlocks.push_back(new PositionedBlock(it->second, (chunk.Offset * 16) + Pos, 1)); // TODO: use helper
     }
     
-    LoadedChunks[chunk.Offset] = chunk;
+    LoadedChunks[chunk.Offset] = &chunk;
 }
 
 void Terrain::HandleRequests(Vector3 Pos) {

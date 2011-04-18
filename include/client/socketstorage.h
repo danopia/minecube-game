@@ -12,7 +12,7 @@ class SocketStorage : public WorldStorage
     public:
         SocketStorage(Terrain *Callback, Context *context) : WorldStorage(Callback), context(context) {};
         
-        void RequestChunk(Vector3 Index);
+        Chunk *RequestChunk(Vector3 Index);
         Chunk ReadChunk(sf::Packet &Packet);
         
     private:

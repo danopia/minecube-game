@@ -89,12 +89,14 @@ bool Client::handlePacket(sf::Packet &Packet) {
 }
 
 void Client::sendTerrain(const Vector3 ChunkIndex) {
-    Chunk chunk = Host->terrain->GetChunk(ChunkIndex);
+    Chunk *chunk = Host->terrain->GetChunk(ChunkIndex);
+    printf("%p\n", chunk);
     
     sf::Packet Packet;
-    Packet << (sf::Uint8) 4 << ChunkIndex << (int) chunk.Blocks.size();
+    Packet << (sf::Uint8) 4 << ChunkIndex << (int) chunk->Blocks.size();
     
-    for (std::map<Vector3, Block*>::iterator it = chunk.Blocks.begin(); it != chunk.Blocks.end(); it++) {
+    for (std::map<Vector3, Block*>::iterator it = chunk->Blocks.begin(); it != chunk->Blocks.end(); it++) {
+        printf("  %p\n", it->second);
         Packet << (sf::Uint8) it->second->Type << it->first;
     }
 

@@ -16,7 +16,7 @@ class WorldStorage
     public:
         WorldStorage(Terrain *Callback) : Callback(Callback) {};
 
-        virtual void RequestChunk(Vector3 Index);
+        virtual Chunk *RequestChunk(Vector3 Index);
 
         Terrain *Callback;
         

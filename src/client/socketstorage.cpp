@@ -3,10 +3,12 @@
 // Terrain &Callback;
 // std::map<Vector3, Chunk*> Loaded;
 
-void SocketStorage::RequestChunk(Vector3 Index) {
+Chunk *SocketStorage::RequestChunk(Vector3 Index) {
     sf::Packet Packet;
     Packet << (sf::Uint8) 4 << Index;
     context->socket->socket.Send(Packet);
+    
+    return NULL;
 }
 
 // TODO: goes elsewhere?

@@ -12,6 +12,7 @@
 #include "common/player.h"
 #include "common/packets.h"
 #include "server/heartbeat.h"
+#include "server/filestorage.h"
 #include "server/client.h"
 
 class Client;

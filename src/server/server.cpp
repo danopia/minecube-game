@@ -1,7 +1,15 @@
 #include "server/server.h"
 
-Server::Server() : Port(28997), NextNumber(1) { terrain = new Terrain(NULL); };
-Server::Server(unsigned short Port) : Port(Port), NextNumber(1) { terrain = new Terrain(NULL); };
+Server::Server() : Port(28997), NextNumber(1) {
+    terrain = new Terrain(NULL);
+    terrain->Storage = new FileStorage(terrain);
+};
+ 
+Server::Server(unsigned short Port) : Port(Port), NextNumber(1) {
+    terrain = new Terrain(NULL);
+    terrain->Storage = new FileStorage(terrain);
+};
+
 
 void Server::beat() {
     if (beater.Beat())
