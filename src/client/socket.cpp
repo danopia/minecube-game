@@ -31,7 +31,7 @@ void Socket::DoStep() {
     while (socket.Receive(In) == sf::Socket::Done) {
         sf::Uint8 command;
         In >> command;
-        //printf("Got packet: %i\n", command);
+        printf("Got packet: %i\n", command);
         
         // TODO: switch to a switch
         if (command == 1) {

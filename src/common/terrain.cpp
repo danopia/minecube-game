@@ -93,8 +93,8 @@ void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
         }
     }
     
-    block = chunk->PlaceBlock(type, blockIndex);
     Storage->PlaceBlock(type, chunkIndex, blockIndex);
+    block = chunk->PlaceBlock(type, blockIndex);
     
     // TODO: handle placing blocks without just counting on a [reliable] glitch!
     
