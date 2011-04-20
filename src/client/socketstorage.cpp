@@ -10,6 +10,7 @@ Chunk *SocketStorage::RequestChunk(Vector3 Index) {
     
     return NULL;
 }
+#include <cstdio>
 
 // TODO: goes elsewhere?
 Block *MakeBlock2(char type) {
@@ -21,12 +22,12 @@ Block *MakeBlock2(char type) {
 
 //void LoadChunk(Vector3 index, Chunk chunk);
 
-Chunk SocketStorage::ReadChunk(sf::Packet &Packet) {
+Chunk *SocketStorage::ReadChunk(sf::Packet &Packet) {
     int BlockCount;
     Vector3 ChunkIndex;
     Packet >> ChunkIndex >> BlockCount;
     
-    Chunk chunk(ChunkIndex, 16);
+    Chunk *chunk = new Chunk(ChunkIndex, 16);
     
     sf::Uint8 type;
     Block *block;
@@ -36,10 +37,10 @@ Chunk SocketStorage::ReadChunk(sf::Packet &Packet) {
     for (int i = 0; i < BlockCount; i++) {
         Packet >> type >> Pos;
         
-        chunk.Blocks[Vector3(Pos)] = MakeBlock2(type);
+        chunk->Blocks[Vector3(Pos)] = MakeBlock2(type);
     }
     
-    Loaded[ChunkIndex] = &chunk;
+    Loaded[ChunkIndex] = chunk;
     Callback->LoadChunk(chunk);
     
     return chunk;

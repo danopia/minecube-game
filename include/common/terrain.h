@@ -43,7 +43,7 @@ class Terrain
         std::vector<Vector3> RequestedChunks;
         
         Chunk *GetChunk(Vector3 index);
-        void LoadChunk(Chunk chunk);
+        void LoadChunk(Chunk *chunk);
         void HandleRequests(Vector3 Pos);
         void RequestChunk(Vector3 index);
 

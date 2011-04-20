@@ -81,7 +81,11 @@ void Terrain::DestroyBlock(PositionedBlock *block) {
     //Socket.Send(Packet);
 }
 
+#include <cstdio>
+
 void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
+    printf("(%f,\t%f,\t%f) \t/ (%f,\t%f,\t%f):\t%i\n", chunkIndex.X, chunkIndex.Y, chunkIndex.Z, blockIndex.X, blockIndex.Y, blockIndex.Z, type);
+    
     // TODO: check if the block is visible before doing this loop
     // TODO: handle variable chunk sizes
     Vector3 absolute = (chunkIndex * 16) + blockIndex;
@@ -161,44 +165,44 @@ Chunk *Terrain::GetChunk(Vector3 index) {
     //}
 }
 
-void Terrain::LoadChunk(Chunk chunk) {
+void Terrain::LoadChunk(Chunk *chunk) {
     sf::Uint8 type;
     Block *block;
     Vector3 Pos;
     
-    for (std::map<Vector3, Block*>::iterator it = chunk.Blocks.begin(); it != chunk.Blocks.end(); ++it) {
+    for (std::map<Vector3, Block*>::iterator it = chunk->Blocks.begin(); it != chunk->Blocks.end(); ++it) {
         if (it->second->Type == 0) continue;
         Pos = it->first;
         
         char sides = 0x3F;
         
-        if (Pos.X > 0 && chunk.GetBlock(Pos - Vector3(1, 0, 0))->Type > 0)
+        if (Pos.X > 0 && chunk->GetBlock(Pos - Vector3(1, 0, 0))->Type > 0)
             sides &= (0xFE); // 0b00000001
         
-        if (Pos.Y > 0 && chunk.GetBlock(Pos - Vector3(0, 1, 0))->Type > 0)
+        if (Pos.Y > 0 && chunk->GetBlock(Pos - Vector3(0, 1, 0))->Type > 0)
             sides &= (0xFD); // 0b00000010
         
-        if (Pos.Z > 0 && chunk.GetBlock(Pos - Vector3(0, 0, 1))->Type > 0)
+        if (Pos.Z > 0 && chunk->GetBlock(Pos - Vector3(0, 0, 1))->Type > 0)
             sides &= (0xFB); // 0b00000100
         
         // TODO: handle variable chunk sizes
         
-        if (Pos.X < 15 && chunk.GetBlock(Pos + Vector3(1, 0, 0))->Type > 0)
+        if (Pos.X < 15 && chunk->GetBlock(Pos + Vector3(1, 0, 0))->Type > 0)
             sides &= (0xF7); // 0b00001000
         
-        if (Pos.Y < 15 && chunk.GetBlock(Pos + Vector3(0, 1, 0))->Type > 0)
+        if (Pos.Y < 15 && chunk->GetBlock(Pos + Vector3(0, 1, 0))->Type > 0)
             sides &= (0xEF); // 0b00010000
         
-        if (Pos.Z < 15 && chunk.GetBlock(Pos + Vector3(0, 0, 1))->Type > 0)
+        if (Pos.Z < 15 && chunk->GetBlock(Pos + Vector3(0, 0, 1))->Type > 0)
             sides &= (0xDF); // 0b00100000
         
         it->second->faces = sides;
         
         if (sides > 0)
-            VisibleBlocks.push_back(new PositionedBlock(it->second, (chunk.Offset * 16) + Pos, 1)); // TODO: use helper
+            VisibleBlocks.push_back(new PositionedBlock(it->second, (chunk->Offset * 16) + Pos, 1)); // TODO: use helper
     }
     
-    LoadedChunks[chunk.Offset] = &chunk;
+    LoadedChunks[chunk->Offset] = chunk;
 }
 
 void Terrain::HandleRequests(Vector3 Pos) {

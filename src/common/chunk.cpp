@@ -91,6 +91,8 @@ Block *Chunk::PlaceBlock(char type, Vector3 index) {
             break;
         }
     }*/
+    printf("(%f,\t%f,\t%f):\t%i\n", index.X, index.Y, index.Z, type);
+    printf("%i\n", Blocks.size());
     
     Block *block = MakeBlock(type);
     Blocks[index] = block;
