@@ -25,7 +25,7 @@ void SocketStorage::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex
     if (chunk == NULL) return; // TODO: this *will* segfault on unloaded chunks!
     
     Vector3 absolute = chunk->GetWorldPos(blockIndex);
-    Block *block = chunk->GetBlock(blockIndex);
+    Block *block = chunk->PlaceBlock(type, blockIndex);
     
     context->socket->SendBlock(type, chunkIndex, blockIndex);
 }

@@ -21,7 +21,7 @@ void Socket::SendChat(const std::string Line) {
 
 void Socket::SendBlock(sf::Uint8 type, Vector3 chunkIndex, Vector3 blockIndex) {
     sf::Packet Packet;
-    Packet << type << chunkIndex << blockIndex;
+    Packet << (sf::Uint8) 9 << type << chunkIndex << blockIndex;
     socket.Send(Packet);
 }
 

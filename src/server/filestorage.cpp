@@ -21,6 +21,13 @@ Chunk *FileStorage::GenerateChunk(Vector3 Index) {
     return chunk;
 }
 
+void FileStorage::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
+    Chunk *chunk = Loaded[chunkIndex];
+    if (chunk == NULL) return; // TODO: this *will* segfault on unloaded chunks!
+    
+    chunk->PlaceBlock(type, blockIndex);
+}
+
 /*
 Chunk FileStorage::ReadChunk(sf::Packet &Packet) {
     int BlockCount;

@@ -94,6 +94,7 @@ void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
     }
     
     block = chunk->PlaceBlock(type, blockIndex);
+    Storage->PlaceBlock(type, chunkIndex, blockIndex);
     
     // TODO: handle placing blocks without just counting on a [reliable] glitch!
     
@@ -142,17 +143,18 @@ void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
 //std::vector<Vector3> RequestedChunks;
 
 Chunk *Terrain::GetChunk(Vector3 index) {
-    /*if (contains(RequestedChunks, index)) {
+    if (contains(RequestedChunks, index)) {
         return LoadedChunks[index];
-    } else {*/
+    } else {
         Chunk *chunk = Storage->RequestChunk(index);
+        RequestedChunks.push_back(index); // TODO: use a RequestChunk helper
         
         if (chunk != NULL) {
             LoadedChunks[index] = chunk;
         }
         
         return chunk;
-    //}
+    }
 }
 
 void Terrain::LoadChunk(Chunk *chunk) {

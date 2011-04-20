@@ -81,6 +81,8 @@ bool Client::handlePacket(sf::Packet &Packet) {
         Out << (sf::Uint8) 9 << type << chunk << block;
         Host->broadcast(Out);
         
+        Host->terrain->PlaceBlock(type, chunk, block);
+        
     } else
         printf("Got strange packet: %i\n", Message);
         //std::cout << "A client says: \"" << Message << "\"" << std::endl;

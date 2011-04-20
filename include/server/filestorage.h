@@ -13,7 +13,7 @@ class FileStorage : public WorldStorage
         FileStorage(Terrain *Callback) : WorldStorage(Callback) {};
         
         Chunk *RequestChunk(Vector3 Index);
-        void PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {};
+        void PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex);
         
         void SaveToFile(std::string filename);
         void LoadFromFile(std::string filename);
