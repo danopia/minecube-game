@@ -7,7 +7,7 @@ void Entity::DoStep(float amount) {
         GravitySpeed -= 20.f * amount;
         if (GravitySpeed > 25.f) GravitySpeed = 25.f;
         
-        if (Pos.Z < 0) GravitySpeed = -GravitySpeed;
+        //if (Pos.Z < 0) GravitySpeed = -GravitySpeed;
         Pos.Z += GravitySpeed * amount;
     }
 }
