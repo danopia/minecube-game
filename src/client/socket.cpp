@@ -114,6 +114,8 @@ void Socket::DoStep() {
             printf("Got strange packet: %i\n", command);
     }
 
+    if (!context->inGame) return;
+    
     if ((context->player->Dirty && (updateTimer.GetElapsedTime() > 0.5f))
      || (updateTimer.GetElapsedTime() > 5.f)) {
         sf::Packet Out;
