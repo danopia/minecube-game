@@ -13,6 +13,8 @@ class SocketStorage : public WorldStorage
         SocketStorage(Terrain *Callback, Context *context) : WorldStorage(Callback), context(context) {};
         
         Chunk *RequestChunk(Vector3 Index);
+        void PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex);
+        
         Chunk *ReadChunk(sf::Packet &Packet);
         
     private:

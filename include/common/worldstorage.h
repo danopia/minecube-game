@@ -17,6 +17,7 @@ class WorldStorage
         WorldStorage(Terrain *Callback) : Callback(Callback) {};
 
         virtual Chunk *RequestChunk(Vector3 Index);
+        virtual void PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex);
 
         Terrain *Callback;
         

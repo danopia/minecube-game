@@ -20,7 +20,15 @@ Block *MakeBlock2(char type) {
         return new AirBlock();
 }
 
-//void LoadChunk(Vector3 index, Chunk chunk);
+void SocketStorage::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
+    Chunk *chunk = Loaded[chunkIndex];
+    if (chunk == NULL) return; // TODO: this *will* segfault on unloaded chunks!
+    
+    Vector3 absolute = chunk->GetWorldPos(blockIndex);
+    Block *block = chunk->GetBlock(blockIndex);
+    
+    context->socket->SendBlock(type, chunkIndex, blockIndex);
+}
 
 Chunk *SocketStorage::ReadChunk(sf::Packet &Packet) {
     int BlockCount;

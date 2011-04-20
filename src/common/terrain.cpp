@@ -70,42 +70,33 @@ void Terrain::DestroyBlock(PositionedBlock *block) {
     chunk.X = floor(block->pos.X / ChunkSize);
     chunk.Y = floor(block->pos.Y / ChunkSize);
     chunk.Z = floor(block->pos.Z / ChunkSize);
-    pos = block->pos - (chunk * 16); // TODO: handle variable chunk sizes
+    pos = block->pos - (chunk * ChunkSize);
     
     PlaceBlock(0, chunk, pos);
-    
-    // TODO
-    //context->socket->SendBlock(0, chunk, pos);
-    //sf::Packet Packet;
-    //Packet << (sf::Uint8) 9 << (sf::Uint8) 0 << chunk << pos;
-    //Socket.Send(Packet);
 }
 
 void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
-    // TODO: check if the block is visible before doing this loop
-    // TODO: handle variable chunk sizes
-    Vector3 absolute = (chunkIndex * 16) + blockIndex;
-    for (std::list<PositionedBlock*>::iterator it = VisibleBlocks.begin(); it != VisibleBlocks.end(); ++it) {
-        if ((*it)->pos == absolute) {
-            VisibleBlocks.remove(*it);
-            break;
+    // chunk isn't loaded, don't bother. TODO: doublecheck
+    if (!contains(RequestedChunks, chunkIndex)) return;
+    
+    Chunk *chunk = LoadedChunks[chunkIndex];
+    
+    Vector3 absolute = chunk->GetWorldPos(blockIndex);
+    Block *block = chunk->GetBlock(blockIndex);
+    
+    if (block->Type > 0 && block->faces != 0) {
+        for (std::list<PositionedBlock*>::iterator it = VisibleBlocks.begin(); it != VisibleBlocks.end(); ++it) {
+            if ((*it)->pos == absolute) {
+                VisibleBlocks.remove(*it);
+                break;
+            }
         }
     }
     
-    // chunk isn't loaded, don't bother
-    if (!contains(RequestedChunks, chunkIndex)) return;
-    
-    // TODO: check though
-    Chunk *chunk = LoadedChunks[chunkIndex];
-    
-    Block *block = chunk->PlaceBlock(type, blockIndex);
-    if (type != 0) VisibleBlocks.push_back(new PositionedBlock(block, absolute, 1));
-    
-    //chunk->RecalcSides();
+    block = chunk->PlaceBlock(type, blockIndex);
     
     // TODO: handle placing blocks without just counting on a [reliable] glitch!
     
-    //*
     Block *blk = NULL;
     if (blockIndex.X > 0 && chunk->GetBlock(blockIndex - Vector3(1, 0, 0))->Type > 0) {
         blk = chunk->GetBlock(blockIndex - Vector3(1, 0, 0));
@@ -125,25 +116,27 @@ void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
         blk->faces |= 0x20;
     }
     
-    // TODO: handle variable chunk sizes
-    if (blockIndex.X < 15 && chunk->GetBlock(blockIndex + Vector3(1, 0, 0))->Type > 0) {
+    int Upper = chunk->SideLength - 1;
+    if (blockIndex.X < Upper && chunk->GetBlock(blockIndex + Vector3(1, 0, 0))->Type > 0) {
         blk = chunk->GetBlock(blockIndex + Vector3(1, 0, 0));
         if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(1, 0, 0), 1));
         blk->faces |= 0x01;
     }
     
-    if (blockIndex.Y < 15 && chunk->GetBlock(blockIndex + Vector3(0, 1, 0))->Type > 0) {
+    if (blockIndex.Y < Upper && chunk->GetBlock(blockIndex + Vector3(0, 1, 0))->Type > 0) {
         blk = chunk->GetBlock(blockIndex + Vector3(0, 1, 0));
         if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(0, 1, 0), 1));
         blk->faces |= 0x02;
     }
     
-    if (blockIndex.Z < 15 && chunk->GetBlock(blockIndex + Vector3(0, 0, 1))->Type > 0) {
+    if (blockIndex.Z < Upper && chunk->GetBlock(blockIndex + Vector3(0, 0, 1))->Type > 0) {
         blk = chunk->GetBlock(blockIndex + Vector3(0, 0, 1));
         if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(0, 0, 1), 1));
         blk->faces |= 0x04;
     }
-    //*/
+    
+    if (type != 0 && blk->faces != 0)
+        VisibleBlocks.push_back(new PositionedBlock(block, absolute, 1));
 }
 
 //std::vector<Vector3> RequestedChunks;
@@ -167,6 +160,8 @@ void Terrain::LoadChunk(Chunk *chunk) {
     Block *block;
     Vector3 Pos;
     
+    int Upper = chunk->SideLength - 1;
+    
     for (std::map<Vector3, Block*>::iterator it = chunk->Blocks.begin(); it != chunk->Blocks.end(); ++it) {
         if (it->second->Type == 0) continue;
         Pos = it->first;
@@ -182,21 +177,19 @@ void Terrain::LoadChunk(Chunk *chunk) {
         if (Pos.Z > 0 && chunk->GetBlock(Pos - Vector3(0, 0, 1))->Type > 0)
             sides &= (0xFB); // 0b00000100
         
-        // TODO: handle variable chunk sizes
-        
-        if (Pos.X < 15 && chunk->GetBlock(Pos + Vector3(1, 0, 0))->Type > 0)
+        if (Pos.X < Upper && chunk->GetBlock(Pos + Vector3(1, 0, 0))->Type > 0)
             sides &= (0xF7); // 0b00001000
         
-        if (Pos.Y < 15 && chunk->GetBlock(Pos + Vector3(0, 1, 0))->Type > 0)
+        if (Pos.Y < Upper && chunk->GetBlock(Pos + Vector3(0, 1, 0))->Type > 0)
             sides &= (0xEF); // 0b00010000
         
-        if (Pos.Z < 15 && chunk->GetBlock(Pos + Vector3(0, 0, 1))->Type > 0)
+        if (Pos.Z < Upper && chunk->GetBlock(Pos + Vector3(0, 0, 1))->Type > 0)
             sides &= (0xDF); // 0b00100000
         
         it->second->faces = sides;
         
         if (sides > 0)
-            VisibleBlocks.push_back(new PositionedBlock(it->second, (chunk->Offset * 16) + Pos, 1)); // TODO: use helper
+            VisibleBlocks.push_back(new PositionedBlock(it->second, chunk->GetWorldPos(Pos), 1));
     }
     
     LoadedChunks[chunk->Offset] = chunk;
@@ -221,7 +214,7 @@ void Terrain::HandleRequests(Vector3 Pos) {
     RequestChunk(CurrentChunk + Vector3(-1, 1,  0));
     
     RequestChunk(CurrentChunk + Vector3(0,  0,  1));
-    RequestChunk(CurrentChunk + Vector3(0,  0,  -1));
+    RequestChunk(CurrentChunk + Vector3(0,  0, -1));
 }
 
 void Terrain::RequestChunk(Vector3 index) {
