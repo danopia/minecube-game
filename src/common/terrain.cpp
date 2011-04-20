@@ -101,48 +101,49 @@ void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
     Block *block = chunk->PlaceBlock(type, blockIndex);
     if (type != 0) VisibleBlocks.push_back(new PositionedBlock(block, absolute, 1));
     
-    chunk->RecalcSides();
+    //chunk->RecalcSides();
     
-    /*
     // TODO: handle placing blocks without just counting on a [reliable] glitch!
     
-    if (blockIndex.X > 0 && chunk[blockIndex - Vector3(1, 0, 0)]->Type > 0) {
-        blk = chunk[blockIndex - Vector3(1, 0, 0)];
+    //*
+    Block *blk = NULL;
+    if (blockIndex.X > 0 && chunk->GetBlock(blockIndex - Vector3(1, 0, 0))->Type > 0) {
+        blk = chunk->GetBlock(blockIndex - Vector3(1, 0, 0));
         if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute - Vector3(1, 0, 0), 1));
         blk->faces |= 0x08;
     }
     
-    if (blockIndex.Y > 0 && chunk[blockIndex - Vector3(0, 1, 0)]->Type > 0) {
-        blk = chunk[blockIndex - Vector3(0, 1, 0)];
+    if (blockIndex.Y > 0 && chunk->GetBlock(blockIndex - Vector3(0, 1, 0))->Type > 0) {
+        blk = chunk->GetBlock(blockIndex - Vector3(0, 1, 0));
         if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute - Vector3(0, 1, 0), 1));
         blk->faces |= 0x10;
     }
     
-    if (blockIndex.Z > 0 && chunk[blockIndex - Vector3(0, 0, 1)]->Type > 0) {
-        blk = chunk[blockIndex - Vector3(0, 0, 1)];
+    if (blockIndex.Z > 0 && chunk->GetBlock(blockIndex - Vector3(0, 0, 1))->Type > 0) {
+        blk = chunk->GetBlock(blockIndex - Vector3(0, 0, 1));
         if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute - Vector3(0, 0, 1), 1));
         blk->faces |= 0x20;
     }
     
     // TODO: handle variable chunk sizes
-    if (blockIndex.X < 15 && chunk[blockIndex + Vector3(1, 0, 0)]->Type > 0) {
-        blk = chunk[blockIndex + Vector3(1, 0, 0)];
+    if (blockIndex.X < 15 && chunk->GetBlock(blockIndex + Vector3(1, 0, 0))->Type > 0) {
+        blk = chunk->GetBlock(blockIndex + Vector3(1, 0, 0));
         if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(1, 0, 0), 1));
         blk->faces |= 0x01;
     }
     
-    if (blockIndex.Y < 15 && chunk[blockIndex + Vector3(0, 1, 0)]->Type > 0) {
-        blk = chunk[blockIndex + Vector3(0, 1, 0)];
+    if (blockIndex.Y < 15 && chunk->GetBlock(blockIndex + Vector3(0, 1, 0))->Type > 0) {
+        blk = chunk->GetBlock(blockIndex + Vector3(0, 1, 0));
         if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(0, 1, 0), 1));
         blk->faces |= 0x02;
     }
     
-    if (blockIndex.Z < 15 && chunk[blockIndex + Vector3(0, 0, 1)]->Type > 0) {
-        blk = chunk[blockIndex + Vector3(0, 0, 1)];
+    if (blockIndex.Z < 15 && chunk->GetBlock(blockIndex + Vector3(0, 0, 1))->Type > 0) {
+        blk = chunk->GetBlock(blockIndex + Vector3(0, 0, 1));
         if (blk->faces == 0) VisibleBlocks.push_back(new PositionedBlock(blk, absolute + Vector3(0, 0, 1), 1));
         blk->faces |= 0x04;
     }
-    */
+    //*/
 }
 
 //std::vector<Vector3> RequestedChunks;
