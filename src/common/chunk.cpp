@@ -17,19 +17,13 @@ Block *MakeBlock(char type) {
 }
 
 
-#include <cstdio>
-
 void Chunk::FillWith(char type) {
     int x, y, z;
     
-    printf("(%f,\t%f,\t%f)\n", Offset.X, Offset.Y, Offset.Z);
-    
     for  (x = 0; x < SideLength; x++)
         for (y = 0; y < SideLength; y++)
-            for (z = 0; z < SideLength; z++) {
-                //printf("(%i,\t%i,\t%i):\t%i\n", x, y, z, type);
+            for (z = 0; z < SideLength; z++)
                 Blocks[Vector3(x, y, z)] = MakeBlock(type);
-            }
     
     RecalcSides();
 }
@@ -91,8 +85,6 @@ Block *Chunk::PlaceBlock(char type, Vector3 index) {
             break;
         }
     }*/
-    printf("(%f,\t%f,\t%f):\t%i\n", index.X, index.Y, index.Z, type);
-    printf("%i\n", Blocks.size());
     
     Block *block = MakeBlock(type);
     Blocks[index] = block;

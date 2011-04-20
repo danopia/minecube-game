@@ -81,11 +81,7 @@ void Terrain::DestroyBlock(PositionedBlock *block) {
     //Socket.Send(Packet);
 }
 
-#include <cstdio>
-
 void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
-    printf("(%f,\t%f,\t%f) \t/ (%f,\t%f,\t%f):\t%i\n", chunkIndex.X, chunkIndex.Y, chunkIndex.Z, blockIndex.X, blockIndex.Y, blockIndex.Z, type);
-    
     // TODO: check if the block is visible before doing this loop
     // TODO: handle variable chunk sizes
     Vector3 absolute = (chunkIndex * 16) + blockIndex;
