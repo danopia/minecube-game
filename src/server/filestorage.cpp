@@ -17,7 +17,6 @@ Block *MakeBlock3(char type) {
 
 Chunk *FileStorage::GenerateChunk(Vector3 Index) {
     Chunk *chunk = new Chunk(Index, Callback->ChunkSize);
-    printf("size: %i\n", Callback->ChunkSize);
     chunk->FillWith((Index.Z > 0) ? 0 : 3);
     return chunk;
 }
