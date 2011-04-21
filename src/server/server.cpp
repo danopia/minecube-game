@@ -45,6 +45,7 @@ bool Server::Listen() {
     
     Selector.Add(Listener);
     std::cout << "Listening to port " << Port << std::endl;
+    return true;
 }
 
 void Server::Loop() {
