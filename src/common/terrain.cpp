@@ -221,17 +221,34 @@ void Terrain::HandleRequests(Vector3 Pos) {
     
     // TODO: lol.
     RequestChunk(CurrentChunk);
-    RequestChunk(CurrentChunk + Vector3(-1, 0,  0));
-    RequestChunk(CurrentChunk + Vector3(-1, -1, 0));
-    RequestChunk(CurrentChunk + Vector3(0,  -1, 0));
-    RequestChunk(CurrentChunk + Vector3(1,  -1, 0));
-    RequestChunk(CurrentChunk + Vector3(1,  0,  0));
-    RequestChunk(CurrentChunk + Vector3(1,  1,  0));
-    RequestChunk(CurrentChunk + Vector3(0,  1,  0));
-    RequestChunk(CurrentChunk + Vector3(-1, 1,  0));
+    RequestChunk(CurrentChunk + Vector3(-1,  0,  0));
+    RequestChunk(CurrentChunk + Vector3(-1, -1,  0));
+    RequestChunk(CurrentChunk + Vector3( 0, -1,  0));
+    RequestChunk(CurrentChunk + Vector3( 1, -1,  0));
+    RequestChunk(CurrentChunk + Vector3( 1,  0,  0));
+    RequestChunk(CurrentChunk + Vector3( 1,  1,  0));
+    RequestChunk(CurrentChunk + Vector3( 0,  1,  0));
+    RequestChunk(CurrentChunk + Vector3(-1,  1,  0));
     
-    RequestChunk(CurrentChunk + Vector3(0,  0,  1));
-    RequestChunk(CurrentChunk + Vector3(0,  0, -1));
+    RequestChunk(CurrentChunk + Vector3( 0,  0,  1));
+    RequestChunk(CurrentChunk + Vector3(-1,  0,  1));
+    RequestChunk(CurrentChunk + Vector3(-1, -1,  1));
+    RequestChunk(CurrentChunk + Vector3( 0, -1,  1));
+    RequestChunk(CurrentChunk + Vector3( 1, -1,  1));
+    RequestChunk(CurrentChunk + Vector3( 1,  0,  1));
+    RequestChunk(CurrentChunk + Vector3( 1,  1,  1));
+    RequestChunk(CurrentChunk + Vector3( 0,  1,  1));
+    RequestChunk(CurrentChunk + Vector3(-1,  1,  1));
+    
+    RequestChunk(CurrentChunk + Vector3( 0,  0, -1));
+    RequestChunk(CurrentChunk + Vector3(-1,  0, -1));
+    RequestChunk(CurrentChunk + Vector3(-1, -1, -1));
+    RequestChunk(CurrentChunk + Vector3( 0, -1, -1));
+    RequestChunk(CurrentChunk + Vector3( 1, -1, -1));
+    RequestChunk(CurrentChunk + Vector3( 1,  0, -1));
+    RequestChunk(CurrentChunk + Vector3( 1,  1, -1));
+    RequestChunk(CurrentChunk + Vector3( 0,  1, -1));
+    RequestChunk(CurrentChunk + Vector3(-1,  1, -1));
 }
 
 void Terrain::RequestChunk(Vector3 index) {
