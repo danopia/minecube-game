@@ -64,6 +64,20 @@ void Terrain::DestroyTarget(Player *player) {
     DestroyBlock(block);
 }
 
+void Terrain::PlaceAboveTarget(Player *player) {
+    PositionedBlock *block = CheckAim(player);
+    if (!block) return;
+    
+    Vector3 chunk, pos;
+    
+    chunk.X = floor(block->pos.X / ChunkSize);
+    chunk.Y = floor(block->pos.Y / ChunkSize);
+    chunk.Z = floor((block->pos.Z + 1) / ChunkSize);
+    pos = block->pos - (chunk * ChunkSize) + Vector3(0, 0, 1);
+    
+    PlaceBlock(3, chunk, pos);
+}
+
 void Terrain::DestroyBlock(PositionedBlock *block) {
     Vector3 chunk, pos;
     
@@ -136,7 +150,8 @@ void Terrain::PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex) {
         blk->faces |= 0x04;
     }
     
-    if (type != 0 && blk->faces != 0)
+    // TODO: do faces calc on new block
+    if (type > 0) // && blk->faces != 0)
         VisibleBlocks.push_back(new PositionedBlock(block, absolute, 1));
 }
 

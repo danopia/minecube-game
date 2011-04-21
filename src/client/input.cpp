@@ -61,6 +61,10 @@ void InputHandler::handleEvent(sf::Event Event) {
     if (!InChat && Event.Type == sf::Event::MouseButtonPressed && Event.MouseButton.Button == sf::Mouse::Left) {
         context->world->DestroyTarget(context->player);
     }
+    
+    if (!InChat && Event.Type == sf::Event::MouseButtonPressed && Event.MouseButton.Button == sf::Mouse::Right) {
+        context->world->PlaceAboveTarget(context->player);
+    }
 
     // Otherwise....
     if (!InChat && Event.Type == sf::Event::KeyPressed) {

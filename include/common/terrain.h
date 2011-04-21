@@ -36,6 +36,7 @@ class Terrain
         void CheckCollision(Entity *entity);
         PositionedBlock *CheckAim(Player *player);
         void DestroyTarget(Player *player);
+        void PlaceAboveTarget(Player *player);
         
         void DestroyBlock(PositionedBlock *block);
         void PlaceBlock(char type, Vector3 chunkIndex, Vector3 blockIndex);
