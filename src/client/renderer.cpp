@@ -45,40 +45,40 @@ GLdouble vertices[96] = {
 // For grass
 GLdouble texcoords[64] = {
     // Bottom
-    0.125, 0.375,
-    0.0,   0.375,
+    0.105, 0.355,
+    0.0,   0.355,
     0.0,   0.25,
-    0.125, 0.25,
+    0.105, 0.25,
 
     // Back
-    0.125, 0.25,
-    0.0,   0.25,
+    0.105, 0.23,
+    0.0,   0.23,
     0.0,   0.125,
-    0.125, 0.125,
+    0.105, 0.125,
 
     // Right
-    0.125, 0.25,
-    0.0,   0.25,
+    0.105, 0.23,
+    0.0,   0.23,
     0.0,   0.125,
-    0.125, 0.125,
+    0.105, 0.125,
 
     // Top
     0.0,   0.0,
-    0.125, 0.0,
-    0.125, 0.125,
-    0.0,   0.125,
+    0.105, 0.0,
+    0.105, 0.105,
+    0.0,   0.105,
 
     // Front
-    0.125, 0.125,
-    0.125, 0.25,
-    0.0,   0.25,
+    0.105, 0.125,
+    0.105, 0.23,
+    0.0,   0.23,
     0.0,   0.125,
 
     // Left
-    0.125, 0.25,
-    0.0,   0.25,
+    0.105, 0.23,
+    0.0,   0.23,
     0.0,   0.125,
-    0.125, 0.125,
+    0.105, 0.125,
 };
 
 
@@ -241,6 +241,10 @@ void Renderer::render() {
     glEnableClientState( GL_VERTEX_ARRAY );
     //glEnableClientState( GL_NORMAL_ARRAY );
     glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+    
+    bool wrap = false;
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap ? GL_REPEAT : GL_CLAMP );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap ? GL_REPEAT : GL_CLAMP );
 
     glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
     //glNormalPointer( GL_DOUBLE, 0, &vertices[0] );
