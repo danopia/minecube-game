@@ -1,4 +1,5 @@
 #include "common/ray.h"
+#include <cstring>
 
 Ray::Ray(Entity *entity) {
     Origin = entity->Pos + Vector3(0.25f, 0.25f, 1.6f);
