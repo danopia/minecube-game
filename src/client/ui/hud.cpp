@@ -5,19 +5,21 @@ char buf[10];
 float Framerate;
 
 HUD::HUD(Context *context) : context(context), ShowUsers(false) {
-    DebugText.SetFont(context->renderer->Font);
-    DebugText.SetSize(context->renderer->Font.GetCharacterSize());
-    
-    BacklogText.SetFont(context->renderer->Font);
-    BacklogText.SetSize(context->renderer->Font.GetCharacterSize());
-    
-    Hair1 = sf::Shape::Line(-15, 0, 15, 0, 2.5, sf::Color(255, 255, 255, 127));
-    Hair2 = sf::Shape::Line(0, -15, 0, 15, 2.5, sf::Color(255, 255, 255, 127));
-    
-    Hair1.SetPosition(context->window->GetWidth() / 2, context->window->GetHeight() / 2);
-    Hair2.SetPosition(Hair1.GetPosition());
-    
-    ContentFnt.LoadFromFile("data/Inconsolata.ttf", 30);
+    DebugText.setFont(context->renderer->Font);
+    //DebugText.setCharacterSize(context->renderer->Font.getCharacterSize());
+
+    BacklogText.setFont(context->renderer->Font);
+    //BacklogText.setCharacterSize(context->renderer->Font.getCharacterSize());
+
+    Hair1 = sf::RectangleShape(sf::Vector2f(30.f, 2.5));
+    Hair1.setFillColor(sf::Color(255, 255, 255, 127));
+    Hair1 = sf::RectangleShape(sf::Vector2f(2.5, 30));
+    Hair1.setFillColor(sf::Color(255, 255, 255, 127));
+
+    Hair1.setPosition(sf::Vector2f(context->window->getSize().x / 2, context->window->getSize().y / 2));
+    Hair2.setPosition(Hair1.getPosition());
+
+    ContentFnt.loadFromFile("data/Inconsolata.ttf"); // 30 size
 };
 
 void HUD::Output(std::string Line) {
@@ -26,77 +28,86 @@ void HUD::Output(std::string Line) {
 }
 
 void HUD::Draw() {
-    Framerate = 1.f / context->window->GetFrameTime();
-    
+    Framerate = 69.f; // 1.f / context->window->GetFrameTime();
+
     // Draw FPS
     snprintf(buf, 10, "%.1f FPS", Framerate);
     //snprintf(buf, 10, "%f", player.Pos.Z);
-    DebugText.SetText(buf);
-    context->window->Draw(DebugText);
-    
+    DebugText.setString(buf);
+    context->window->draw(DebugText);
+
     // Draw backlog
-    BacklogText.SetPosition(0, 10);
+    BacklogText.setPosition(sf::Vector2f(0, 10));
     for (std::deque<std::string>::iterator line = Backlog.begin(); line != Backlog.end(); line++) {
-        BacklogText.Move(0, 20);
-        BacklogText.SetText(*line);
-        context->window->Draw(BacklogText);
+        BacklogText.move(0, 20);
+        BacklogText.setString(*line);
+        context->window->draw(BacklogText);
     }
-    
+
     // Expire old backlog
     int expired = 0;
     for (std::deque<sf::Clock>::iterator clock = BacklogClocks.begin(); clock != BacklogClocks.end(); clock++)
-        if (clock->GetElapsedTime() > 5.f)
+        if (clock->getElapsedTime().asSeconds() > 5.f)
             expired++;
-    
+
     for (int i = 0; i < expired; i++) {
         Backlog.pop_front();
         BacklogClocks.pop_front();
     }
-    
+
     // Display chat input as you type (dumb textbox)
     if (context->inputHandler->InChat) {
-        BacklogText.SetColor(sf::Color::Blue);
-        BacklogText.Move(0, 30);
-        BacklogText.SetText("> " + chatEntry);
-        
-        context->window->Draw(BacklogText);
-        
-        BacklogText.SetColor(sf::Color::White);
+        BacklogText.setColor(sf::Color::Blue);
+        BacklogText.move(0, 30);
+        BacklogText.setString("> " + chatEntry);
+
+        context->window->draw(BacklogText);
+
+        BacklogText.setColor(sf::Color::White);
     }
-    
+
     if (ShowUsers) {
         DrawUsers();
     } else {
         // Draw crosshair
-        context->window->Draw(Hair1);
-        context->window->Draw(Hair2);
+        context->window->draw(Hair1);
+        context->window->draw(Hair2);
     }
 }
 
 void HUD::DrawUsers() {
-    sf::Shape Dimmer = sf::Shape::Rectangle(0, 0, context->window->GetWidth(), context->window->GetHeight(), sf::Color(0, 0, 0, 128));
-    context->window->Draw(Dimmer);
-    
-    sf::Shape Button = sf::Shape::Rectangle(-200, -20, 200, 20, sf::Color(127.f, 127.f, 127.f), 2, sf::Color::Black);
-    Button.SetPosition(context->window->GetWidth() / 2, 150);
-    
-    sf::String Label("User List", ContentFnt, 30);
-    Label.SetPosition(Button.GetPosition().x - (Label.GetRect().GetWidth() / 2), Button.GetPosition().y - 20);
-    context->window->Draw(Label);
-    
+    sf::RectangleShape Dimmer;
+    Dimmer.setSize(static_cast<sf::Vector2f>(context->window->getSize()));
+    Dimmer.setFillColor(sf::Color(0, 0, 0, 128));
+    Dimmer.setOutlineThickness(2.f);
+    Dimmer.setOutlineColor(sf::Color::Black);
+    context->window->draw(Dimmer);
+
+    sf::RectangleShape Button;
+    Button.setSize(sf::Vector2f(400, 40));
+    Button.setPosition(context->window->getSize().x / 2 - 200, 150 - 40);
+    Button.setFillColor(sf::Color(127.f, 127.f, 127.f));
+    Button.setOutlineThickness(2.f);
+    Button.setOutlineColor(sf::Color::Black);
+
+    sf::Text Label("User List", ContentFnt, 30);
+    Label.setPosition(Button.getPosition());
+    Label.move(-(Label.getLocalBounds().width / 2), -20);
+    context->window->draw(Label);
+
     for (std::map<int, Player*>::iterator player = context->socket->Players.begin(); player != context->socket->Players.end(); player++) {
-        Button.Move(0, 60);
-        
+        Button.move(0, 60);
+
         if (player->first == context->socket->Number)
-            Button.SetColor(sf::Color(220.f, 220.f, 220.f, 180.f));
+            Button.setFillColor(sf::Color(220.f, 220.f, 220.f, 180.f));
         else
-            Button.SetColor(sf::Color(127.f, 127.f, 127.f, 180.f));
-        
-        Label.SetText(player->second->Name);
-        Label.SetPosition(Button.GetPosition().x - (Label.GetRect().GetWidth() / 2), Button.GetPosition().y - 20);
-        
-        context->window->Draw(Button);
-        context->window->Draw(Label);
+            Button.setFillColor(sf::Color(127.f, 127.f, 127.f, 180.f));
+
+        Label.setString(player->second->Name);
+        Label.setPosition(Button.getPosition());
+        Label.move(-(Label.getLocalBounds().width / 2), -20);
+
+        context->window->draw(Button);
+        context->window->draw(Label);
     }
 }
-

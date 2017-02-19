@@ -3,37 +3,37 @@
 const int KeySize = 32;
 
 bool Heartbeat::Beat() {
-    sf::Http Http("mc-heartbeat.heroku.com");
+    sf::Http Http("mc-heartbeat.herokuapp.com");
 
     // Prepare a request to beat the heart
     sf::Http::Request Request;
-    Request.SetMethod(sf::Http::Request::Post);
-    Request.SetBody("hey=thar");//"port=" << Port);
-    
+    Request.setMethod(sf::Http::Request::Post);
+    Request.setBody("hey=thar");//"port=" << Port);
+
     // Load the key (if any)
     std::string key = ReadKey();
     if (key == "")
-        Request.SetURI("/beat");
+        Request.setUri("/beat");
     else
-        Request.SetURI("/beat/" + key);
+        Request.setUri("/beat/" + key);
 
     // Send it and get the response returned by the server
-    sf::Http::Response Page = Http.SendRequest(Request);
+    sf::Http::Response Page = Http.sendRequest(Request);
 
-    if (Page.GetStatus() != 200) {
-        std::cerr << "Error while beating the heart. (HTTP " << Page.GetStatus() << ")" << std::endl;
+    if (Page.getStatus() != 200) {
+        std::cerr << "Error while beating the heart. (HTTP " << Page.getStatus() << ")" << std::endl;
         return false;
     }
-    
+
     // Save the key
-    SaveKey(Page.GetBody());
-    
+    SaveKey(Page.getBody());
+
     return true;
 }
 
 void Heartbeat::SaveKey(std::string key) {
     if (key.length() != KeySize) return; // TODO: throw error
-    
+
     std::ofstream file("key.txt");
     file << key;
 }
@@ -43,10 +43,9 @@ std::string Heartbeat::ReadKey() {
     std::ifstream file("key.txt");
 
     if (!file) return ""; // No key is saved; it'll grab a new one
-    
+
     char memblock[KeySize];
     file.read(memblock, KeySize);
 
     return std::string(memblock, KeySize);
 }
-

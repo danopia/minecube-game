@@ -6,8 +6,10 @@ class Block
 {
     public:
         Block(char Type = 0, int DamageTaken = 0, int DamageThreshold = 0) : Type(Type), faces(0x3F), DamageTaken(DamageTaken), DamageThreshold(DamageThreshold) {};
-        virtual Block *newBlock() {};
-        
+        virtual Block *newBlock() {
+            return new Block(); // TODO: throw
+        };
+
         char Type;
         char faces;
         int DamageTaken;

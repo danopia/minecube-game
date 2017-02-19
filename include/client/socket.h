@@ -21,23 +21,22 @@ class Socket
 {
     public:
         Socket(Context *context, int port, std::string hostname);
-        Socket(Context *context, sf::SocketTCP socket);
-        
+        Socket(Context *context, sf::TcpSocket *socket);
+
         void DoStep();
         void Close();
         void SendChat(const std::string Line);
         void SendBlock(sf::Uint8 type, Vector3 chunkIndex, Vector3 blockIndex);
-        
+
         Context *context;
-        sf::SocketTCP socket;
-        
+        sf::TcpSocket *socket;
+
         sf::Clock Clock; // Track elapsed time for player movement
         sf::Clock updateTimer;
-        
+
         int Number;
         bool Connected;
         std::map<int, Player*> Players;
 };
 
 #endif
-

@@ -145,34 +145,34 @@ void Renderer::InitGraphics() {
     glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);				// Setup The Diffuse Light
     glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);			// Position The Light
     glEnable(GL_LIGHT1);							// Enable Light One
-    
+
     //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE); // Let glcolor work with lighting
     //glEnable(GL_COLOR_MATERIAL); // Enable lighting colors
     //glEnable(GL_LIGHTING); // Enable lighting
     glEnable(GL_TEXTURE_2D); // Enable textures
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); // Color textures
-    
+
     // Uncomment for freaky graphics
     //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
     //glEnable(GL_BLEND);
-    
+
     glShadeModel(GL_SMOOTH); // Enable Smooth Shading
-    
+
     // Load texture
     sf::Image Image;
-    if (!Image.LoadFromFile("data/tiles.png"))
+    if (!Image.loadFromFile("data/tiles.png"))
         return;
-    
+
     glGenTextures(1, &Texture);
     glBindTexture(GL_TEXTURE_2D, Texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.GetWidth(), Image.GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, Image.GetPixelsPtr());
-    
-    Font.LoadFromFile("data/Inconsolata.ttf", 20);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, Image.getSize().x, Image.getSize().y, GL_RGBA, GL_UNSIGNED_BYTE, Image.getPixelsPtr());
+
+    Font.loadFromFile("data/Inconsolata.ttf"); // 20
 }
 
-// Don't forget to destroy our texture 
+// Don't forget to destroy our texture
 //glDeleteTextures(1, &Texture);
 
 void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
@@ -183,7 +183,7 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
     glScalef(10, 10, 10);
     glTranslatef(x + subsize, y + subsize, z + subsize);
     glScalef(subsize, subsize, subsize);
-    
+
     if (block->Type == 1) // Stone
         glTexCoordPointer(2, GL_DOUBLE, 0, &texcoords2[0]);
     else if (block->Type == 3) // Grass
@@ -209,13 +209,13 @@ void Renderer::drawCube(Block *block, float x, float y, float z, float length) {
 
 void Renderer::renderBlock(PositionedBlock *block) {
     drawCube(block->block, block->pos.X, block->pos.Y, block->pos.Z, block->sideLength);
-    
+
     if (block->marked) {
       glColor3f(0, 0, 0);
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-      
+
       drawCube(block->block, block->pos.X, block->pos.Y, block->pos.Z, block->sideLength);
-      
+
       glColor3f(255, 255, 255);
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       block->marked = false;
@@ -225,7 +225,7 @@ void Renderer::renderBlock(PositionedBlock *block) {
 void Renderer::render() {
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     // Apply some transformations
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -235,13 +235,13 @@ void Renderer::render() {
     glTranslatef((-context->player->Pos.X - 0.25f) * 10, (-context->player->Pos.Y - 0.25f) * 10, (-context->player->Pos.Z - 1.6f) * 10);    // Translate The Scene Based On Player Position
 
     glMatrixMode(GL_MODELVIEW);
-    
+
     glBindTexture(GL_TEXTURE_2D, Texture);
 
     glEnableClientState( GL_VERTEX_ARRAY );
     //glEnableClientState( GL_NORMAL_ARRAY );
     glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-    
+
     bool wrap = false;
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap ? GL_REPEAT : GL_CLAMP );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap ? GL_REPEAT : GL_CLAMP );
@@ -249,13 +249,13 @@ void Renderer::render() {
     glVertexPointer( 3, GL_DOUBLE, 0, &vertices[0] );
     //glNormalPointer( GL_DOUBLE, 0, &vertices[0] );
     glTexCoordPointer(2, GL_DOUBLE, 0, &texcoords[0]);
-    
+
     // Loop through blocks and render them
     //for (int i = 0; i < context->world->Blocks.size(); i++)
     //    renderBlock(context->world->Blocks[i]);
     for (std::list<PositionedBlock*>::iterator it = context->world->VisibleBlocks.begin(); it != context->world->VisibleBlocks.end(); ++it)
         renderBlock(*it);
-    
+
     Block *block = new StoneBlock();
     for (std::map<int, Player*>::iterator player = context->socket->Players.begin(); player != context->socket->Players.end(); player++) {
         if (player->first != context->socket->Number) {

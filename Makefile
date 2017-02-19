@@ -1,6 +1,7 @@
 # At the time being, use the VS project file on Windows
 
-COMPILER    := g++
+COMPILER    := clang++
+# was g++
 ARCH        := x86_64
 ARCHES      := i386 x86_64
 BUILD_TYPE  := debug
@@ -25,10 +26,10 @@ CFLAGS := -I include -g -O2 -fno-rtti
 all: client server
 
 client: $(COMMONOBJFILES) $(CLIENTOBJFILES)
-	$(COMPILER) $+ -o client -lsfml-graphics -lsfml-window -lsfml-network -lsfml-system -lGLU
-	
+	$(COMPILER) $+ -o client -lsfml-graphics -lsfml-window -lsfml-network -lsfml-system -lGLU -lGL
+
 server: $(COMMONOBJFILES) $(SERVEROBJFILES)
-	$(COMPILER) $+ -o server -lsfml-network -lsfml-system -lGLU
+	$(COMPILER) $+ -o server -lsfml-network -lsfml-system -lGLU -lGL
 
 %.o: %.cpp
 	$(COMPILER) $(CFLAGS) -c $< -o $@

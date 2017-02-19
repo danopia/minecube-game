@@ -22,16 +22,16 @@ class Server
     public:
         Server();
         Server(unsigned short Port);
-        
+
         void beat();
-        
+
         void broadcast(sf::Packet &Packet);
         void broadcastExcept(const Client *Except, sf::Packet &Packet);
         void broadcastLog(const std::string &Line);
-        
+
         bool Listen();
         void Loop();
-        
+
         unsigned short Port;
 
         Terrain *terrain;
@@ -39,10 +39,9 @@ class Server
         sf::Clock BeatTimer;
 
         int NextNumber;
-        std::map<sf::SocketTCP, Client*> clients;
-        sf::SocketTCP Listener;
-        sf::SelectorTCP Selector;
+        std::map<sf::TcpSocket*, Client*> clients;
+        sf::TcpListener Listener;
+        sf::SocketSelector Selector;
 };
 
 #endif
-

@@ -15,18 +15,17 @@ class Ray
         Ray() : Origin(0, 0, 0), Direction(0, 0, 0) {};
         Ray(Entity *entity);
         Ray(Vector3 origin, Vector3 direction) : Origin(origin), Direction(direction) {};
-        
+
         float CheckCollision(PositionedBlock *block);
-        
+
         bool FindClosest(std::list<PositionedBlock*> blocks);
         PositionedBlock* Closest;
         float Distance;
         char Face;
-        
+
         Vector3 Origin, Direction;
-        
-        const double static PI = 3.14159265358979323846264338329750288419716939937510582;
+
+        const double static PI;
 };
 
 #endif
-

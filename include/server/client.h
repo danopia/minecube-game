@@ -14,23 +14,22 @@ class Server;
 class Client
 {
     public:
-        static Client *Accept(sf::SocketTCP &Listener, Server *Host);
-        
+        static Client *Accept(sf::TcpListener &Listener, Server *Host);
+
         Client(Server *Host);
-        Client(sf::SocketTCP Socket, sf::IPAddress Address, Server *Host, int Number);
-        
+        Client(sf::TcpSocket *Socket, sf::IpAddress Address, Server *Host, int Number);
+
         void SendWelcome();
         void SendPlayerList();
         bool handlePacket(sf::Packet &Packet);
         void sendTerrain(const Vector3 ChunkIndex);
-        
-        sf::SocketTCP Socket;
-        sf::IPAddress Address;
+
+        sf::TcpSocket *Socket;
+        sf::IpAddress Address;
         Server *Host;
         Player *Avatar;
-        
+
         int Number;
 };
 
 #endif
-
