@@ -6,7 +6,7 @@
 Chunk *SocketStorage::RequestChunk(Vector3 Index) {
     sf::Packet Packet;
     Packet << (sf::Uint8) 4 << Index;
-    context->socket->socket->send(Packet);
+    context->socket->socket.send(Packet);
 
     return NULL;
 }

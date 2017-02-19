@@ -39,7 +39,7 @@ class Server
         sf::Clock BeatTimer;
 
         int NextNumber;
-        std::map<sf::TcpSocket*, Client*> clients;
+        std::list<Client*> clients;
         sf::TcpListener Listener;
         sf::SocketSelector Selector;
 };

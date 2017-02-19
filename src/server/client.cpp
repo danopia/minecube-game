@@ -3,8 +3,8 @@
 Client *Client::Accept(sf::TcpListener &Listener, Server *Host) {
     Client *client = new Client(Host);
 
-    Listener.accept(*client->Socket);
-    client->Address = client->Socket->getRemoteAddress();
+    Listener.accept(client->Socket);
+    client->Address = client->Socket.getRemoteAddress();
 
     client->Avatar = new Player(5.f, Vector3(0.f, 0.f, 90.f), Vector3(8.f, 8.f, 15.9f), "");
     client->Avatar->Name = client->Address.toString();
@@ -15,8 +15,8 @@ Client *Client::Accept(sf::TcpListener &Listener, Server *Host) {
     Packet << (sf::Uint8) 7 << client->Number << client->Avatar->Name << client->Avatar;
     Host->broadcast(Packet);
 
-    Host->clients[client->Socket] = client;
-    Host->Selector.add(*client->Socket);
+    Host->clients.push_back(client);
+    Host->Selector.add(client->Socket);
 
     client->SendWelcome();
 
@@ -27,22 +27,24 @@ Client::Client(Server *Host) : Host(Host) {
     Number = Host->NextNumber++;
 }
 
+/*
 Client::Client(sf::TcpSocket *Socket, sf::IpAddress Address, Server *Host, int Number) : Socket(Socket), Address(Address), Host(Host), Number(Number) {
     Avatar = new Player();
     Avatar->Name = Address.toString();
 
     SendWelcome();
 }
+*/
 
 void Client::SendWelcome() {
     sf::Packet Packet;
     Packet << (sf::Uint8) 1;
     Packet << Host->terrain->ChunkSize;
-    Socket->send(Packet);
+    Socket.send(Packet);
 
     sf::Packet Packet2;
     Packet2 << (sf::Uint8) 2 << Number << Avatar->Name << Avatar;
-    Socket->send(Packet2);
+    Socket.send(Packet2);
 
     SendPlayerList();
 }
@@ -101,7 +103,7 @@ void Client::sendTerrain(const Vector3 ChunkIndex) {
         Packet << (sf::Uint8) it->second->Type << it->first;
     }
 
-    Socket->send(Packet);
+    Socket.send(Packet);
 }
 
 void Client::SendPlayerList() {
@@ -109,9 +111,10 @@ void Client::SendPlayerList() {
     Packet << (sf::Uint8) 6;
     Packet << (int) Host->clients.size();
 
-    for (std::map<sf::TcpSocket*, Client*>::iterator client = Host->clients.begin(); client != Host->clients.end(); client++) {
-        Packet << client->second->Number << client->second->Avatar->Name << client->second->Avatar;
+    for (std::list<Client*>::iterator it = Host->clients.begin(); it != Host->clients.end(); it++) {
+        Client* client = *it;
+        Packet << client->Number << client->Avatar->Name << client->Avatar;
     }
 
-    Socket->send(Packet);
+    Socket.send(Packet);
 }

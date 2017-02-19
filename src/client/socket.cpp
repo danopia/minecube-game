@@ -3,35 +3,33 @@
 #include <stdio.h>
 
 Socket::Socket(Context *context, int port, std::string hostname) : context(context), Number(0) {
+    socket.setBlocking(true);
+
     // Connect to the server
     sf::IpAddress host(hostname);
-    Connected = (socket->connect(host, port) == sf::Socket::Done);
+    Connected = (socket.connect(host, port) == sf::Socket::Done);
+    std::cout << "=== connected: " << Connected << std::endl;
 
-    socket->setBlocking(false);
-}
-
-Socket::Socket(Context *context, sf::TcpSocket *socket) : context(context), socket(socket), Number(0) {
-    socket->setBlocking(false);
+    socket.setBlocking(false);
 }
 
 void Socket::SendChat(const std::string Line) {
     sf::Packet Packet;
     Packet << (sf::Uint8) 3 << Line;
-    socket->send(Packet);
+    socket.send(Packet);
 }
 
 void Socket::SendBlock(sf::Uint8 type, Vector3 chunkIndex, Vector3 blockIndex) {
     sf::Packet Packet;
     Packet << (sf::Uint8) 9 << type << chunkIndex << blockIndex;
-    socket->send(Packet);
+    socket.send(Packet);
 }
 
 void Socket::DoStep() {
-    std::cout << "=== jkl;" << std::endl;
-    
+
     sf::Packet In;
 
-    while (socket->receive(In) == sf::Socket::Done) {
+    while (socket.receive(In) == sf::Socket::Done) {
         sf::Uint8 command;
         In >> command;
         //printf("Got packet: %i\n", command);
@@ -123,7 +121,7 @@ void Socket::DoStep() {
      || (updateTimer.getElapsedTime().asSeconds() > 5.f)) {
         sf::Packet Out;
         Out << (sf::Uint8) 5 << context->player;
-        socket->send(Out);
+        socket.send(Out);
 
         context->player->Dirty = false;
         updateTimer.restart();
@@ -140,5 +138,5 @@ void Socket::DoStep() {
 }
 
 void Socket::Close() {
-    socket->disconnect();
+    socket.disconnect();
 }

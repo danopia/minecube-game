@@ -21,14 +21,18 @@ void Server::beat() {
 }
 
 void Server::broadcast(sf::Packet &Packet) {
-    for (std::map<sf::TcpSocket*, Client*>::iterator client = clients.begin(); client != clients.end(); client++)
-        client->second->Socket->send(Packet);
+    for (std::list<Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
+        Client* client = *it;
+        client->Socket.send(Packet);
+    }
 }
 
 void Server::broadcastExcept(const Client *Except, sf::Packet &Packet) {
-    for (std::map<sf::TcpSocket*, Client*>::iterator client = clients.begin(); client != clients.end(); client++)
-        if (client->second->Number != Except->Number)
-            client->second->Socket->send(Packet);
+    for (std::list<Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
+        Client* client = *it;
+        if (client->Number != Except->Number)
+            client->Socket.send(Packet);
+  }
 }
 
 void Server::broadcastLog(const std::string &Line) {
@@ -69,22 +73,21 @@ void Server::Loop() {
                 Client *client = Client::Accept(Listener, this);
             }
 
-            for (std::map<sf::TcpSocket*, Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
-                sf::TcpSocket* Socket = it->first;
+            for (std::list<Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
+                Client *client = *it;
 
-                if (Selector.isReady(*Socket)) {
+                if (Selector.isReady(client->Socket)) {
                     // Read the data the client sent
-                    Client *client = it->second;
 
                     sf::Packet Packet;
-                    if (Socket->receive(Packet) == sf::Socket::Done) {
+                    if (client->Socket.receive(Packet) == sf::Socket::Done) {
                         // Extract the message and display it
                         client->handlePacket(Packet);
 
                     } else {
                         // Error: we'd better remove the socket from the selector
-                        Selector.remove(*Socket);
-                        clients.erase(Socket);
+                        Selector.remove(client->Socket);
+                        clients.erase(it);
 
                         sf::Packet OutPacket;
                         OutPacket << (sf::Uint8) 8 << client->Number;

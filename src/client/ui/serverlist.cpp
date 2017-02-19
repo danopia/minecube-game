@@ -36,7 +36,7 @@ std::vector<std::string> FetchServers() {
 
 ServerList::ServerList(Context *context) : ButtonPage(context, "Server List", true) {
     Buttons = FetchServers();
-    Buttons.push_back("localhost:28997");
+    Buttons.push_back("127.0.0.1:28997");
 }
 
 void ServerList::Connect(std::string hostname, int port) {

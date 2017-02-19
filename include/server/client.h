@@ -17,14 +17,14 @@ class Client
         static Client *Accept(sf::TcpListener &Listener, Server *Host);
 
         Client(Server *Host);
-        Client(sf::TcpSocket *Socket, sf::IpAddress Address, Server *Host, int Number);
+        //Client(sf::TcpSocket *Socket, sf::IpAddress Address, Server *Host, int Number);
 
         void SendWelcome();
         void SendPlayerList();
         bool handlePacket(sf::Packet &Packet);
         void sendTerrain(const Vector3 ChunkIndex);
 
-        sf::TcpSocket *Socket;
+        sf::TcpSocket Socket;
         sf::IpAddress Address;
         Server *Host;
         Player *Avatar;
